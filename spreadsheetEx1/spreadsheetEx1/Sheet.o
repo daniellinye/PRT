@@ -1,0 +1,13 @@
+#include "stdafx.h"
+#include "Cell.cpp"
+
+class sheet
+{
+	//initializes a 2d pointer array
+	void initsheet(int h, int b);
+
+	//resizes the pointerarray and 
+	//readds the values that can be added to the new
+	//height and width
+	void resizesheet(int h, int b);
+}
