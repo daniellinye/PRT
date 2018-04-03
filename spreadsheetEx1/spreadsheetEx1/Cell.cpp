@@ -4,12 +4,6 @@
 
 class CellValueBase
 {
-private:
-	int iv; std::string sv; float fv;
-public:
-	virtual void destroy();
-	virtual std::stringstream print();
-	virtual float convtn();
 
 };
 
@@ -19,9 +13,9 @@ class CellValue final : public CellValueBase
 private:
 	T tvalue;
 public:
-	virtual void destroy();
-	virtual std::stringstream print();
-	virtual float convtn();
+	virtual void destroy(void) {};
+	virtual std::stringstream print(void) {};
+	virtual float convtn(void) {};
 	CellValue(T init)
 	{
 		this->tvalue = init;
@@ -33,54 +27,63 @@ public:
 	}
 };
 
-void CellValue<int>::destroy()
+template<>
+void CellValue<int>::destroy(void)
 {
 	delete this;
 }
 
-void CellValue<float>::destroy()
+template<>
+void CellValue<float>::destroy(void)
 {
 	delete this;
 }
 
-void CellValue<std::string>::destroy()
+template<>
+void CellValue<std::string>::destroy(void)
 {
 	delete this;
 }
 
-std::stringstream CellValue<int>::print()
+template<>
+std::stringstream CellValue<int>::print(void)
 {
 	std::stringstream ss;
 	ss << tvalue;
 	return ss;
 }
 
-std::stringstream CellValue<float>::print()
+template<>
+std::stringstream CellValue<float>::print(void)
 {
 	std::stringstream ss;
 	ss << tvalue;
 	return ss;
 }
 
-std::stringstream CellValue<std::string>::print()
+template<>
+std::stringstream CellValue<std::string>::print(void)
 {
 	std::stringstream ss;
 	ss << tvalue;
 	return ss;
 }
 
-float CellValue<int>::convtn()
+template<>
+float CellValue<int>::convtn(void)
 {
 	float temp = (float)tvalue;
 	return temp;
 }
 
-float CellValue<float>::convtn()
+template<>
+float CellValue<float>::convtn(void)
 {
 	return tvalue;
 }
 
-float CellValue<std::string>::convtn()
+template<>
+float CellValue<std::string>::convtn(void)
 {
 	int temp = 0;
 	for (char chars : tvalue)
@@ -102,14 +105,15 @@ public:
 		value = new CellValue<T>;
 	}
 
-	void initCell(CellValue<float>* val)
+	template<typename T>
+	CellValue<T>* giveref()
 	{
-
-	}
-
-	void initCell(CellValue<std::string>* val)
-	{
-
+		if (value != nullptr)
+		{
+			return giveref();
+		}
+		return NULL;
 	}
 	
+
 };
