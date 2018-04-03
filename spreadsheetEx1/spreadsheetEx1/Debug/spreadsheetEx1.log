@@ -1,6 +1,6 @@
-﻿  stdafx.cpp
-  Sheet.cpp
-  main.cpp
+﻿  Sheet.cpp
+f:\github\prt\spreadsheetex1\spreadsheetex1\cell.cpp(91): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
+f:\github\prt\spreadsheetex1\spreadsheetex1\sheet.cpp(11): error C3203: 'Cell': unspecialized class template can't be used as a template argument for template parameter '_Ty', expected a real type
   Cell.cpp
+f:\github\prt\spreadsheetex1\spreadsheetex1\cell.cpp(91): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
   Generating Code...
-  spreadsheetEx1.vcxproj -> F:\Github\PRT\spreadsheetEx1\Debug\spreadsheetEx1.exe

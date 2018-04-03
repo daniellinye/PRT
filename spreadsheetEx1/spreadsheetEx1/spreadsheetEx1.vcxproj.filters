@@ -36,9 +36,4 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
-  <ItemGroup>
-    <Object Include="Sheet.o">
-      <Filter>Source Files</Filter>
-    </Object>
-  </ItemGroup>
 </Project>
