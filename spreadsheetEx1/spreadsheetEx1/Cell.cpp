@@ -28,25 +28,25 @@ public:
 	}
 };
 
-template<>
+
 void CellValue<int>::destroy(void)
 {
 	delete this;
 }
 
-template<>
+
 void CellValue<float>::destroy(void)
 {
 	delete this;
 }
 
-template<>
+
 void CellValue<std::string>::destroy(void)
 {
 	delete this;
 }
 
-template<>
+
 std::stringstream CellValue<int>::print(void)
 {
 	std::stringstream ss;
@@ -54,7 +54,7 @@ std::stringstream CellValue<int>::print(void)
 	return ss;
 }
 
-template<>
+
 std::stringstream CellValue<float>::print(void)
 {
 	std::stringstream ss;
@@ -62,7 +62,7 @@ std::stringstream CellValue<float>::print(void)
 	return ss;
 }
 
-template<>
+
 std::stringstream CellValue<std::string>::print(void)
 {
 	std::stringstream ss;
@@ -70,20 +70,20 @@ std::stringstream CellValue<std::string>::print(void)
 	return ss;
 }
 
-template<>
+
 float CellValue<int>::convtn(void)
 {
 	float temp = (float)tvalue;
 	return temp;
 }
 
-template<>
+
 float CellValue<float>::convtn(void)
 {
 	return tvalue;
 }
 
-template<>
+
 float CellValue<std::string>::convtn(void)
 {
 	int temp = 0;
