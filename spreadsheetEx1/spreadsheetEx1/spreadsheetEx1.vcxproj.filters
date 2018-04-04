@@ -35,5 +35,11 @@
     <ClCompile Include="Sheet.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CellAddress.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Range.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

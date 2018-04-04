@@ -148,7 +148,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Cell.cpp" />
+    <ClCompile Include="CellAddress.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Range.cpp" />
     <ClCompile Include="Sheet.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
