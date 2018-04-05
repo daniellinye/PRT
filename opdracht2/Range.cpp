@@ -29,7 +29,7 @@ public:
 	}
 };
 
-class RangeIterator : Range
+class RangeIterator : Range, CellAdress
 {
 private:
 	Range begin;
