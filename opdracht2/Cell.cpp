@@ -9,7 +9,6 @@ class CellValueBase
 {
 	CellValueBase() {};
 public:
-	virtual void destroy() { delete this; }
 	virtual std::stringstream print()
 	{
 		std::stringstream ss;
@@ -66,14 +65,12 @@ public:
 		return tvalue;
 	}
 
-	virtual void destroy(void) { delete this; }
 	virtual std::stringstream print(void) 
 	{
 		std::stringstream ss;
 		ss << tvalue;
 		return ss;
 	};
-	virtual float convtn(void) {};
 
 
 	virtual std::string givetid()

@@ -19,7 +19,7 @@ public:
 	{
 		if (input[0] - 'A' >= 0)
 			this->x = input[0] - 'A';
-		for (int i = 1; i < sizeof(input) - 1; i++)
+		for (int i = 1; i < input.size() - 1; i++)
 			if (input[i] - '0' >= 0 && input[i] - '0' <= 9)
 				this->y = this->y * 10 + input[i] - '0';
 	}
