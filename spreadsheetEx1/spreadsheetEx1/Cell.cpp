@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include <memory>
 #include <sstream>
 #include <iostream>
@@ -66,9 +66,10 @@ public:
 		return tvalue;
 	}
 
-	virtual void destroy(void) { delete this };
+	virtual void destroy(void) { delete this; }
 	virtual std::stringstream print(void) 
 	{
+		std::stringstream ss;
 		ss << tvalue;
 		return ss;
 	};
@@ -95,7 +96,7 @@ public:
 			return convtns;
 			break;
 		default:
-			std::cout << "Case " << typeid(T).name() << " not implemented" << endl;
+			std::cout << "Case " << typeid(T).name() << " not implemented" << std::endl;
 		}
 	}
 };

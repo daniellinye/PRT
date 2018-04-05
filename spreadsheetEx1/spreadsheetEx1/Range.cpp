@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "CellAddress.cpp"
 #include "Sheet.cpp"
 

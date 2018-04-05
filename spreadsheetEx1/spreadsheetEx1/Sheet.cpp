@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Cell.cpp"
 #include <vector>
 #include <memory>
@@ -23,7 +22,7 @@ public:
 	template<typename T>
 	CellValue<T>* getCell(int x, int y)
 	{
-		matrix[x][y].giveref();
+		matrix[x][y]->giveref();
 	}
 
 	template<typename T>
