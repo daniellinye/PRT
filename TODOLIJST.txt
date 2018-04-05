@@ -1,0 +1,4 @@
+Daniel : Range en Formula
+Robert : UI
+Jordi  : Input/output (bestanden lezen en schrijven)
+beetje algemeen : main goed maken (en menu)
