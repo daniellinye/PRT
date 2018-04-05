@@ -41,4 +41,19 @@ public:
 		return new int[2]{ x, y };
 	}
 
+	CellAdress* operator +=(CellAdress &a)
+	{
+		int* coords = a.givecoords();
+		this->x += coords[0];
+		this->y += coords[1];
+		return this;
+	}
+
+	CellAdress* operator +=(int coords[2])
+	{
+		this->x += coords[0];
+		this->y += coords[1];
+		return this;
+	}
+
 };
