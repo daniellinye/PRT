@@ -37,5 +37,5 @@ private:
 public:
 	RangeIterator() {};
 
-	
+
 };

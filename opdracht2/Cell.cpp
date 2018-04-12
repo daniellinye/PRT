@@ -4,7 +4,6 @@
 #include <iostream>
 #include <vector>
 
-
 class CellValueBase
 {
 	CellValueBase() {};
@@ -65,7 +64,7 @@ public:
 		return tvalue;
 	}
 
-	virtual std::stringstream print(void) 
+	virtual std::stringstream print(void)
 	{
 		std::stringstream ss;
 		ss << tvalue;
@@ -121,7 +120,7 @@ public:
 		}
 		return NULL;
 	}
-	
+
 	/*
 	TODO: still need to fix this
 	Cell* operator +=(Cell *& other)

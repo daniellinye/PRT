@@ -2,14 +2,15 @@
 //
 
 #include "Range.cpp"
-
-
-
+#include "SheetView.cpp"
 
 int main()
 {
 	Range r = Range();
+	SheetView view = SheetView();
+	Sheet sheet = Sheet(view.retH(),view.retB());
 
-    return 0;
+	view.Display(r.returnSheet());
+
+  return 0;
 }
-
