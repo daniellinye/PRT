@@ -3,6 +3,7 @@
 #include <memory>
 #include <sstream>
 
+using namespace std;
 
 class Sheet
 {
@@ -44,5 +45,23 @@ public:
 	Cell* end(int column)
 	{
 		return matrix[column][h];
+	}
+
+	void print()
+	{
+		int tx = 0;
+		for(std::vector<Cell*> list : matrix)
+		{
+			for(Cell* element : list)
+			{
+				cout << element->giveref()->convertfloat();
+				tx++;
+				if (tx == b)
+				{
+					cout << endl;
+					tx = 0;
+				}
+			}
+		}
 	}
 };

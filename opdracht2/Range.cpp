@@ -27,6 +27,11 @@ public:
 		end = CellAdress();
 		end.init(x, y);
 	}
+
+	void print()
+	{
+		matrix->print();
+	}
 };
 
 class RangeIterator : Range, CellAdress

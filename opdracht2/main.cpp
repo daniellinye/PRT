@@ -9,7 +9,7 @@
 int main()
 {
 	Range r = Range();
-
+    r.print();
     return 0;
 }
 
