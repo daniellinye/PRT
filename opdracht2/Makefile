@@ -1,7 +1,6 @@
 CC = g++
 
 CompileParms = -c -Wall -std=c++11
-LDFLAGS = -lncurses
 
 OBJS = Cell.o CellAddress.o Range.o Sheet.o SheetView.o main.o
 
