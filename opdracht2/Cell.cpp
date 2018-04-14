@@ -1,101 +1,101 @@
 
-#include "Cell.h"
 #include <memory>
 #include <sstream>
 #include <iostream>
 #include <vector>
 
-
-CellValueBase::CellValueBase() {};
-
-std::stringstream CellValueBase::print()
+class CellValueBase
 {
-	std::stringstream ss;
-	return ss;
-}
-
-std::string CellValueBase::givetid()
-{
-	return "nonetype";
-}
-
-float CellValueBase::convertfloat()
-{
-	return 0;
-}
-
-
-template<typename T>
-float CellValue<T>::convtni()
-{
-	float temp = (float)tvalue;
-	return temp;
-}
-
-template<typename T>
-float CellValue<T>::convtnf()
-{
-	return tvalue;
-}
-
-template<typename T>
-float CellValue<T>::convtns()
-{
-	int temp = 0;
-	for (char chars : tvalue)
+	CellValueBase() {};
+public:
+	virtual std::stringstream print()
 	{
-		if (chars >= '0' && chars <= '9')
-			temp = temp * 10 + (chars - '0');
+		std::stringstream ss;
+		return ss;
 	}
-	return temp;
-}
 
-template<typename T>
-CellValue<T>::CellValue(T init)
-{
-	this->tvalue = init;
-}
+	virtual std::string givetid()
+	{
+		return "nonetype";
+	}
 
-template<typename T>
-T CellValue<T>::formvalue()
-{
-	return tvalue;
-}
-
-template<typename T>
-std::stringstream CellValue<T>::print(void)
-{
-	std::stringstream ss;
-	ss << tvalue;
-	return ss;
+	virtual float convertfloat()
+	{
+		return 0;
+	}
 };
 
 template<typename T>
-std::string CellValue<T>::givetid()
+class CellValue : public CellValueBase
 {
-	return typeid(T).name();
-}
+private:
+	T tvalue;
 
-//returns the value into a float
-template<typename T>
-float CellValue<T>::convertfloat()
-{
-	switch (typeid(T))
+	float convtni()
 	{
-	case typeid(float) :
-		return convtnf();
-		break;
-	case typeid(int) :
-		return convtni();
-		break;
-	case typeid(std::string) :
-		return convtns();
-		break;
-	default:
-		std::cout << "Case " << typeid(T).name() << " not implemented" << std::endl;
+		float temp = (float)tvalue;
+		return temp;
 	}
-}
 
+	float convtnf()
+	{
+		return tvalue;
+	}
+
+	float convtns()
+	{
+		int temp = 0;
+		for (char chars : tvalue)
+		{
+			if (chars >= '0' && chars <= '9')
+				temp = temp * 10 + (chars - '0');
+		}
+		return temp;
+	}
+
+public:
+	CellValue(T init)
+	{
+		this->tvalue = init;
+	}
+
+	T formvalue()
+	{
+		return tvalue;
+	}
+
+	virtual std::stringstream print(void)
+	{
+		std::stringstream ss;
+		ss << tvalue;
+		return ss;
+	};
+
+
+	virtual std::string givetid()
+	{
+		return typeid(T).name();
+	}
+
+	//returns the value into a float
+	virtual float convertfloat()
+	{
+		switch (typeid(T))
+		{
+		case typeid(float) :
+			return convtnf;
+			break;
+		case typeid(int) :
+			return convtni;
+			break;
+		case typeid(std::string) :
+			return convtns;
+			break;
+		default:
+			std::cout << "Case " << typeid(T).name() << " not implemented" << std::endl;
+		}
+	}
+};
 
 
 

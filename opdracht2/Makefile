@@ -7,7 +7,7 @@ OBJS = Cell.o CellAddress.o Range.o Sheet.o SheetView.o main.o
 Opdr: $(OBJS)
 	$(CC) $(OBJS) -o Sheet $(LDFLAGS)
 
-Cell.o: Cell.h Cell.cpp
+Cell.o: Cell.cpp
 	$(CC) $(CompileParms) Cell.cpp
 
 CellAdress.o: CellAdress.cpp
