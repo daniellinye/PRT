@@ -2,14 +2,16 @@
 //
 
 #include "Range.cpp"
+#include <iostream>
 
-
-
-
+//TODO: fix segmentation fault
 int main()
 {
 	Range r = Range();
-    r.print();
-    return 0;
+	Sheet* matrix = new Sheet(12, 12);
+	r.initm(matrix);
+	r.print();
+	return 0;
 }
+
 

@@ -3,6 +3,8 @@
 #include <iostream>
 #include <vector>
 
+using namespace std;
+
 struct CellValueBase
 {
 	CellValueBase() {};
@@ -61,3 +63,6 @@ public:
 	float convertfloat();
 
 };
+
+
+

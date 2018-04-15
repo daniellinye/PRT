@@ -80,9 +80,6 @@ float CellValue<T>::convertfloat()
 
 
 
-
-
-
 class Cell
 {
 private:
@@ -104,6 +101,7 @@ public:
 		return NULL;
 	}
 	
+	
 /*
 	Cell* operator +=(Cell *& other)
 	{
@@ -118,3 +116,5 @@ public:
 
 */
 };
+
+
