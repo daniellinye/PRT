@@ -5,6 +5,8 @@
 #include <vector>
 #include "Cell.h"
 
+using namespace std;
+
 template <typename T>
 float CellValue<T>::convtni()
 {
@@ -84,19 +86,20 @@ float CellValue<T>::convertfloat()
 class Cell
 {
 private:
-	CellValueBase *value = nullptr;
+
+	unique_ptr<CellValueBase> value;
+
 public:
-	template<typename T>
-	void initCell(T initv)
+	void initCell()
 	{
-		value = new CellValue<T>(initv);
+		value = unique_ptr<CellValueBase>();
 	}
 
 	CellValueBase* giveref()
 	{
-		if (value != nullptr)
+		if (value != 0)
 		{
-			return value;
+			return value.get();
 		}
 		return NULL;
 	}

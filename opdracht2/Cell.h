@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 
-class CellValueBase
+struct CellValueBase
 {
 	CellValueBase() {};
 public:
