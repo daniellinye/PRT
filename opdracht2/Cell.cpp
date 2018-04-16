@@ -7,6 +7,29 @@
 
 using namespace std;
 
+
+
+std::stringstream CellValueBase::print()
+{
+	std::stringstream ss;
+	ss << " ";
+	return ss;
+}
+
+//returns typename T as type
+std::string CellValueBase::givetid()
+{
+	return "nonetype";
+}
+
+//returns the value as float
+//is -1 when it's null
+float CellValueBase::convertfloat()
+{
+	return -1;
+}
+
+
 template <typename T>
 float CellValue<T>::convtni()
 {

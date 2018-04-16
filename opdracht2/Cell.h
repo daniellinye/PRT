@@ -12,25 +12,14 @@ public:
     //gives a stringstream with the 
     //value in the stringstream
     //is empty if it's null
-	std::stringstream print()
-	{
-		std::stringstream ss;
-		ss << " ";
-		return ss;
-	}
+	std::stringstream print();
 
     //returns typename T as type
-	std::string givetid()
-	{
-		return "nonetype";
-	}
+	std::string givetid();
 
     //returns the value as float
     //is -1 when it's null
-	float convertfloat()
-	{
-		return -1;
-	}
+	float convertfloat();
 };
 
 template<typename T>
