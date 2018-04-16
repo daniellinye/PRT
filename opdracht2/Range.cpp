@@ -1,13 +1,12 @@
-
-#include "CellAddress.cpp"
-#include "Sheet.cpp"
+#include "CellAddress.h"
+#include "Sheet.h"
 
 class Range
 {
 private:
 	Sheet* matrix;
-	CellAdress begin;
-	CellAdress end;
+	CellAddress begin;
+	CellAddress end;
 public:
 	Range() {};
 
@@ -18,24 +17,23 @@ public:
 
 	void setbegin(int x, int y)
 	{
-		begin = CellAdress();
+		begin = CellAddress();
 		begin.init(x, y);
 	}
 
 	void setend(int x, int y)
 	{
-		end = CellAdress();
+		end = CellAddress();
 		end.init(x, y);
 	}
-};
 
-class RangeIterator : Range, CellAdress
-{
-private:
-	Range begin;
-	Range end;
-public:
-	RangeIterator() {};
+	void print()
+	{
+		matrix->print();
+	}
 
-
+	CellValueBase* getCell(int x, int y)
+	{
+		return matrix->getCell(x, y);
+	}
 };

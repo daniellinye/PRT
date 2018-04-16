@@ -1,48 +1,90 @@
-#include "Cell.cpp"
+#include "Sheet.h"
 #include <vector>
 #include <memory>
 #include <sstream>
 
+using namespace std;
 
-class Sheet
+Sheet::Sheet(int h, int b)
 {
-private:
-	std::vector<std::vector<Cell*>> matrix;
-	//temporary empty cell
-	int h, b;
-public:
-	Sheet(int h, int b)
+	this->h = h;
+	this->b = b;
+	//fill matrix with h x b cells that are empty
+	for(int i = 0; i < b; i++)
 	{
-		this->h = h;
-		this->b = b;
-		//fill matrix with h x b cells that are empty
-		matrix.resize(b, std::vector<Cell*>(h, new Cell));
-	}
-	
-	template<typename T>
-	CellValue<T>* getCell(int x, int y)
-	{
-		matrix[x][y]->giveref();
-	}
+		matrix.push_back(Column(h));
+		for(int j = 0; j < h; j++)
+		{
 
-	template<typename T>
-	CellValue<T>* getCell(char a, int y)
-	{
-		if (a >= 'A' && a <= 'Z')
-			return matrix[a - 'A'][y]->giveref();
-		else
-			return NULL;
+		}
 	}
+}
 
-	//TODO: move to class Range
-	Cell* begin(int column)
-	{
-		return matrix[column][0];
-	}
+CellValueBase* Sheet::getCell(int x, int y)
+{
+	return matrix[x].getCell(y)->giveref();
+}
 
-	//TODO: move to class Range
-	Cell* end(int column)
+CellValueBase* Sheet::getCell(char a, int y)
+{
+	if (a >= 'A' && a <= 'Z')
+		return matrix[a - 'A'].getCell(y)->giveref();
+	else
+		return NULL;
+}
+
+//TODO: move to class Range
+Cell* Sheet::begin(int column)
+{
+	return matrix[column].begin();
+}
+
+//TODO: move to class Range
+Cell* Sheet::end(int column)
+{
+	return matrix[column].end();
+}
+
+void Sheet::print()
+{
+	int tx = 0;
+	for(int i = 0; i < b; i++)
 	{
-		return matrix[column][h];
+		for(int j = 0; j < h; j++)
+		{
+			cout << matrix[i].getCell(j)->giveref();
+		}
+		cout << endl;
 	}
-};
+}
+
+
+Column::Column(int size)
+{
+	this->size = size;
+	for(int i = 0; i < size; i++)
+	{
+		col.push_back(new Cell());
+	}
+}
+
+Cell* Column::getCell(int index)
+{
+	return col[index];
+}
+
+Cell* Column::begin()
+{
+	if(col.size() > 0)
+		return col[0];
+	else
+		return new Cell();
+}
+
+Cell* Column::end()
+{
+	if(col.size() > 0)
+		return col[col.size() - 1];
+	else
+		return new Cell();
+}

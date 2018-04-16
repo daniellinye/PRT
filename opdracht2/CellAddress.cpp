@@ -1,47 +1,42 @@
 
 #include <string>
 #include <iostream>
+#include "CellAddress.h"
 
 
-class CellAdress
+CellAddress::CellAddress() {};
+
+void CellAddress::init(int x, int y)
 {
-private:
-	int x, y;
-public:
-	CellAdress() {};
-	void init(int x, int y)
-	{
-		this->x = x;
-		this->y = y;
-	}
+	this->x = x;
+	this->y = y;
+}
 
-	void init(std::string input)
-	{
-		if (input[0] - 'A' >= 0)
-			this->x = input[0] - 'A';
-		for (int i = 1; i < input.size() - 1; i++)
-			if (input[i] - '0' >= 0 && input[i] - '0' <= 9)
-				this->y = this->y * 10 + input[i] - '0';
-	}
+void CellAddress::init(std::string input)
+{
+	if (input[0] - 'A' >= 0)
+		this->x = input[0] - 'A';
+	for (int i = 1; i < input.size() - 1; i++)
+		if (input[i] - '0' >= 0 && input[i] - '0' <= 9)
+			this->y = this->y * 10 + input[i] - '0';
+}
 
-	int* givecoords()
-	{
-		return new int[2]{ x, y };
-	}
+int* CellAddress::givecoords()
+{
+	return new int[2]{ x, y };
+}
 
-	CellAdress* operator +=(CellAdress &a)
-	{
-		int* coords = a.givecoords();
-		this->x += coords[0];
-		this->y += coords[1];
-		return this;
-	}
+CellAddress* CellAddress::operator +=(CellAddress &a)
+{
+	int* coords = a.givecoords();
+	this->x += coords[0];
+	this->y += coords[1];
+	return this;
+}
 
-	CellAdress* operator +=(int coords[2])
-	{
-		this->x += coords[0];
-		this->y += coords[1];
-		return this;
-	}
-
-};
+CellAddress* CellAddress::operator +=(int coords[2])
+{
+	this->x += coords[0];
+	this->y += coords[1];
+	return this;
+}

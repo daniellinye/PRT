@@ -2,11 +2,12 @@
 //
 
 #include "SheetView.cpp"
+#include <iostream>
 
+//TODO: fix segmentation fault
 int main()
 {
 	SheetView view = SheetView();
-
 	view.Display();
-  return 0;
+	return 0;
 }
