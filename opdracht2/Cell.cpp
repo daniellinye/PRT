@@ -62,15 +62,15 @@ std::string CellValue<T>::givetid()
 template <typename T>
 float CellValue<T>::convertfloat()
 {
-	switch (typeid(T))
+	switch (typeid(T).name())
 	{
-	case typeid(float) :
+	case typeid(float).name() :
 		return convtnf;
 		break;
-	case typeid(int) :
+	case typeid(int).name() :
 		return convtni;
 		break;
-	case typeid(std::string) :
+	case typeid(std::string).name() :
 		return convtns;
 		break;
 	default:
@@ -83,9 +83,7 @@ float CellValue<T>::convertfloat()
 class Cell
 {
 private:
-
 	unique_ptr<CellValueBase> value;
-
 public:
 	void initCell()
 	{

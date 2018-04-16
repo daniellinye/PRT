@@ -52,7 +52,7 @@ void Sheet::print()
 	{
 		for(int j = 0; j < h; j++)
 		{
-			cout << matrix[i].getCell(j)->giveref()->convertfloat();
+			cout << matrix[i].getCell(j)->giveref();
 		}
 		cout << endl;
 	}
