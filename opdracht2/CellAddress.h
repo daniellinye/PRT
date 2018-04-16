@@ -1,6 +1,7 @@
 #include <string>
 #include <iostream>
-
+#ifndef CellAddressHVar  // om te voorkomen dat dit .h bestand meerdere keren
+#define CellAddressHVar  // wordt ge-include 
 
 class CellAddress
 {
@@ -21,3 +22,5 @@ public:
 	CellAddress* operator +=(int coords[2]);
 
 };
+
+#endif

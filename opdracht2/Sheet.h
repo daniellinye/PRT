@@ -1,7 +1,9 @@
-#include "Cell.cpp"
+#include "Cell.h"
 #include <vector>
 #include <memory>
 #include <sstream>
+#ifndef SheetHVar  // om te voorkomen dat dit .h bestand meerdere keren
+#define SheetHVar  // wordt ge-include 
 
 using namespace std;
 
@@ -33,10 +35,10 @@ public:
 	Sheet(int h, int b);
 
 	//gets a cell from the 	
-	CellValueBase* getCell(int x, int y);
+	Cell* getCell(int x, int y);
 
 
-	CellValueBase* getCell(char a, int y);
+	Cell* getCell(char a, int y);
 
 	//TODO: move to class Range
 	Cell* begin(int column);
@@ -46,3 +48,5 @@ public:
 
 	void print();
 };
+
+#endif

@@ -103,41 +103,25 @@ float CellValue<T>::convertfloat()
 
 
 
-class Cell
+void Cell::initCell()
 {
-private:
-	//initializes as 0's
-	//that's why it first has the compile error
-	unique_ptr<CellValueBase> value;
-public:
-	void initCell()
-	{
-		value = unique_ptr<CellValueBase>();
-	}
+	value = unique_ptr<CellValueBase>();
+}
 
-	CellValueBase* giveref()
-	{
-		if (value != 0)
-		{
-			return value.get();
-		}
-		return NULL;
-	}
-	
-	
-/*
-	Cell* operator +=(Cell *& other)
-	{
-		if (value != nullptr && other->value != nullptr && giveref()->givetid() == other->giveref()->givetid())
-		{
-			float temp = value->convertfloat();
-			temp += other->value->convertfloat();
-			value = new CellValue<float>(temp);
-		}
-		return this;
-	}
+template<typename T>
+void Cell::initCell(T init)
+{
+	value = unique_ptr<CellValue<T>>(init);
+}
 
-*/
-};
+CellValueBase* Cell::giveref()
+{
+	if (value != 0)
+	{
+		return value.get();
+	}
+	return NULL;
+}
+	
 
 

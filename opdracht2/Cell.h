@@ -2,6 +2,9 @@
 #include <sstream>
 #include <iostream>
 #include <vector>
+#ifndef CellHVar  // om te voorkomen dat dit .h bestand meerdere keren
+#define CellHVar  // wordt ge-include 
+
 
 using namespace std;
 
@@ -54,5 +57,34 @@ public:
 
 };
 
+class Cell
+{
+private:
+	//initializes as 0's
+	//that's why it first has the compile error
+	unique_ptr<CellValueBase> value;
+public:
+	void initCell();
 
+	template<typename T>
+	void initCell(T init);
 
+	CellValueBase* giveref();
+	
+	
+/*
+	Cell* operator +=(Cell *& other)
+	{
+		if (value != nullptr && other->value != nullptr && giveref()->givetid() == other->giveref()->givetid())
+		{
+			float temp = value->convertfloat();
+			temp += other->value->convertfloat();
+			value = new CellValue<float>(temp);
+		}
+		return this;
+	}
+
+*/
+};
+
+#endif

@@ -20,15 +20,15 @@ Sheet::Sheet(int h, int b)
 	}
 }
 
-CellValueBase* Sheet::getCell(int x, int y)
+Cell* Sheet::getCell(int x, int y)
 {
-	return matrix[x].getCell(y)->giveref();
+	return matrix[x].getCell(y);
 }
 
-CellValueBase* Sheet::getCell(char a, int y)
+Cell* Sheet::getCell(char a, int y)
 {
 	if (a >= 'A' && a <= 'Z')
-		return matrix[a - 'A'].getCell(y)->giveref();
+		return matrix[a - 'A'].getCell(y);
 	else
 		return NULL;
 }
