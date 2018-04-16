@@ -103,7 +103,7 @@ float CellValue<T>::convertfloat()
 
 
 
-void Cell::initCell()
+Cell::Cell()
 {
 	value = unique_ptr<CellValueBase>();
 }
@@ -111,6 +111,7 @@ void Cell::initCell()
 template<typename T>
 void Cell::initCell(T init)
 {
+	value.reset();
 	value = unique_ptr<CellValue<T>>(init);
 }
 

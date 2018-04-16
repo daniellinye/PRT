@@ -6,13 +6,13 @@
 
 using namespace std;
 
-//TODO: fix segmentation fault
+//TODO: fix undefined reference to void Cell::initCell<int>(int)
 int main()
 {
 	Range r = Range();
 	Sheet* matrix = new Sheet(12, 12);
-	matrix->getCell(5 ,5);
 	r.initm(matrix);
+	r.getCell(2,2)->initCell(5);
 	r.print();
 	return 0;
 }

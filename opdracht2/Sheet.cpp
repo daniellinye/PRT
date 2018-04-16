@@ -13,10 +13,6 @@ Sheet::Sheet(int h, int b)
 	for(int i = 0; i < b; i++)
 	{
 		matrix.push_back(Column(h));
-		for(int j = 0; j < h; j++)
-		{
-
-		}
 	}
 }
 

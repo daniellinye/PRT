@@ -53,7 +53,7 @@ public:
 	std::string givetid();
 
 	//returns the value into a float
-	float convertfloat();
+	float convertfloat() override;
 
 };
 
@@ -64,6 +64,8 @@ private:
 	//that's why it first has the compile error
 	unique_ptr<CellValueBase> value;
 public:
+	Cell();
+
 	void initCell();
 
 	template<typename T>
