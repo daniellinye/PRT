@@ -32,6 +32,11 @@ public:
 	{
 		matrix->print();
 	}
+
+	CellValueBase* getCell(int x, int y)
+	{
+		return matrix->getCell(x, y);
+	}
 };
 
 
