@@ -12,21 +12,22 @@ public:
     //gives a stringstream with the 
     //value in the stringstream
     //is empty if it's null
-	virtual std::stringstream print()
+	std::stringstream print()
 	{
 		std::stringstream ss;
+		ss << " ";
 		return ss;
 	}
 
     //returns typename T as type
-	virtual std::string givetid()
+	std::string givetid()
 	{
 		return "nonetype";
 	}
 
     //returns the value as float
     //is -1 when it's null
-	virtual float convertfloat()
+	float convertfloat()
 	{
 		return -1;
 	}

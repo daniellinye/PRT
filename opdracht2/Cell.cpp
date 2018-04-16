@@ -83,6 +83,8 @@ float CellValue<T>::convertfloat()
 class Cell
 {
 private:
+	//initializes as 0's
+	//that's why it first has the compile error
 	unique_ptr<CellValueBase> value;
 public:
 	void initCell()
