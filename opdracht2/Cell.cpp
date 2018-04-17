@@ -56,7 +56,7 @@ float CellValue<T>::convtns()
 }
 
 template <typename T>
-CellValue<T>::CellValue(T init)
+CellValue<T>::CellValue(T init) : CellValueBase()
 {
 	this->tvalue = init;
 }
@@ -85,34 +85,22 @@ std::string CellValue<T>::givetid()
 template <typename T>
 float CellValue<T>::convertfloat()
 {
-	switch (typeid(T).name())
-	{
-	case typeid(float).name() :
-		return convtnf;
-		break;
-	case typeid(int).name() :
-		return convtni;
-		break;
-	case typeid(std::string).name() :
-		return convtns;
-		break;
-	default:
-		std::cout << "Case " << typeid(T).name() << " not implemented" << std::endl;
-	}
+	return (float) tvalue;
 }
 
 
 
-Cell::Cell()
+Cell::Cell() 
 {
+	value.reset(nullptr);
 	value = unique_ptr<CellValueBase>();
 }
 
-template<typename T>
-void Cell::initCell(T init)
+void Cell::initCelli(int init)
 {
-	value.reset();
-	value = unique_ptr<CellValue<T>>(init);
+	float temp;
+	value.reset(nullptr);
+	value = unique_ptr<CellValueBase>(new CellValue<int>(init));
 }
 
 CellValueBase* Cell::giveref()

@@ -11,8 +11,9 @@ int main()
 {
 	Range r = Range();
 	Sheet* matrix = new Sheet(12, 12);
+	matrix->replaceCell(2, 2, 5);
 	r.initm(matrix);
-	r.getCell(2,2)->initCell(5);
+	r.getCell(2,2)->initCelli(5);
 	r.print();
 	return 0;
 }

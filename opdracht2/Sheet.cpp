@@ -16,6 +16,11 @@ Sheet::Sheet(int h, int b)
 	}
 }
 
+void Sheet::replaceCell(int x, int y, int value)
+{
+	matrix[x].replaceCell(y, value);
+}
+
 Cell* Sheet::getCell(int x, int y)
 {
 	return matrix[x].getCell(y);
@@ -43,12 +48,11 @@ Cell* Sheet::end(int column)
 
 void Sheet::print()
 {
-	int tx = 0;
 	for(int i = 0; i < b; i++)
 	{
 		for(int j = 0; j < h; j++)
 		{
-			cout << matrix[i].getCell(j)->giveref()->convertfloat();
+			cout << matrix[i].getCell(j)->giveref();
 		}
 		cout << endl;
 	}
@@ -62,6 +66,11 @@ Column::Column(int size)
 	{
 		col.push_back(new Cell());
 	}
+}
+
+void Column::replaceCell(int index, int newvalue)
+{
+	col[index]->initCelli(newvalue);
 }
 
 Cell* Column::getCell(int index)

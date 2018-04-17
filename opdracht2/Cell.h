@@ -15,14 +15,14 @@ public:
     //gives a stringstream with the 
     //value in the stringstream
     //is empty if it's null
-	std::stringstream print();
+	virtual std::stringstream print();
 
     //returns typename T as type
-	std::string givetid();
+	virtual std::string givetid();
 
     //returns the value as float
     //is -1 when it's null
-	float convertfloat();
+	virtual float convertfloat();
 };
 
 template<typename T>
@@ -53,7 +53,7 @@ public:
 	std::string givetid();
 
 	//returns the value into a float
-	float convertfloat() override;
+	float convertfloat();
 
 };
 
@@ -68,8 +68,10 @@ public:
 
 	void initCell();
 
-	template<typename T>
-	void initCell(T init);
+	void initCelli(int init);
+
+	void initCell(float init);
+	void initCell(char init);
 
 	CellValueBase* giveref();
 	

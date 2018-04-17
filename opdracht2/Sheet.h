@@ -16,6 +16,7 @@ private:
 public:
 	Column(int size);
 
+	void replaceCell(int index, int value);
 	Cell* getCell(int index);
 	Cell* begin();
 	Cell* end();
@@ -33,6 +34,8 @@ public:
 	//initializes the sheet with
 	//height h and width b
 	Sheet(int h, int b);
+
+	void replaceCell(int x, int y, int value);
 
 	//gets a cell from the 	
 	Cell* getCell(int x, int y);
