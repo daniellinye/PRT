@@ -82,7 +82,7 @@ std::string CellValue<T>::givetid()
 }
 
 //returns the value into a float
-template <typename T>
+template<typename T>
 float CellValue<T>::convertfloat()
 {
 	return (float) tvalue;
@@ -98,8 +98,6 @@ Cell::Cell()
 
 void Cell::initCelli(int init)
 {
-	float temp;
-	value.reset(nullptr);
 	value = unique_ptr<CellValueBase>(new CellValue<int>(init));
 }
 

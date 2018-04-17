@@ -22,7 +22,7 @@ public:
 
     //returns the value as float
     //is -1 when it's null
-	virtual float convertfloat();
+	float convertfloat();
 };
 
 template<typename T>
