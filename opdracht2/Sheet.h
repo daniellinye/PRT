@@ -17,6 +17,7 @@ public:
 	Column(int size);
 
 	void replaceCell(int index, int value);
+	void replaceCell(int index, string value);
 	Cell* getCell(int index);
 	Cell* begin();
 	Cell* end();
@@ -36,6 +37,8 @@ public:
 	Sheet(int h, int b);
 
 	void replaceCell(int x, int y, int value);
+
+	void replaceCell(int x, int y, string value);
 
 	//gets a cell from the 	
 	Cell* getCell(int x, int y);

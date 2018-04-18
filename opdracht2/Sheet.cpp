@@ -73,6 +73,11 @@ void Column::replaceCell(int index, int newvalue)
 	col[index]->initCelli(newvalue);
 }
 
+void Column::replaceCell(int index, string newvalue)
+{
+	
+}
+
 Cell* Column::getCell(int index)
 {
 	return col[index];

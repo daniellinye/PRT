@@ -26,6 +26,7 @@ std::string CellValueBase::givetid()
 //is -1 when it's null
 float CellValueBase::convertfloat()
 {
+	cout <<"d";
 	return -1;
 }
 
@@ -33,21 +34,21 @@ float CellValueBase::convertfloat()
 template <typename T>
 float CellValue<T>::convtni()
 {
-	float temp = (float)tvalue;
+	float temp = (float)value;
 	return temp;
 }
 
 template <typename T>
 float CellValue<T>::convtnf()
 {
-	return tvalue;
+	return value;
 }
 
 template <typename T>
 float CellValue<T>::convtns()
 {
 	int temp = 0;
-	for (char chars : tvalue)
+	for (char chars : value)
 	{
 		if (chars >= '0' && chars <= '9')
 			temp = temp * 10 + (chars - '0');
@@ -58,20 +59,36 @@ float CellValue<T>::convtns()
 template <typename T>
 CellValue<T>::CellValue(T init) : CellValueBase()
 {
-	this->tvalue = init;
+	this->value = init;
 }
 
 template <typename T>
 T CellValue<T>::formvalue()
 {
-	return tvalue;
+	return value;
 }
 
-template <typename T>
-std::stringstream CellValue<T>::print(void) 
+template <>
+std::stringstream CellValue<float>::print(void) 
 {
 	std::stringstream ss;
-	ss << tvalue;
+	ss << value;
+	return ss;
+}
+
+template <>
+std::stringstream CellValue<int>::print(void) 
+{
+	std::stringstream ss;
+	ss << value;
+	return ss;
+}
+
+template <>
+std::stringstream CellValue<string>::print(void) 
+{
+	std::stringstream ss;
+	ss << value;
 	return ss;
 }
 
@@ -82,24 +99,47 @@ std::string CellValue<T>::givetid()
 }
 
 //returns the value into a float
-template<typename T>
-float CellValue<T>::convertfloat()
+template<>
+float CellValue<int>::convertfloat()
 {
-	return (float) tvalue;
+	return (float) value;
 }
 
+template<>
+float CellValue<string>::convertfloat()
+{
+	float temp = 0;
+	for (char chars : value)
+	{
+		if (chars >= '0' && chars <= '9')
+			temp = temp * 10 + (chars - '0');
+	}
+	return temp;
+}
 
+template<>
+float CellValue<float>::convertfloat()
+{
+	//TODO: has to be "value" from the extended class
+	return value;
+}
 
 Cell::Cell() 
 {
 	value.reset(nullptr);
-	value = unique_ptr<CellValueBase>();
+	value = unique_ptr<CellValueBase>(new CellValue<string>(""));
 }
 
-void Cell::initCelli(int init)
+
+
+void Cell::initCelli(string init)
 {
-	value = unique_ptr<CellValueBase>(new CellValue<int>(init));
+	
+	auto cvar = new CellValue<int>(init);
+	value = unique_ptr<CellValueBase>(cvar);
+	cout << endl << "yoyo: " << value->convertfloat() << endl;
 }
+
 
 CellValueBase* Cell::giveref()
 {
@@ -109,6 +149,9 @@ CellValueBase* Cell::giveref()
 	}
 	return NULL;
 }
+
+
+
 	
 
 

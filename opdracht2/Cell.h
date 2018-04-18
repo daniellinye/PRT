@@ -22,7 +22,7 @@ public:
 
     //returns the value as float
     //is -1 when it's null
-	float convertfloat();
+	virtual float convertfloat();
 };
 
 template<typename T>
@@ -30,7 +30,7 @@ class CellValue : public CellValueBase
 {
 private:
     //initial value
-	T tvalue;
+	T value;
 
     //specific float converters for types
 	float convtni();
@@ -53,7 +53,7 @@ public:
 	std::string givetid();
 
 	//returns the value into a float
-	float convertfloat();
+	virtual float convertfloat();
 
 };
 
