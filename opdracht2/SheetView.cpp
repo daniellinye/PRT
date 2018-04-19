@@ -2,8 +2,8 @@
 #include "SheetView.h"
 #include <ncurses.h>
 
-static const int lines(24);
-static const int cols(80);
+static const int lines(10);
+static const int cols(10);
 static const int cellheigth(1);
 static const int cellwidth(8);
 
@@ -11,11 +11,7 @@ SheetView::SheetView()
 {
   r = Range();
   matrix = new Sheet(lines, cols);
-  matrix->replaceCell(2, 2, 5);
-  cout <<"main:"<< matrix->getCell(2, 2)->giveref()->convertfloat();
   r.initm(matrix);
-  r.getCell(2,2)->initCelli(5);
-  r.giveRows("A4:D6");
 }
 
 //add row and column names
@@ -27,7 +23,7 @@ void SheetView::RowCol(WINDOW *win)
   wattron(win, A_STANDOUT);
 
   //add rownumbers
-  for (i = 1; i < lines; i++) {
+  for (i = 1; i <= lines; i++) {
     wmove(win, cellheigth * i, 0);
     sprintf(cell,"   %d",i);
     for (n = 0; n < cellwidth; n++) {
@@ -37,7 +33,7 @@ void SheetView::RowCol(WINDOW *win)
   }
 
   //add column names
-  for (i = 1; i < cols; i++) {
+  for (i = 1; i <= cols; i++) {
     wmove(win, 0, cellwidth * i);
     for (n = 0; n < cellwidth; n++) {
       cell[n] = ' ';
@@ -57,12 +53,13 @@ void SheetView::FillSheet(WINDOW *win)
   for (x = 0; x < cols; x++) {
     for (y = 0; y < lines; y++) {
       value = r.getCell(x,y)->giveref()->convertfloat();
-      sprintf(cell,"%f",value);
-      wmove(win, y + 1, x + 1);
+      sprintf(cell," %.2f",value);
+      wmove(win, cellheigth*(y + 1), cellwidth*(x + 1));
       waddstr(win, cell);
     }
   }
 }//FillSheet
+
 /*
 void SheetView::CreateCursor ()
 {
@@ -76,6 +73,7 @@ void SheetView::CreateCursor ()
   mvvline(y + 1, x + w, win->border.rs, h - 1);
 }
 */
+
 //Initialize window
 void SheetView::Display()
 {
@@ -83,7 +81,7 @@ void SheetView::Display()
   initscr(); //start of ncurses
 
   //create a new window
-  WINDOW *win = newwin(cellheigth*lines, cellwidth*cols, 0, 0);
+  WINDOW *win = newwin(cellheigth*(lines+1), cellwidth*(cols+1), 0, 0);
   keypad(win, TRUE); //enable keyboard inputs
 
   attr_t old_attr; //remember parameters

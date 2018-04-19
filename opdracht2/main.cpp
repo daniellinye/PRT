@@ -10,7 +10,6 @@ rangeiterator
 //
 
 #include "SheetView.h"
-
 #include <iostream>
 
 using namespace std;
@@ -22,5 +21,3 @@ int main()
 	view.Display();
 	return 0;
 }
-
-
