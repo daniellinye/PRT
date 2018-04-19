@@ -69,6 +69,7 @@ public:
 	void initCell();
 
 	void initCelli(int init);
+	void initCelli(string init);
 
 	void initCell(float init);
 	void initCell(char init);

@@ -131,11 +131,20 @@ Cell::Cell()
 }
 
 
+void Cell::initCelli(int init)
+{
+	
+	auto cvar = new CellValue<int>(init);
+	value = unique_ptr<CellValueBase>(cvar);
+	cout << endl << "yoyo: " << value->convertfloat() << endl;
+}
+
+
 
 void Cell::initCelli(string init)
 {
 	
-	auto cvar = new CellValue<int>(init);
+	auto cvar = new CellValue<string>(init);
 	value = unique_ptr<CellValueBase>(cvar);
 	cout << endl << "yoyo: " << value->convertfloat() << endl;
 }
