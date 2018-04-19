@@ -9,7 +9,8 @@ rangeiterator
 */
 //
 
-#include "Range.h"
+#include "SheetView.h"
+
 #include <iostream>
 
 using namespace std;

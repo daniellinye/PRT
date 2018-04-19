@@ -3,7 +3,7 @@ CC = g++
 CompileParms = -c -Wall -std=c++11
 CXXFLAGS = -c -Wall -std=c++11
 
-OBJS = Cell.o CellAddress.o Range.o Sheet.o main.o
+OBJS = Cell.o CellAddress.o Range.o Sheet.o SheetView.o main.o
 
 Opdr: $(OBJS)
 	$(CC) $(OBJS) -o Sheet
@@ -22,4 +22,3 @@ Range.o: Range.cpp Range.h
 
 main.o: main.cpp
 	$(CC) $(CompileParms)  main.cpp
-
