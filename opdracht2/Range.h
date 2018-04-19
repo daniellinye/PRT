@@ -26,6 +26,8 @@ public:
 
 	Cell* getCell(int x, int y);
 
+	Cell* getCell(char a, int col);
+
 	stringstream giveRows(string input);
 };
 

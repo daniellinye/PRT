@@ -31,13 +31,6 @@ class CellValue : public CellValueBase
 private:
     //initial value
 	T value;
-
-    //specific float converters for types
-	float convtni();
-
-	float convtnf();
-
-	float convtns();
 public:
     //constructor
 	CellValue(T init);

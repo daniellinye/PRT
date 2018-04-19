@@ -43,7 +43,6 @@ public:
 	//gets a cell from the 	
 	Cell* getCell(int x, int y);
 
-
 	Cell* getCell(char a, int y);
 
 	//TODO: move to class Range
