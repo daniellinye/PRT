@@ -35,17 +35,22 @@ Cell* Range::getCell(int x, int y)
 	return matrix->getCell(x, y);
 }
 
+Cell* Range::getCell(char a, int col)
+{
+	
+}
+
 stringstream Range::giveRows(string input)
 {
-	string left = "", right = "";
-	int i = 0;
+	char leftl = input[0], rightl; 
+	string leftn = "", rightn = "";
+	int i = 1, x1, x2;
 	while(i < sizeof(input) && input[i] != ':')
 	{
-		left += input[i];
+		leftn += input[i];
 		i++;
 	}
-	cout << "left:" << left << "|right: " << right << endl;
-
+	x1 = stoi(leftn);
 }
 
 
