@@ -10,12 +10,12 @@ static const int cellwidth(8);
 SheetView::SheetView()
 {
   r = Range();
-  Sheet* matrix = new Sheet(lines, cols);
+  matrix = new Sheet(lines, cols);
   matrix->replaceCell(2, 2, 5);
   cout <<"main:"<< matrix->getCell(2, 2)->giveref()->convertfloat();
   r.initm(matrix);
   r.getCell(2,2)->initCelli(5);
-  r.print();
+  r.giveRows("A4:D6");
 }
 
 //add row and column names

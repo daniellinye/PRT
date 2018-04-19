@@ -18,13 +18,8 @@ using namespace std;
 //TODO: fix undefined reference to void Cell::initCell<int>(int)
 int main()
 {
-	Range r = Range();
-	Sheet* matrix = new Sheet(12, 12);
-	matrix->replaceCell(2, 2, 5);
-	cout <<"main:"<< matrix->getCell(1, 1)->giveref()->convertfloat();
-	r.initm(matrix);
-	r.getCell(2,2)->initCelli(5);
-	r.print();
+	SheetView view = SheetView();
+	view.Display();
 	return 0;
 }
 

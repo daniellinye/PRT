@@ -5,6 +5,8 @@
 #ifndef RangeHVar  // om te voorkomen dat dit .h bestand meerdere keren
 #define RangeHVar  // wordt ge-include 
 
+using namespace std;
+
 class Range
 {
 private:
@@ -23,6 +25,8 @@ public:
 	void print();
 
 	Cell* getCell(int x, int y);
+
+	stringstream giveRows(string input);
 };
 
 #endif
