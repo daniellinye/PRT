@@ -7,24 +7,48 @@
 
 using namespace std;
 
+
+
+std::stringstream CellValueBase::print()
+{
+	std::stringstream ss;
+	ss << " ";
+	return ss;
+}
+
+//returns typename T as type
+std::string CellValueBase::givetid()
+{
+	return "nonetype";
+}
+
+//returns the value as float
+//is -1 when it's null
+float CellValueBase::convertfloat()
+{
+	cout <<"d";
+	return -1;
+}
+
+
 template <typename T>
 float CellValue<T>::convtni()
 {
-	float temp = (float)tvalue;
+	float temp = (float)value;
 	return temp;
 }
 
 template <typename T>
 float CellValue<T>::convtnf()
 {
-	return tvalue;
+	return value;
 }
 
 template <typename T>
 float CellValue<T>::convtns()
 {
 	int temp = 0;
-	for (char chars : tvalue)
+	for (char chars : value)
 	{
 		if (chars >= '0' && chars <= '9')
 			temp = temp * 10 + (chars - '0');
@@ -33,22 +57,38 @@ float CellValue<T>::convtns()
 }
 
 template <typename T>
-CellValue<T>::CellValue(T init)
+CellValue<T>::CellValue(T init) : CellValueBase()
 {
-	this->tvalue = init;
+	this->value = init;
 }
 
 template <typename T>
 T CellValue<T>::formvalue()
 {
-	return tvalue;
+	return value;
 }
 
-template <typename T>
-std::stringstream CellValue<T>::print(void)
+template <>
+std::stringstream CellValue<float>::print(void) 
 {
 	std::stringstream ss;
-	ss << tvalue;
+	ss << value;
+	return ss;
+}
+
+template <>
+std::stringstream CellValue<int>::print(void) 
+{
+	std::stringstream ss;
+	ss << value;
+	return ss;
+}
+
+template <>
+std::stringstream CellValue<string>::print(void) 
+{
+	std::stringstream ss;
+	ss << value;
 	return ss;
 }
 
@@ -59,58 +99,68 @@ std::string CellValue<T>::givetid()
 }
 
 //returns the value into a float
-template <typename T>
-float CellValue<T>::convertfloat()
+template<>
+float CellValue<int>::convertfloat()
 {
-	switch (typeid(T).name())
+	return (float) value;
+}
+
+template<>
+float CellValue<string>::convertfloat()
+{
+	float temp = 0;
+	for (char chars : value)
 	{
-	case typeid(float).name() :
-		return convtnf;
-		break;
-	case typeid(int).name() :
-		return convtni;
-		break;
-	case typeid(std::string).name() :
-		return convtns;
-		break;
-	default:
-		std::cout << "Case " << typeid(T).name() << " not implemented" << std::endl;
+		if (chars >= '0' && chars <= '9')
+			temp = temp * 10 + (chars - '0');
 	}
+	return temp;
+}
+
+template<>
+float CellValue<float>::convertfloat()
+{
+	//TODO: has to be "value" from the extended class
+	return value;
+}
+
+Cell::Cell() 
+{
+	value.reset(nullptr);
+	value = unique_ptr<CellValueBase>(new CellValue<string>(""));
+}
+
+
+void Cell::initCelli(int init)
+{
+	
+	auto cvar = new CellValue<int>(init);
+	value = unique_ptr<CellValueBase>(cvar);
+	cout << endl << "yoyo: " << value->convertfloat() << endl;
 }
 
 
 
-class Cell
+void Cell::initCelli(string init)
 {
-private:
-	unique_ptr<CellValueBase> value;
-public:
-	void initCell()
+	
+	auto cvar = new CellValue<string>(init);
+	value = unique_ptr<CellValueBase>(cvar);
+	cout << endl << "yoyo: " << value->convertfloat() << endl;
+}
+
+
+CellValueBase* Cell::giveref()
+{
+	if (value != 0)
 	{
-		value = unique_ptr<CellValueBase>();
+		return value.get();
 	}
-
-	CellValueBase* giveref()
-	{
-		if (value != 0)
-		{
-			return value.get();
-		}
-		return NULL;
-	}
+	return NULL;
+}
 
 
-/*
-	Cell* operator +=(Cell *& other)
-	{
-		if (value != nullptr && other->value != nullptr && giveref()->givetid() == other->giveref()->givetid())
-		{
-			float temp = value->convertfloat();
-			temp += other->value->convertfloat();
-			value = new CellValue<float>(temp);
-		}
-		return this;
-	}
 
-*/
-};
+	
+
+

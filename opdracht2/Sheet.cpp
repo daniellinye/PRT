@@ -13,22 +13,23 @@ Sheet::Sheet(int h, int b)
 	for(int i = 0; i < b; i++)
 	{
 		matrix.push_back(Column(h));
-		for(int j = 0; j < h; j++)
-		{
-
-		}
 	}
 }
 
-CellValueBase* Sheet::getCell(int x, int y)
+void Sheet::replaceCell(int x, int y, int value)
 {
-	return matrix[x].getCell(y)->giveref();
+	matrix[x].replaceCell(y, value);
 }
 
-CellValueBase* Sheet::getCell(char a, int y)
+Cell* Sheet::getCell(int x, int y)
+{
+	return matrix[x].getCell(y);
+}
+
+Cell* Sheet::getCell(char a, int y)
 {
 	if (a >= 'A' && a <= 'Z')
-		return matrix[a - 'A'].getCell(y)->giveref();
+		return matrix[a - 'A'].getCell(y);
 	else
 		return NULL;
 }
@@ -47,12 +48,11 @@ Cell* Sheet::end(int column)
 
 void Sheet::print()
 {
-	int tx = 0;
 	for(int i = 0; i < b; i++)
 	{
 		for(int j = 0; j < h; j++)
 		{
-			cout << matrix[i].getCell(j)->giveref();
+			cout << matrix[i].getCell(j)->giveref()->convertfloat();
 		}
 		cout << endl;
 	}
@@ -66,6 +66,16 @@ Column::Column(int size)
 	{
 		col.push_back(new Cell());
 	}
+}
+
+void Column::replaceCell(int index, int newvalue)
+{
+	col[index]->initCelli(newvalue);
+}
+
+void Column::replaceCell(int index, string newvalue)
+{
+	
 }
 
 Cell* Column::getCell(int index)

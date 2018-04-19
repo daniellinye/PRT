@@ -1,7 +1,9 @@
-#include "Cell.cpp"
+#include "Cell.h"
 #include <vector>
 #include <memory>
 #include <sstream>
+#ifndef SheetHVar  // om te voorkomen dat dit .h bestand meerdere keren
+#define SheetHVar  // wordt ge-include 
 
 using namespace std;
 
@@ -14,6 +16,8 @@ private:
 public:
 	Column(int size);
 
+	void replaceCell(int index, int value);
+	void replaceCell(int index, string value);
 	Cell* getCell(int index);
 	Cell* begin();
 	Cell* end();
@@ -32,11 +36,15 @@ public:
 	//height h and width b
 	Sheet(int h, int b);
 
-	//gets a cell from the
-	CellValueBase* getCell(int x, int y);
+	void replaceCell(int x, int y, int value);
+
+	void replaceCell(int x, int y, string value);
+
+	//gets a cell from the 	
+	Cell* getCell(int x, int y);
 
 
-	CellValueBase* getCell(char a, int y);
+	Cell* getCell(char a, int y);
 
 	//TODO: move to class Range
 	Cell* begin(int column);
@@ -46,3 +54,5 @@ public:
 
 	void print();
 };
+
+#endif

@@ -1,39 +1,38 @@
-#include "CellAddress.h"
-#include "Sheet.h"
+#include "Range.h"
 
-class Range
+/*
+WATCH OUT:
+CELL DECLARATION:
+(1, A)
+CORRESPONDS TO COORDINATES
+(0, 0)
+*/
+
+void Range::initm(Sheet* matrix)
 {
-private:
-	Sheet* matrix;
-	CellAddress begin;
-	CellAddress end;
-public:
-	Range() {};
+	this->matrix = matrix;
+}
 
-	void initm(Sheet* matrix)
-	{
-		this->matrix = matrix;
-	}
+void Range::setbegin(int x, int y)
+{
+	begin = CellAddress();
+	begin.init(x, y);
+}
 
-	void setbegin(int x, int y)
-	{
-		begin = CellAddress();
-		begin.init(x, y);
-	}
+void Range::setend(int x, int y)
+{
+	end = CellAddress();
+	end.init(x, y);
+}
 
-	void setend(int x, int y)
-	{
-		end = CellAddress();
-		end.init(x, y);
-	}
+void Range::print()
+{
+	matrix->print();
+}
 
-	void print()
-	{
-		matrix->print();
-	}
+Cell* Range::getCell(int x, int y)
+{
+	return matrix->getCell(x, y);
+}
 
-	CellValueBase* getCell(int x, int y)
-	{
-		return matrix->getCell(x, y);
-	}
-};
+
