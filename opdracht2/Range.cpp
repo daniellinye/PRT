@@ -37,11 +37,12 @@ Cell* Range::getCell(int x, int y)
 
 Cell* Range::getCell(char a, int col)
 {
-	
+	return matrix->getCell(a, col);
 }
 
-stringstream Range::giveRows(string input)
+Cell** Range::giveRows(string input)
 {
+	Cell **cells = new Cell*[2];
 	char leftl = input[0], rightl; 
 	string leftn = "", rightn = "";
 	int i = 1, x1, x2;
@@ -51,6 +52,21 @@ stringstream Range::giveRows(string input)
 		i++;
 	}
 	x1 = stoi(leftn);
+	//increment by one to skip ':'
+	i++;
+	rightl = input[i];
+	while(i < sizeof(input))
+	{
+		rightn += input[i];
+	}
+
+	x2 = stoi(rightn);
+	cells[0] = getCell(leftl, x1);
+	cells[1] = getCell(rightl, x2);
+
+	return cells;
 }
+
+
 
 
