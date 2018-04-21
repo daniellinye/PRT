@@ -13,16 +13,26 @@ void Range::initm(Sheet* matrix)
 	this->matrix = matrix;
 }
 
-void Range::setbegin(int x, int y)
+void Range::setbegin(string input)
 {
 	begin = CellAddress();
-	begin.init(x, y);
+	begin.init(input);
 }
 
-void Range::setend(int x, int y)
+void Range::setend(string input)
 {
 	end = CellAddress();
-	end.init(x, y);
+	end.init(input);
+}
+
+int* Range::givebegincoords()
+{
+	return begin.givecoords();
+}
+
+int* Range::giveendcoords()
+{
+	return end.givecoords();
 }
 
 void Range::print()
@@ -40,33 +50,49 @@ Cell* Range::getCell(char a, int col)
 	return matrix->getCell(a, col);
 }
 
-Cell** Range::giveRows(string input)
+void Range::giveRows(string input)
 {
-	Cell **cells = new Cell*[2];
-	char leftl = input[0], rightl; 
 	string leftn = "", rightn = "";
-	int i = 1, x1, x2;
-	while(i < sizeof(input) && input[i] != ':')
+	int i = 0, arsize = sizeof(input);
+	bool passed = false;
+	
+	//parse the string
+	while(i < arsize)
 	{
-		leftn += input[i];
+		if(passed)
+		{
+			rightn += input[i];
+		}
+		else if(input[i] != ':')
+		{
+			passed = true;
+		}
+		else
+		{
+			leftn += input[i];
+		}
 		i++;
 	}
-	x1 = stoi(leftn);
-	//increment by one to skip ':'
-	i++;
-	rightl = input[i];
-	while(i < sizeof(input))
-	{
-		rightn += input[i];
-	}
-
-	x2 = stoi(rightn);
-	cells[0] = getCell(leftl, x1);
-	cells[1] = getCell(rightl, x2);
-
-	return cells;
+	begin.init(leftn);
+	end.init(rightn);
 }
 
+stringstream Range::iterRows(string input)
+{
+	stringstream ss;
+	giveRows(input);
+
+	int *begin = givebegincoords(), *end = giveendcoords();
+
+	for(int i = begin[0]; i <= end[0]; i++)
+	{
+		for(int j = begin[1]; j <= end[1]; j++)
+		{
+			ss << getCell(i, j)->giveref()->print().str();
+		}
+	}
+	return ss;
+}
 
 
 

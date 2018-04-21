@@ -29,7 +29,7 @@ Cell* Sheet::getCell(int x, int y)
 Cell* Sheet::getCell(char a, int y)
 {
 	if (a >= 'A' && a <= 'Z')
-		return matrix[a - 'A'].getCell(y);
+		return matrix[a - 'A'].getCell(y - 1);
 	else
 		return NULL;
 }
@@ -75,7 +75,7 @@ void Column::replaceCell(int index, int newvalue)
 
 void Column::replaceCell(int index, string newvalue)
 {
-	
+	col[index]->initCelli(newvalue);
 }
 
 Cell* Column::getCell(int index)
