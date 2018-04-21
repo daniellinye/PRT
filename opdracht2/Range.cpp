@@ -77,6 +77,7 @@ void Range::giveRows(string input)
 	end.init(rightn);
 }
 
+//actually is SUM
 stringstream Range::iterRows(string input)
 {
 	stringstream ss;
