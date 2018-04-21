@@ -89,7 +89,7 @@ stringstream Range::iterRows(string input)
 	{
 		for(int j = begin[1]; j <= end[1]; j++)
 		{
-			ss << getCell(i, j)->giveref()->print().str();
+			ss << getCell(i, j)->giveref()->print().str() << endl;
 		}
 	}
 	return ss;
