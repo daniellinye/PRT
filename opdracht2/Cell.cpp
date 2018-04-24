@@ -30,32 +30,6 @@ float CellValueBase::convertfloat()
 	return -1;
 }
 
-
-template <typename T>
-float CellValue<T>::convtni()
-{
-	float temp = (float)value;
-	return temp;
-}
-
-template <typename T>
-float CellValue<T>::convtnf()
-{
-	return value;
-}
-
-template <typename T>
-float CellValue<T>::convtns()
-{
-	int temp = 0;
-	for (char chars : value)
-	{
-		if (chars >= '0' && chars <= '9')
-			temp = temp * 10 + (chars - '0');
-	}
-	return temp;
-}
-
 template <typename T>
 CellValue<T>::CellValue(T init) : CellValueBase()
 {

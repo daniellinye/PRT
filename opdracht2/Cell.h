@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 #ifndef CellHVar  // om te voorkomen dat dit .h bestand meerdere keren
-#define CellHVar  // wordt ge-include 
+#define CellHVar  // wordt ge-include
 
 
 using namespace std;
@@ -12,7 +12,7 @@ struct CellValueBase
 {
 	CellValueBase() {};
 public:
-    //gives a stringstream with the 
+    //gives a stringstream with the
     //value in the stringstream
     //is empty if it's null
 	virtual std::stringstream print();
@@ -31,18 +31,11 @@ class CellValue : public CellValueBase
 private:
     //initial value
 	T value;
-
-    //specific float converters for types
-	float convtni();
-
-	float convtnf();
-
-	float convtns();
 public:
     //constructor
 	CellValue(T init);
 
-    //returns the value in 
+    //returns the value in
     //type T
 	T formvalue();
 
@@ -75,8 +68,8 @@ public:
 	void initCell(char init);
 
 	CellValueBase* giveref();
-	
-	
+
+
 /*
 	Cell* operator +=(Cell *& other)
 	{

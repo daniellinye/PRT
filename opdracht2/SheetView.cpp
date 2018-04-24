@@ -23,7 +23,9 @@ bool SheetView::isinview(int x, int y)
 //add row and column names
 void SheetView::RowCol(WINDOW *win)
 {
-  int i,n;
+  int i,n,temp1;
+  float temp2;
+  string letters = "";
   char cell[cellwidth];
 
   wattron(win, A_STANDOUT);
@@ -44,17 +46,37 @@ void SheetView::RowCol(WINDOW *win)
     for (n = 0; n < cellwidth; n++) {
       cell[n] = ' ';
     }
-    cell[3] = i + 'A' - 1;
+
+    temp1 = i;
+    temp2 = i;
+    n = 0;
+
+    while (temp1 > 26) {
+      temp1 /= 26;
+      temp2 /= 26;
+    }
+
+    while (temp1 > 0){
+      cell[n+3] = temp1 + 'A' - 1;
+      temp2 -= temp1;
+      temp1 = round(temp2 * 26);
+      n++;
+    }
     waddstr(win, cell);
   }
   wattroff(win, A_STANDOUT);
 }//RowCol
 
 //print cell
-void SheetView::PrintCell(WINDOW* win, int x, int y, char cell[cellwidth])
+void SheetView::PrintCell(WINDOW* win, int x, int y)
 {
+  int n;
+  char cell[cellwidth] = {0};
   float value = r.getCell(x,y)->giveref()->convertfloat();
   sprintf(cell," %.2f",value);
+  for (n = 0; n < cellwidth; n++) {
+    if (!cell[n]) {cell[n] = ' ';}
+  }
   wmove(win, cellheigth*(y + 1), cellwidth*(x + 1));
   waddstr(win, cell);
 }//PrintCell
@@ -63,10 +85,9 @@ void SheetView::PrintCell(WINDOW* win, int x, int y, char cell[cellwidth])
 void SheetView::FillSheet(WINDOW *win)
 {
   int x,y;
-  char cell[cellwidth];
   for (x = 0; x < cols; x++) {
     for (y = 0; y < lines; y++) {
-      PrintCell(win,x,y,cell);
+      PrintCell(win,x,y);
     }
   }
 }//FillSheet
@@ -113,11 +134,59 @@ void SheetView::RefreshSheet(WINDOW* win, int x, int y)
   werase(win); //clear window
   RowCol(win); //add rows and columns
   FillSheet(win); //add current sheet data
+  wattron(win, A_STANDOUT);
 
   if (x >= 0 && x < cols && y >= 0 && y < lines) {
     address->init(x,y); //change address of cursor
   }//check whether coordinates are in the view
-  CreateCursor(win); //place cursor
+
+  int* coords = address->givecoords();
+  x = coords[0];
+  y = coords[1];
+
+  PrintCell(win,x,y);
+  wattroff(win, A_STANDOUT);
+  curs_set(0);
+  wrefresh(win);
+
+}
+
+void SheetView::StartEdit(WINDOW* win, int x, int y)
+{
+  int ch, n, i = 0;
+  char cell[cellwidth];
+  curs_set(1);
+
+  CreateCursor(win);
+
+  WINDOW* edit = subwin(win,cellheigth,cellwidth,(y+1)*cellheigth,(x+1)*cellwidth);
+  keypad(edit, TRUE); //enable keyboard inputs
+  while((ch = wgetch(edit)) != '\n') {
+    if (ch == KEY_BACKSPACE) {
+      if (i > 0) {
+        i--;
+        cell[i] = ' ';
+      }
+    } //backspace
+
+    else if (!(has_key(ch))) {
+      cell[i] = ch;
+      if (i<(cellwidth-1)) {
+        i++;
+      }
+    }
+    mvwaddstr(edit,0,0,cell);
+    wmove(edit,0,i);
+    wrefresh(edit);
+  }
+
+  for (n = 0; n < cellwidth; n++) {
+    if (!cell[n]) {cell[n] = ' ';}
+  }
+
+  matrix->replaceCell(x,y,cell);
+
+  RefreshSheet(win,x,y);
 }
 
 //Initialize window
@@ -131,15 +200,11 @@ void SheetView::Display()
   WINDOW *win = newwin(cellheigth*(lines+1), cellwidth*(cols+1), 0, 0);
   keypad(win, TRUE); //enable keyboard inputs
 
-  attr_t old_attr; //remember parameters
-  short old_pair;
-  wattr_get(win, &old_attr, &old_pair, NULL);
-
   RefreshSheet(win,0,0);
 
-  wattr_set(win, old_attr, old_pair, NULL); //reset previous parameters
-
+  noecho();
   while ((ch = wgetch(win)) != 'q'){
+    noecho();
     int* coords = address->givecoords();
     x = coords[0];
     y = coords[1];
@@ -157,7 +222,7 @@ void SheetView::Display()
         RefreshSheet(win, x-1, y);
       break;
       case '\n':
-        RefreshSheet(win, x, y);
+        StartEdit(win,x,y);
       break;
     }//moves the cursor around
   }//wait for an ENTER-input

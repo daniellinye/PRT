@@ -5,6 +5,8 @@
 #ifndef RangeHVar  // om te voorkomen dat dit .h bestand meerdere keren
 #define RangeHVar  // wordt ge-include 
 
+using namespace std;
+
 class Range
 {
 private:
@@ -14,15 +16,33 @@ private:
 public:
 	Range() {};
 
+	//input is a pointer matrix
+	//the pointer matrix needs to be
+	//initialized first
 	void initm(Sheet* matrix);
 
-	void setbegin(int x, int y);
+	//sets beginning celladress to corresponding coords
+	void setbegin(string input);
 
-	void setend(int x, int y);
+	//sets endadress to corresponding coords
+	void setend(string input);
+
+	int* givebegincoords();
+	
+	int* giveendcoords();
 
 	void print();
 
 	Cell* getCell(int x, int y);
+
+	Cell* getCell(char a, int col);
+
+	//gives top left and bottom right
+	//cells to compute sum
+	void giveRows(string input);
+
+
+	stringstream iterRows(string input);
 };
 
 #endif

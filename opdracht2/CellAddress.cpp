@@ -4,7 +4,7 @@
 #include "CellAddress.h"
 
 
-CellAddress::CellAddress()
+CellAddress::CellAddress() 
 {
 	this->x = 0;
 	this->y = 0;
