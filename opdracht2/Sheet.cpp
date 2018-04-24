@@ -75,7 +75,7 @@ void Column::replaceCell(int index, int newvalue)
 
 void Column::replaceCell(int index, string newvalue)
 {
-	
+
 }
 
 Cell* Column::getCell(int index)

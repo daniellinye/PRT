@@ -69,7 +69,7 @@ T CellValue<T>::formvalue()
 }
 
 template <>
-std::stringstream CellValue<float>::print(void) 
+std::stringstream CellValue<float>::print(void)
 {
 	std::stringstream ss;
 	ss << value;
@@ -77,7 +77,7 @@ std::stringstream CellValue<float>::print(void)
 }
 
 template <>
-std::stringstream CellValue<int>::print(void) 
+std::stringstream CellValue<int>::print(void)
 {
 	std::stringstream ss;
 	ss << value;
@@ -85,7 +85,7 @@ std::stringstream CellValue<int>::print(void)
 }
 
 template <>
-std::stringstream CellValue<string>::print(void) 
+std::stringstream CellValue<string>::print(void)
 {
 	std::stringstream ss;
 	ss << value;
@@ -124,7 +124,7 @@ float CellValue<float>::convertfloat()
 	return value;
 }
 
-Cell::Cell() 
+Cell::Cell()
 {
 	value.reset(nullptr);
 	value = unique_ptr<CellValueBase>(new CellValue<string>(""));
@@ -133,20 +133,18 @@ Cell::Cell()
 
 void Cell::initCelli(int init)
 {
-	
+
 	auto cvar = new CellValue<int>(init);
 	value = unique_ptr<CellValueBase>(cvar);
-	cout << endl << "yoyo: " << value->convertfloat() << endl;
 }
 
 
 
 void Cell::initCelli(string init)
 {
-	
+
 	auto cvar = new CellValue<string>(init);
 	value = unique_ptr<CellValueBase>(cvar);
-	cout << endl << "yoyo: " << value->convertfloat() << endl;
 }
 
 
@@ -158,9 +156,3 @@ CellValueBase* Cell::giveref()
 	}
 	return NULL;
 }
-
-
-
-	
-
-
