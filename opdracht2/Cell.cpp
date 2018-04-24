@@ -132,6 +132,47 @@ CellValueBase* Cell::giveref()
 }
 
 
+CellFormula::CellFormula() {}
+
+void CellFormula::init(string init)
+{
+	if(init[0] == '=')
+		this->parse = init;
+}
+
+void CellFormula::parsesum(stringstream ss)
+{
+	string parser;
+	int temp, total = 0;
+	try
+	{
+		while(ss.rdbuf()->in_avail() != 0)
+		{
+			ss >> parser;
+			temp = atoi(parser.c_str());
+			total += temp;
+		}
+		this->value = total;
+	} catch(exception e)
+	{
+		this->parse = "ERR";
+	}
+}
+
+stringstream CellFormula::print()
+{
+	stringstream ss;
+	if(this->value != NULL)
+	{
+		ss << value;
+	}
+	return ss;
+}
+
+float CellFormula::convertfloat()
+{
+	return this->value;
+}
 
 	
 

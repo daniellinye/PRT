@@ -40,7 +40,7 @@ public:
 	T formvalue();
 
     //gives stringstream with value
-	std::stringstream print(void);
+	virtual std::stringstream print();
 
     //gives typename T in string
 	std::string givetid();
@@ -50,11 +50,33 @@ public:
 
 };
 
+class CellFormula : public CellValueBase
+{
+private:
+	string parse;
+	float value;
+public:
+	CellFormula();
+
+	//initializes the class with sum value string
+	void init(string init);
+
+	//grabs the sums of a stringstream input
+	void parsesum(stringstream values);
+
+	//returns in a print the value;
+	virtual stringstream print();
+
+	//gives typename in string
+	string givetid();
+
+	//returns the value into a float
+	virtual float convertfloat();
+};
+
 class Cell
 {
 private:
-	//initializes as 0's
-	//that's why it first has the compile error
 	unique_ptr<CellValueBase> value;
 public:
 	Cell();
@@ -63,9 +85,6 @@ public:
 
 	void initCelli(int init);
 	void initCelli(string init);
-
-	void initCell(float init);
-	void initCell(char init);
 
 	CellValueBase* giveref();
 	
