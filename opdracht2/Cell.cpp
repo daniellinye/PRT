@@ -169,6 +169,11 @@ stringstream CellFormula::print()
 	return ss;
 }
 
+std::string CellFormula::givetid()
+{
+	return "nonetype";
+}
+
 float CellFormula::convertfloat()
 {
 	return this->value;
