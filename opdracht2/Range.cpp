@@ -77,7 +77,9 @@ void Range::giveRows(string input)
 	end.init(rightn);
 }
 
-//actually is SUM
+//takes input
+//<location a>:<location b> as string
+//and converts it into a stringstream
 stringstream Range::iterRows(string input)
 {
 	stringstream ss, helper;
