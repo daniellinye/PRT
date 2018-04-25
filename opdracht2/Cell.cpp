@@ -10,7 +10,7 @@ using namespace std;
 std::stringstream CellValueBase::print()
 {
 	std::stringstream ss;
-	ss << " ";
+	ss << "";
 	return ss;
 }
 
@@ -81,10 +81,24 @@ template<>
 float CellValue<string>::convertfloat()
 {
 	float temp = 0;
+	bool decimal = false;
+	int i, n = 0;
 	for (char chars : value)
 	{
-		if (chars >= '0' && chars <= '9')
+		if (chars == '.' || chars == ',') {
+			decimal = true;
+		}
+		else if (chars >= '0' && chars <= '9') {
 			temp = temp * 10 + (chars - '0');
+			if (decimal) {
+				n++;
+			}
+		}
+	}
+	if (decimal) {
+		for (i = 0; i < n; i++) {
+			temp /= 10;
+		}
 	}
 	return temp;
 }

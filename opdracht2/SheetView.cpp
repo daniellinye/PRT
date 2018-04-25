@@ -44,7 +44,7 @@ void SheetView::RowCol(WINDOW *win)
     wmove(win, 0, cellwidth * i);
     for (n = 0; n < cellwidth; n++) {
       cell[n] = ' ';
-    }
+    }                                   //after 'Z' it counts further from 'AA'
 
     temp1 = i;
     temp2 = i;
@@ -56,7 +56,7 @@ void SheetView::RowCol(WINDOW *win)
     }
 
     while (temp1 > 0){
-      cell[n+3] = temp1 + 'A' - 1;
+      cell[n+2] = temp1 + 'A' - 1;
       temp2 -= temp1;
       temp1 = round(temp2 * 26);
       n++;
@@ -69,15 +69,16 @@ void SheetView::RowCol(WINDOW *win)
 //print cell
 void SheetView::PrintCell(WINDOW* win, int x, int y)
 {
-  int n;
-  char cell[cellwidth] = {0};
-  float value = r.getCell(x,y)->giveref()->convertfloat();
-  sprintf(cell," %.2f",value);
-  for (n = 0; n < cellwidth; n++) {
-    if (!cell[n]) {cell[n] = ' ';}
-  }
-  wmove(win, cellheigth*(y + 1), cellwidth*(x + 1));
-  waddstr(win, cell);
+  std::stringstream ss = r.getCell(x,y)->giveref()->print();
+  std::string str = ss.str();           //convert stringstream to string
+
+  const char* cell = str.c_str(); //convert string to const char*
+
+  x = cellwidth*(x + 1);
+  y = cellheigth*(y + 1);
+
+  mvwhline(win, y, x, ' ', cellwidth);
+  mvwaddstr(win, y, x, cell);
 }//PrintCell
 
 //implement all cells from Sheet
@@ -91,7 +92,7 @@ void SheetView::FillSheet(WINDOW *win)
   }
 }//FillSheet
 
-void SheetView::CreateBorder (WINDOW* win, int width)
+void SheetView::CreateBorder (WINDOW* win)
 {
   int* coords = address->givecoords();
   int x = cellwidth*(coords[0] + 1);
@@ -102,25 +103,25 @@ void SheetView::CreateBorder (WINDOW* win, int width)
     mvwaddch(win, y + 1, x - 1, corner);
   }
   if(isinview(x+1,y+1)){
-    mvwaddch(win, y + 1, x + width, corner);
+    mvwaddch(win, y + 1, x + maxwidth, corner);
   }
   if(isinview(x-1,y-1)){
     mvwaddch(win, y - cellheigth, x - 1, corner);
   }
   if(isinview(x+1,y-1)){
-    mvwaddch(win, y - cellheigth, x + width, corner);
+    mvwaddch(win, y - cellheigth, x + maxwidth, corner);
   }
   if(isinview(x,y+1)){
-    mvwhline(win, y + 1, x, horizontal, width);
+    mvwhline(win, y + 1, x, horizontal, maxwidth);
   }
   if(isinview(x,y-1)){
-    mvwhline(win, y - cellheigth, x, horizontal, width);
+    mvwhline(win, y - cellheigth, x, horizontal, maxwidth);
   }
   if(isinview(x-1,y)){
     mvwvline(win, y, x - 1, vertical, cellheigth);
   }
   if(isinview(x+1,y)){
-    mvwvline(win, y, x + width, vertical, cellheigth);
+    mvwvline(win, y, x + maxwidth, vertical, cellheigth);
   }
   wmove(win,y,x);
   wrefresh(win);
@@ -152,19 +153,18 @@ void SheetView::RefreshSheet(WINDOW* win, int x, int y)
 void SheetView::StartEdit(WINDOW* win, int x, int y)
 {
   int ch, n, i = 0;
-  int editwidth = 2 * cellwidth;
-  char cell[editwidth];
+  char cell[maxwidth];
 
-  for (n = 0; n < editwidth; n++) {
+  for (n = 0; n < maxwidth; n++) {
     cell[n] = ' ';
   }
 
   curs_set(1);
 
-  WINDOW* edit = subwin(win,cellheigth,editwidth,(y+1)*cellheigth,(x+1)*cellwidth);
+  WINDOW* edit = subwin(win,cellheigth,maxwidth,(y+1)*cellheigth,(x+1)*cellwidth);
   keypad(edit, TRUE); //enable keyboard inputs
   werase(edit); //clear window
-  CreateBorder(win, editwidth);
+  CreateBorder(win);
 
   noecho();
   while((ch = wgetch(edit)) != '\n') {
@@ -173,17 +173,17 @@ void SheetView::StartEdit(WINDOW* win, int x, int y)
       case KEY_BACKSPACE:   //backspace
         if (i > 0) {
           i--;
-          for (n = i; n < editwidth - 1; n++) {
+          for (n = i; n < maxwidth - 1; n++) {
             cell[n] = cell[n+1];
           }
-          cell[editwidth-1] = ' ';
+          cell[maxwidth-1] = ' ';
         }
       break;
       case KEY_DC:          //delete
-        for (n = i; n < editwidth - 1; n++) {
+        for (n = i; n < maxwidth - 1; n++) {
           cell[n] = cell[n+1];
         }
-        cell[editwidth-1] = ' ';
+        cell[maxwidth-1] = ' ';
       break;
       case KEY_LEFT:        //left
         i--;
@@ -203,7 +203,7 @@ void SheetView::StartEdit(WINDOW* win, int x, int y)
       i++;
     }
 
-    else if (i >= editwidth) {
+    else if (i >= maxwidth) {
       i--;
     }
 
@@ -212,9 +212,7 @@ void SheetView::StartEdit(WINDOW* win, int x, int y)
     wrefresh(edit);
   }
 
-  for (n = 0; n < editwidth; n++) {
-    if (!cell[n]) {cell[n] = ' ';}
-  }
+  cell[i] = '\0';
 
   matrix->getCell(x,y)->initCelli(cell);
 
