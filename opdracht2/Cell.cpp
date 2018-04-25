@@ -7,8 +7,6 @@
 
 using namespace std;
 
-
-
 std::stringstream CellValueBase::print()
 {
 	std::stringstream ss;

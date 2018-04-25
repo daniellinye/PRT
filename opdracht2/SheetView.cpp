@@ -25,8 +25,7 @@ void SheetView::RowCol(WINDOW *win)
 {
   int i,n,temp1;
   float temp2;
-  string letters = "";
-  char cell[cellwidth];
+  char cell[cellwidth] = {0};
 
   wattron(win, A_STANDOUT);
 
@@ -92,7 +91,7 @@ void SheetView::FillSheet(WINDOW *win)
   }
 }//FillSheet
 
-void SheetView::CreateCursor (WINDOW* win)
+void SheetView::CreateBorder (WINDOW* win, int width)
 {
   int* coords = address->givecoords();
   int x = cellwidth*(coords[0] + 1);
@@ -103,27 +102,26 @@ void SheetView::CreateCursor (WINDOW* win)
     mvwaddch(win, y + 1, x - 1, corner);
   }
   if(isinview(x+1,y+1)){
-    mvwaddch(win, y + 1, x + cellwidth, corner);
+    mvwaddch(win, y + 1, x + width, corner);
   }
   if(isinview(x-1,y-1)){
     mvwaddch(win, y - cellheigth, x - 1, corner);
   }
   if(isinview(x+1,y-1)){
-    mvwaddch(win, y - cellheigth, x + cellwidth, corner);
+    mvwaddch(win, y - cellheigth, x + width, corner);
   }
   if(isinview(x,y+1)){
-    mvwhline(win, y + 1, x, horizontal, cellwidth);
+    mvwhline(win, y + 1, x, horizontal, width);
   }
   if(isinview(x,y-1)){
-    mvwhline(win, y - cellheigth, x, horizontal, cellwidth);
+    mvwhline(win, y - cellheigth, x, horizontal, width);
   }
   if(isinview(x-1,y)){
     mvwvline(win, y, x - 1, vertical, cellheigth);
   }
   if(isinview(x+1,y)){
-    mvwvline(win, y, x + cellwidth, vertical, cellheigth);
+    mvwvline(win, y, x + width, vertical, cellheigth);
   }
-
   wmove(win,y,x);
   wrefresh(win);
 }
@@ -154,37 +152,63 @@ void SheetView::RefreshSheet(WINDOW* win, int x, int y)
 void SheetView::StartEdit(WINDOW* win, int x, int y)
 {
   int ch, n, i = 0;
-  char cell[cellwidth];
+  int editwidth = 2 * cellwidth;
+  char cell[editwidth] = {0};
   curs_set(1);
 
-  CreateCursor(win);
-
-  WINDOW* edit = subwin(win,cellheigth,cellwidth,(y+1)*cellheigth,(x+1)*cellwidth);
+  WINDOW* edit = subwin(win,cellheigth,editwidth,(y+1)*cellheigth,(x+1)*cellwidth);
   keypad(edit, TRUE); //enable keyboard inputs
-  while((ch = wgetch(edit)) != '\n') {
-    if (ch == KEY_BACKSPACE) {
-      if (i > 0) {
-        i--;
-        cell[i] = ' ';
-      }
-    } //backspace
+  werase(edit); //clear window
+  CreateBorder(win, editwidth);
 
-    else if (!(has_key(ch))) {
-      cell[i] = ch;
-      if (i<(cellwidth-1)) {
+  noecho();
+  while((ch = wgetch(edit)) != '\n') {
+    noecho();
+    switch (ch) {
+      case KEY_BACKSPACE:   //backspace
+        if (i > 0) {
+          i--;
+          cell[i] = ' ';
+        }
+      break;
+      case KEY_DC:          //delete
+        for (n = i + 1; n < editwidth - 1; n++) {
+          cell[n] = cell[n+1];
+        }
+        cell[n] = ' ';
+      break;
+      case KEY_LEFT:        //left
+        i--;
+      break;
+      case KEY_RIGHT:       //right
         i++;
-      }
+      break;
+      default:              //normal typing keys
+        if (!(has_key(ch))) {
+          cell[i] = ch;
+          i++;
+        }
+      break;
     }
+
+    if (i < 0) {
+      i++;
+    }
+
+    else if (i >= editwidth) {
+      i--;
+    }
+
     mvwaddstr(edit,0,0,cell);
     wmove(edit,0,i);
     wrefresh(edit);
   }
 
-  for (n = 0; n < cellwidth; n++) {
+  for (n = 0; n < editwidth; n++) {
     if (!cell[n]) {cell[n] = ' ';}
   }
 
-  matrix->replaceCell(x,y,cell);
+  matrix->getCell(x,y)->initCelli(cell);
 
   RefreshSheet(win,x,y);
 }
