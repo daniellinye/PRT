@@ -58,10 +58,10 @@ public:
 	//WARNING: relative coords A1 correspond to "(0, 0)"
 	Cell* getCell(char a, int y);
 
-	//TODO: move to class Range
+	//returns the begin of a cell in a column
 	Cell* begin(int column);
 
-	//TODO: move to class Range
+	//returns the end of a cell in a column
 	Cell* end(int column);
 
 	void print();

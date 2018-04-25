@@ -7,6 +7,9 @@
 
 using namespace std;
 
+//****************************************
+//CellValueBase
+
 std::stringstream CellValueBase::print()
 {
 	std::stringstream ss;
@@ -27,6 +30,9 @@ float CellValueBase::convertfloat()
 	cout <<"d";
 	return -1;
 }
+
+//****************************************
+//CellValue
 
 template <typename T>
 CellValue<T>::CellValue(T init) : CellValueBase()
@@ -109,6 +115,9 @@ float CellValue<float>::convertfloat()
 	//TODO: has to be "value" from the extended class
 	return value;
 }
+
+//****************************************
+//Cell
 
 Cell::Cell()
 {
