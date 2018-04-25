@@ -80,7 +80,8 @@ void Range::giveRows(string input)
 //actually is SUM
 stringstream Range::iterRows(string input)
 {
-	stringstream ss;
+	stringstream ss, helper;
+	string temp;
 	giveRows(input);
 
 	int *begin = givebegincoords(), *end = giveendcoords();
@@ -89,7 +90,9 @@ stringstream Range::iterRows(string input)
 	{
 		for(int j = begin[1]; j <= end[1]; j++)
 		{
-			ss << getCell(i, j)->giveref()->print().str() << endl;
+			helper = getCell(i, j)->giveref()->print();
+			helper >> temp;
+			ss << temp << endl;
 		}
 	}
 	return ss;
