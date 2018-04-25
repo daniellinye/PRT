@@ -5,6 +5,9 @@
 
 using namespace std;
 
+
+//**********************************************************
+//Sheet
 Sheet::Sheet(int h, int b)
 {
 	this->h = h;
@@ -63,6 +66,8 @@ void Sheet::print()
 	}
 }
 
+//*****************************************************************************
+//Column
 
 Column::Column(int size)
 {
