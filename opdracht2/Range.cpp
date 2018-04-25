@@ -81,10 +81,11 @@ void Range::giveRows(string input)
 //takes input
 //<location a>:<location b> as string
 //and converts it into a stringstream
+//does SUM
 string Range::iterRows(string input, Sheet* matrix)
 {
-		int temp = 0;
-		string str;
+	float temp = 0;
+	string str;
     giveRows(input);
 
     int beginx = begin.givex(), beginy = begin.givey(),
@@ -95,9 +96,9 @@ string Range::iterRows(string input, Sheet* matrix)
         for(int j = beginy; j <= endy; j++)
         {
 					string str = matrix->getCell(i, j)->giveref()->print().str();
-					try {temp += atoi(str.c_str());}
+					try {temp += atof(str.c_str());}
 					catch(exception e){return 0;}
         }
     }
-    return (string) temp;
+    return to_string(temp);
 }
