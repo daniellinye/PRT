@@ -23,6 +23,10 @@ public:
 	//returns the coordinates in a int[2]
 	int* givecoords();
 
+	int givex();
+
+	int givey();
+
 	//adds another celladress to the current one
 	CellAddress* operator +=(CellAddress &a);
 

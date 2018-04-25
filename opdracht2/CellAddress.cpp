@@ -34,6 +34,16 @@ int* CellAddress::givecoords()
 	return new int[2]{ x, y };
 }
 
+int CellAddress::givex()
+{
+	return x;
+}
+
+int CellAddress::givey()
+{
+	return y;
+}
+
 CellAddress* CellAddress::operator +=(CellAddress &a)
 {
 	int* coords = a.givecoords();

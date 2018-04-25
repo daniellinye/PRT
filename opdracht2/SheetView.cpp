@@ -118,8 +118,7 @@ std::string SheetView::CheckFormula(std::string str)
 //print cell
 void SheetView::PrintCell(WINDOW* win, int x, int y)
 {
-  std::stringstream ss = r.getCell(x,y)->giveref()->print();
-  std::string str = ss.str();           //convert stringstream to string
+  std::string str = r.getCell(x,y)->giveref()->print().str();           //convert stringstream to string
 
   if (str[0] == '=') {str = CheckFormula(str);}
 

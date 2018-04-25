@@ -11,17 +11,17 @@ CORRESPONDS TO COORDINATES
 void Range::initm(Sheet* matrix)
 {
 	this->matrix = matrix;
+	begin = CellAddress();
+	end = CellAddress();
 }
 
 void Range::setbegin(string input)
 {
-	begin = CellAddress();
 	begin.init(input);
 }
 
 void Range::setend(string input)
 {
-	end = CellAddress();
 	end.init(input);
 }
 
@@ -82,19 +82,18 @@ void Range::giveRows(string input)
 //and converts it into a stringstream
 stringstream Range::iterRows(string input)
 {
-    stringstream ss, helper;
-    string temp;
+    stringstream ss;
     giveRows(input);
 
-    int *begin = givebegincoords(), *end = giveendcoords();
+    int beginx = begin.givex(), beginy = begin.givey(),
+	endy = end.givey(), endx = end.givex();
 
-    for(int i = begin[0]; i <= end[0]; i++)
+    for(int i = beginx; i < endx; i++)
     {
-        for(int j = begin[1]; j <= end[1]; j++)
+        for(int j = beginy; j < endy; j++)
         {
-            helper = getCell(i, j)->giveref()->print();
-            helper >> temp;
-            cout << temp << endl;
+			string temp = getCell(i, j)->giveref()->print().str();
+			ss << temp;
         }
     }
     return ss;
