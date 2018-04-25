@@ -128,7 +128,6 @@ void Cell::initCelli(int init)
 
 void Cell::initCelli(string init)
 {
-
 	auto cvar = new CellValue<string>(init);
 	value = unique_ptr<CellValueBase>(cvar);
 }

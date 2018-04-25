@@ -16,6 +16,11 @@ Sheet::Sheet(int h, int b)
 	}
 }
 
+void Sheet::replaceCell(int x, int y, int value)
+{
+	matrix[x].replaceCell(y, value);
+}
+
 void Sheet::replaceCell(int x, int y, string value)
 {
 	matrix[x].replaceCell(y, value);

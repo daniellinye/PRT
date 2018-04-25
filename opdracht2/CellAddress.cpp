@@ -18,11 +18,15 @@ void CellAddress::init(int x, int y)
 
 void CellAddress::init(std::string input)
 {
-	if (input[0] - 'A' >= 0)
-		this->x = input[0] - 'A';
-	for (int i = 1; i < input.size() - 1; i++)
-		if (input[i] - '0' >= 0 && input[i] - '0' <= 9)
-			this->y = this->y * 10 + input[i] - '0';
+	int size = sizeof(input);
+	if (size < 0)
+	{
+		if (input[0] - 'A' >= 0)
+			this->x = input[0] - 'A';
+		for (int i = 1; i < size - 1; i++)
+			if (input[i] - '0' >= 0 && input[i] - '0' <= 9)
+				this->y = this->y * 10 + input[i] - '0';
+	}
 }
 
 int* CellAddress::givecoords()
