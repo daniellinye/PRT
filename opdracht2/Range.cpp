@@ -55,7 +55,7 @@ void Range::giveRows(string input)
 	string leftn = "", rightn = "";
 	int i = 0, arsize = sizeof(input);
 	bool passed = false;
-	
+
 	//parse the string
 	while(i < arsize)
 	{
@@ -82,23 +82,20 @@ void Range::giveRows(string input)
 //and converts it into a stringstream
 stringstream Range::iterRows(string input)
 {
-	stringstream ss, helper;
-	string temp;
-	giveRows(input);
+    stringstream ss, helper;
+    string temp;
+    giveRows(input);
 
-	int *begin = givebegincoords(), *end = giveendcoords();
+    int *begin = givebegincoords(), *end = giveendcoords();
 
-	for(int i = begin[0]; i <= end[0]; i++)
-	{
-		for(int j = begin[1]; j <= end[1]; j++)
-		{
-			helper = getCell(i, j)->giveref()->print();
-			helper >> temp;
-			ss << temp << endl;
-		}
-	}
-	return ss;
+    for(int i = begin[0]; i <= end[0]; i++)
+    {
+        for(int j = begin[1]; j <= end[1]; j++)
+        {
+            helper = getCell(i, j)->giveref()->print();
+            helper >> temp;
+            cout << temp << endl;
+        }
+    }
+    return ss;
 }
-
-
-

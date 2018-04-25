@@ -10,6 +10,7 @@ SheetView::SheetView()
   address = new CellAddress();
 }
 
+//check whether cell is in view
 bool SheetView::isinview(int x, int y)
 {
   if (x >= cellwidth && x < (cols + 1) * cellwidth){
@@ -18,7 +19,7 @@ bool SheetView::isinview(int x, int y)
     }
   }
   return false;
-}//check whether cell is in view
+}//isinview
 
 //add row and column names
 void SheetView::RowCol(WINDOW *win)
@@ -32,7 +33,7 @@ void SheetView::RowCol(WINDOW *win)
   //add rownumbers
   for (i = 1; i <= lines; i++) {
     wmove(win, cellheigth * i, 0);
-    sprintf(cell,"   %d",i);
+    sprintf(cell,"   %d",i);     //sprintf places the number after a few spaces
     for (n = 0; n < cellwidth; n++) {
       if (!cell[n]) {cell[n] = ' ';}
     }
@@ -44,7 +45,7 @@ void SheetView::RowCol(WINDOW *win)
     wmove(win, 0, cellwidth * i);
     for (n = 0; n < cellwidth; n++) {
       cell[n] = ' ';
-    }                                   //after 'Z' it counts further from 'AA'
+    }                                 //after 'Z' it counts further from 'AA'
 
     temp1 = i;
     temp2 = i;
@@ -58,13 +59,61 @@ void SheetView::RowCol(WINDOW *win)
     while (temp1 > 0){
       cell[n+2] = temp1 + 'A' - 1;
       temp2 -= temp1;
-      temp1 = round(temp2 * 26);
-      n++;
+      temp1 = round(temp2 * 26);    //round makes sure that the inaccuracy
+      n++;                          //of a float is rounded up right
     }
     waddstr(win, cell);
   }
   wattroff(win, A_STANDOUT);
 }//RowCol
+
+//checks whether the cellvalue is a formula and calculates when needed
+std::string SheetView::CheckFormula(std::string str)
+{
+  std::stringstream ss;
+  int i = 0;
+  std::string sum("SUM(");
+  std::string count("COUNT(");
+  std::string avg("AVG(");
+  std::string substring;
+  std::string begincell = "";
+  std::string endcell = "";
+  Range tempR = Range();
+  unsigned begin;
+  unsigned end = str.find(')');
+  unsigned middle = str.find(':');
+
+  if ((str.find(sum) != string::npos) && str.back() == ')') {
+    begin = str.find(sum);
+    substring = str.substr(begin + sum.length(),end - begin - sum.length());
+    while (substring[i] != ':' && substring[i] != '\0') {
+      begincell += substring[i];
+      i++;
+    }
+    while (substring[i] != '\0') {
+      endcell += substring[i];
+      i++;
+    }
+
+    // =SUM(B2:C3)
+
+    ss = tempR.iterRows("A5:F6");
+  }
+
+  else if ((str.find(count) != string::npos) && (str.find(middle) != string::npos) && str.back() == ')') {
+    begin = str.find(count);
+    tempR.setbegin(str.substr(begin,middle-begin));
+    tempR.setend(str.substr(middle,end-middle));
+  }
+
+  else if ((str.find(avg) != string::npos) && (str.find(middle) != string::npos) && str.back() == ')') {
+    begin = str.find(avg);
+    tempR.setbegin(str.substr(begin,middle-begin));
+    tempR.setend(str.substr(middle,end-middle));
+  }
+
+  return ss.str();
+}//CheckFormula
 
 //print cell
 void SheetView::PrintCell(WINDOW* win, int x, int y)
@@ -72,13 +121,15 @@ void SheetView::PrintCell(WINDOW* win, int x, int y)
   std::stringstream ss = r.getCell(x,y)->giveref()->print();
   std::string str = ss.str();           //convert stringstream to string
 
+  if (str[0] == '=') {str = CheckFormula(str);}
+
   const char* cell = str.c_str(); //convert string to const char*
 
   x = cellwidth*(x + 1);
   y = cellheigth*(y + 1);
 
-  mvwhline(win, y, x, ' ', cellwidth);
-  mvwaddstr(win, y, x, cell);
+  mvwhline(win, y, x, ' ', cellwidth);  // first empties the cell
+  mvwaddstr(win, y, x, cell);           // by placing spaces
 }//PrintCell
 
 //implement all cells from Sheet
@@ -92,16 +143,17 @@ void SheetView::FillSheet(WINDOW *win)
   }
 }//FillSheet
 
+//Creates a border for editing
 void SheetView::CreateBorder (WINDOW* win)
 {
-  int* coords = address->givecoords();
+  int* coords = address->givecoords();    //gets coordinates of cursor
   int x = cellwidth*(coords[0] + 1);
   int y = cellheigth*(coords[1] + 1);
   char corner = '+', vertical = '|', horizontal = '-';
 
-  if(isinview(x-1,y+1)){
-    mvwaddch(win, y + 1, x - 1, corner);
-  }
+  if(isinview(x-1,y+1)){                    //first checks whether the character(s)
+    mvwaddch(win, y + 1, x - 1, corner);    //to be placed is/are in the view and
+  }                                         //then adds that/those character(s)
   if(isinview(x+1,y+1)){
     mvwaddch(win, y + 1, x + maxwidth, corner);
   }
@@ -161,14 +213,15 @@ void SheetView::StartEdit(WINDOW* win, int x, int y)
 
   curs_set(1);
 
+  //subwindow
   WINDOW* edit = subwin(win,cellheigth,maxwidth,(y+1)*cellheigth,(x+1)*cellwidth);
-  keypad(edit, TRUE); //enable keyboard inputs
-  werase(edit); //clear window
-  CreateBorder(win);
+  keypad(edit, TRUE); //enable keyboard inputs for the subwindow
+  werase(edit);       //clear window
+  CreateBorder(win);  //add border around edit window
 
-  noecho();
-  while((ch = wgetch(edit)) != '\n') {
-    noecho();
+  noecho();                               //the character to be typed will first
+  while((ch = wgetch(edit)) != '\n') {    //be placed in an array, then that array
+    noecho();                             //is printed with every new character
     switch (ch) {
       case KEY_BACKSPACE:   //backspace
         if (i > 0) {
@@ -207,14 +260,14 @@ void SheetView::StartEdit(WINDOW* win, int x, int y)
       i--;
     }
 
-    mvwaddstr(edit,0,0,cell);
+    mvwaddstr(edit,0,0,cell); //displays the just typed array
     wmove(edit,0,i);
     wrefresh(edit);
   }
 
   cell[i] = '\0';
 
-  matrix->getCell(x,y)->initCelli(cell);
+  matrix->replaceCell(x,y,cell); //replaces the cellvalue
 
   RefreshSheet(win,x,y);
 }
@@ -232,8 +285,8 @@ void SheetView::Display()
 
   RefreshSheet(win,0,0);
 
-  noecho();
-  while ((ch = wgetch(win)) != 'q'){
+  noecho();                               //keyboard inputs do not need to be
+  while ((ch = wgetch(win)) != 'q'){      //displayed
     noecho();
     int* coords = address->givecoords();
     x = coords[0];

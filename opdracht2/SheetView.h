@@ -1,7 +1,7 @@
 #include <iostream>
 #include "Range.h"
 #include <ncurses.h>
-#include <math.h> //for rounding the floats
+#include <math.h>   //for rounding the floats
 
 static int lines(24);     //amount of lines in the sheet
 static int cols(80);      //amount of columns in the sheet
@@ -22,6 +22,8 @@ public:
   bool isinview(int x, int y);
 
   void RowCol(WINDOW *win);
+
+  std::string CheckFormula(std::string str);
 
   void PrintCell(WINDOW* win, int x, int y);
 
