@@ -25,3 +25,6 @@ SheetView.o:  SheetView.cpp
 
 main.o: main.cpp
 	$(CC) $(CompileParms)  main.cpp
+
+clean:
+	rm *.o
