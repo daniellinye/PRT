@@ -11,17 +11,35 @@ CORRESPONDS TO COORDINATES
 void Range::initm(Sheet* matrix)
 {
 	this->matrix = matrix;
+	begin = CellAddress();
+	end = CellAddress();
+}
+
+void Range::replaceCell(int x, int y, string input)
+{
+	stringstream ss;
+	if(input[0] == '=')
+	{
+		ss = iterRows(input, x, y);
+	}
+	matrix->replaceCell(x, y, input, ss);
+
+}
+
+void Range::replaceCell(int x, int y, int input)
+{
+	matrix->replaceCell(x, y, input);
 }
 
 void Range::setbegin(string input)
 {
-	begin = CellAddress();
+
 	begin.init(input);
 }
 
 void Range::setend(string input)
 {
-	end = CellAddress();
+
 	end.init(input);
 }
 
@@ -50,6 +68,31 @@ Cell* Range::getCell(char a, int col)
 	return matrix->getCell(a, col);
 }
 
+void Range::castFormula(string input)
+{
+	string leftn = "", rightn = "";
+	int i = 1, arsize = sizeof(input);
+	bool passed = false;
+	while(i < arsize)
+	{
+		if(passed)
+		{
+			rightn += input[i];
+		}
+		else if(input[i] != '(')
+		{
+			passed = true;
+		}
+		else
+		{
+			leftn += input[i];
+		}
+		i++;
+	}
+	cout << left << rightn;
+	giveRows(rightn);
+}
+
 void Range::giveRows(string input)
 {
 	string leftn = "", rightn = "";
@@ -57,7 +100,7 @@ void Range::giveRows(string input)
 	bool passed = false;
 	
 	//parse the string
-	while(i < arsize)
+	while(i < arsize && input[i] != ')')
 	{
 		if(passed)
 		{
@@ -73,15 +116,16 @@ void Range::giveRows(string input)
 		}
 		i++;
 	}
-	begin.init(leftn);
-	end.init(rightn);
+	//TODO:fix both these lines
+	setbegin(leftn);
+	setend(rightn);
 }
 
-//actually is SUM
-stringstream Range::iterRows(string input)
+//iters ranges and gives the stringstream back with values
+stringstream Range::iterRows(string input, int x, int y)
 {
 	stringstream ss;
-	giveRows(input);
+	castFormula(input);
 
 	int *begin = givebegincoords(), *end = giveendcoords();
 
@@ -89,7 +133,8 @@ stringstream Range::iterRows(string input)
 	{
 		for(int j = begin[1]; j <= end[1]; j++)
 		{
-			ss << getCell(i, j)->giveref()->print().str() << endl;
+			//TODO: FIX THIS LINE
+			cout << getCell(i, j)->giveref()->print().str() << endl;
 		}
 	}
 	return ss;

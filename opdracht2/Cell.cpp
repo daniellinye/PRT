@@ -30,6 +30,11 @@ float CellValueBase::convertfloat()
 	return -1;
 }
 
+void CellValueBase::parsesum(stringstream & ss)
+{
+
+}
+
 template <typename T>
 CellValue<T>::CellValue(T init) : CellValueBase()
 {
@@ -98,11 +103,30 @@ float CellValue<float>::convertfloat()
 	return value;
 }
 
+template<>
+void CellValue<string>::parsesum(stringstream & ss)
+{
+
+}
+
+template<>
+void CellValue<int>::parsesum(stringstream & ss)
+{
+
+}
+
+template<>
+void CellValue<float>::parsesum(stringstream & ss)
+{
+
+}
+
 Cell::Cell() 
 {
 	value.reset(nullptr);
 	value = unique_ptr<CellValueBase>(new CellValue<string>(""));
 }
+
 
 
 void Cell::initCelli(int init)
@@ -121,6 +145,12 @@ void Cell::initCelli(string init)
 	value = unique_ptr<CellValueBase>(cvar);
 }
 
+void Cell::initFormula(string init, stringstream & ss)
+{
+	auto cvar = new CellFormula(init, ss);
+	value = unique_ptr<CellValueBase>(cvar);
+}
+
 
 CellValueBase* Cell::giveref()
 {
@@ -132,15 +162,16 @@ CellValueBase* Cell::giveref()
 }
 
 
-CellFormula::CellFormula() {}
-
-void CellFormula::init(string init)
+CellFormula::CellFormula(string init, stringstream & ss) 
 {
 	if(init[0] == '=')
 		this->parse = init;
+	parsesum(ss);
 }
 
-void CellFormula::parsesum(stringstream ss)
+
+
+void CellFormula::parsesum(stringstream & ss)
 {
 	string parser;
 	int temp, total = 0;

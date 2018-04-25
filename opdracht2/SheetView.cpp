@@ -12,6 +12,7 @@ SheetView::SheetView()
   r = Range();
   matrix = new Sheet(lines, cols);
   r.initm(matrix);
+  r.replaceCell(2, 2, "=SUM(A1:B5)");
 }
 
 //add row and column names

@@ -21,6 +21,20 @@ void Sheet::replaceCell(int x, int y, int value)
 	matrix[x].replaceCell(y, value);
 }
 
+void Sheet::replaceCell(int x, int y, string value, stringstream &ss)
+{
+	if(value[0] == '=')
+	{
+		matrix[x].replaceFormula(y, value, ss);
+	}
+	else
+	{	
+		matrix[x].replaceCell(y, value);
+	}
+}
+
+
+
 Cell* Sheet::getCell(int x, int y)
 {
 	return matrix[x].getCell(y);
@@ -76,6 +90,11 @@ void Column::replaceCell(int index, int newvalue)
 void Column::replaceCell(int index, string newvalue)
 {
 	col[index]->initCelli(newvalue);
+}
+
+void Column::replaceFormula(int index, string newvalue, stringstream & ss)
+{
+	col[index]->initFormula(newvalue, ss);
 }
 
 Cell* Column::getCell(int index)

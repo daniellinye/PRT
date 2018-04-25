@@ -13,6 +13,7 @@ private:
 	Sheet* matrix;
 	CellAddress begin;
 	CellAddress end;
+	string operant;
 public:
 	Range() {};
 
@@ -20,6 +21,10 @@ public:
 	//the pointer matrix needs to be
 	//initialized first
 	void initm(Sheet* matrix);
+
+	void replaceCell(int x, int y, string input);
+
+	void replaceCell(int x, int y, int input);
 
 	//sets beginning celladress to corresponding coords
 	void setbegin(string input);
@@ -41,8 +46,9 @@ public:
 	//cells to compute sum
 	void giveRows(string input);
 
+	void castFormula(string input);
 
-	stringstream iterRows(string input);
+	stringstream iterRows(string input, int x , int y);
 };
 
 #endif

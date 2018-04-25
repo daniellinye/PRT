@@ -22,6 +22,8 @@ public:
 	//replaces a cell with value string
 	void replaceCell(int index, string value);
 
+	void replaceFormula(int index, string value, stringstream & ss);
+
 	//gets cell from vector at col index
 	Cell* getCell(int index);
 
@@ -49,7 +51,7 @@ public:
 	void replaceCell(int x, int y, int value);
 
 	//replaces a cell at virtual coords x and y with value string
-	void replaceCell(int x, int y, string value);
+	void replaceCell(int x, int y, string value, stringstream &ss);
 
 	//gets a cell at coords x and y
 	Cell* getCell(int x, int y);

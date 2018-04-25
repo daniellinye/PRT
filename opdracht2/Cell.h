@@ -23,6 +23,8 @@ public:
     //returns the value as float
     //is -1 when it's null
 	virtual float convertfloat();
+
+	virtual void parsesum(stringstream & ss);
 };
 
 template<typename T>
@@ -48,21 +50,20 @@ public:
 	//returns the value into a float
 	virtual float convertfloat();
 
+	virtual void parsesum(stringstream & ss);
+
 };
 
 class CellFormula : public CellValueBase
 {
 private:
-	string parse;
+	string parse, operant;
 	float value;
 public:
-	CellFormula();
-
-	//initializes the class with sum value string
-	void init(string init);
+	CellFormula(string init, stringstream & ss);
 
 	//grabs the sums of a stringstream input
-	void parsesum(stringstream values);
+	virtual void parsesum(stringstream & values);
 
 	//returns in a print the value;
 	virtual stringstream print();
@@ -85,6 +86,7 @@ public:
 
 	void initCelli(int init);
 	void initCelli(string init);
+	void initFormula(string init, stringstream & ss);
 
 	CellValueBase* giveref();
 	
