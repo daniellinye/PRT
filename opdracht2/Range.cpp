@@ -1,13 +1,11 @@
 #include "Range.h"
 
 /*
-WATCH OUT:
 CELL DECLARATION:
 (1, A)
 CORRESPONDS TO COORDINATES
 (0, 0)
 */
-
 void Range::initm(Sheet* matrix)
 {
 	this->matrix = matrix;

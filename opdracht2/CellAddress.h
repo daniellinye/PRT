@@ -23,8 +23,10 @@ public:
 	//returns the coordinates in a int[2]
 	int* givecoords();
 
+	//returns the x-coordinate
 	int givex();
 
+	//returns the y-coordinate
 	int givey();
 
 	//adds another celladress to the current one

@@ -27,22 +27,33 @@ public:
 	//sets endadress to corresponding coords
 	void setend(string input);
 
+	//returns the coordinates of celladdress begin
 	int* givebegincoords();
 
+	//returns the coordinates of celladdress end
 	int* giveendcoords();
 
+	//prints the matrix in a cout
 	void print();
 
+	//returns the original cell* 
+	//in location (x, y)
 	Cell* getCell(int x, int y);
 
+	//returns the original cell* 
+	//in location (a, col)
 	Cell* getCell(char a, int col);
 
 	//gives top left and bottom right
 	//cells to compute sum
 	void giveRows(string input);
 
+	//sum method of =METHOD(<coords1>:<coords2>)
+	//used in the cells themselves to call a formula
 	string iterRows(string input, Sheet* matrix);
 
+	//count method of =METHOD(<coords1>:<coords2>)
+	//used in the cells themselves to call a formula
 	stringstream Count(string input);
 };
 

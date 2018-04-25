@@ -18,22 +18,22 @@ private:
   CellAddress* address;   //create a pointer to a CellAddress
 public:
   SheetView();
-
+  
   bool isinview(int x, int y);
 
   void RowCol(WINDOW *win);
 
   void CheckFormula(std::string &str);
 
-  void PrintCell(WINDOW* win, int x, int y);
+  void PrintCell(WINDOW *win, int x, int y);
 
   void FillSheet(WINDOW *win);
 
-  void CreateBorder (WINDOW* win);
+  void CreateBorder (WINDOW *win);
 
-  void RefreshSheet(WINDOW* win, int x, int y);
+  void RefreshSheet(WINDOW *win, int x, int y);
 
-  void StartEdit(WINDOW* win, int x, int y);
+  void StartEdit(WINDOW *win, int x, int y);
 
 	void Display();
 
