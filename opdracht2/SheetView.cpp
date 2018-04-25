@@ -68,10 +68,8 @@ void SheetView::RowCol(WINDOW *win)
 }//RowCol
 
 //checks whether the cellvalue is a formula and calculates when needed
-std::string SheetView::CheckFormula(std::string str)
+void SheetView::CheckFormula(std::string &str)
 {
-  std::stringstream ss;
-  int i = 0;
   std::string sum("SUM(");
   std::string count("COUNT(");
   std::string avg("AVG(");
@@ -81,46 +79,35 @@ std::string SheetView::CheckFormula(std::string str)
   Range tempR = Range();
   unsigned begin;
   unsigned end = str.find(')');
-  unsigned middle = str.find(':');
 
   if ((str.find(sum) != string::npos) && str.back() == ')') {
     begin = str.find(sum);
     substring = str.substr(begin + sum.length(),end - begin - sum.length());
-    while (substring[i] != ':' && substring[i] != '\0') {
-      begincell += substring[i];
-      i++;
-    }
-    while (substring[i] != '\0') {
-      endcell += substring[i];
-      i++;
-    }
-
-    // =SUM(B2:C3)
-
-    ss = tempR.iterRows("A5:F6");
+    str = tempR.iterRows(substring, matrix);
   }
 
-  else if ((str.find(count) != string::npos) && (str.find(middle) != string::npos) && str.back() == ')') {
+      // =SUM(B2:C3)
+
+  else if ((str.find(count) != string::npos) && str.back() == ')') {
     begin = str.find(count);
-    tempR.setbegin(str.substr(begin,middle-begin));
-    tempR.setend(str.substr(middle,end-middle));
+    substring = str.substr(begin + count.length(),end - begin - count.length());
+    //str = tempR.Count(substring);
   }
 
-  else if ((str.find(avg) != string::npos) && (str.find(middle) != string::npos) && str.back() == ')') {
+  else if ((str.find(avg) != string::npos) && str.back() == ')') {
     begin = str.find(avg);
-    tempR.setbegin(str.substr(begin,middle-begin));
-    tempR.setend(str.substr(middle,end-middle));
+    substring = str.substr(begin + avg.length(),end - begin - avg.length());
+    //str = tempR.Count(substring);
   }
-
-  return ss.str();
 }//CheckFormula
 
 //print cell
 void SheetView::PrintCell(WINDOW* win, int x, int y)
 {
-  std::string str = r.getCell(x,y)->giveref()->print().str();           //convert stringstream to string
+  std::stringstream ss = r.getCell(x,y)->giveref()->print();
+  std::string str = ss.str();           //convert stringstream to string
 
-  if (str[0] == '=') {str = CheckFormula(str);}
+  if (str[0] == '=') {CheckFormula(str);}
 
   const char* cell = str.c_str(); //convert string to const char*
 
@@ -145,9 +132,8 @@ void SheetView::FillSheet(WINDOW *win)
 //Creates a border for editing
 void SheetView::CreateBorder (WINDOW* win)
 {
-  int* coords = address->givecoords();    //gets coordinates of cursor
-  int x = cellwidth*(coords[0] + 1);
-  int y = cellheigth*(coords[1] + 1);
+  int x = cellwidth*(address->givex() + 1);
+  int y = cellheigth*(address->givey() + 1);
   char corner = '+', vertical = '|', horizontal = '-';
 
   if(isinview(x-1,y+1)){                    //first checks whether the character(s)
@@ -190,11 +176,7 @@ void SheetView::RefreshSheet(WINDOW* win, int x, int y)
     address->init(x,y); //change address of cursor
   }//check whether coordinates are in the view
 
-  int* coords = address->givecoords();
-  x = coords[0];
-  y = coords[1];
-
-  PrintCell(win,x,y);
+  PrintCell(win,address->givex(),address->givey());
   wattroff(win, A_STANDOUT);
   curs_set(0);
   wrefresh(win);

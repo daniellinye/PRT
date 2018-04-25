@@ -53,7 +53,7 @@ Cell* Range::getCell(char a, int col)
 void Range::giveRows(string input)
 {
 	string leftn = "", rightn = "";
-	int i = 0, arsize = sizeof(input);
+	int i = 0, arsize = input.size();
 	bool passed = false;
 
 	//parse the string
@@ -63,7 +63,7 @@ void Range::giveRows(string input)
 		{
 			rightn += input[i];
 		}
-		else if(input[i] != ':')
+		else if(input[i] == ':')
 		{
 			passed = true;
 		}
@@ -73,6 +73,7 @@ void Range::giveRows(string input)
 		}
 		i++;
 	}
+
 	begin.init(leftn);
 	end.init(rightn);
 }
@@ -80,21 +81,23 @@ void Range::giveRows(string input)
 //takes input
 //<location a>:<location b> as string
 //and converts it into a stringstream
-stringstream Range::iterRows(string input)
+string Range::iterRows(string input, Sheet* matrix)
 {
-    stringstream ss;
+		int temp = 0;
+		string str;
     giveRows(input);
 
     int beginx = begin.givex(), beginy = begin.givey(),
-	endy = end.givey(), endx = end.givex();
+		endy = end.givey(), endx = end.givex();
 
-    for(int i = beginx; i < endx; i++)
+    for(int i = beginx; i <= endx; i++)
     {
-        for(int j = beginy; j < endy; j++)
+        for(int j = beginy; j <= endy; j++)
         {
-			string temp = getCell(i, j)->giveref()->print().str();
-			ss << temp;
+					string str = matrix->getCell(i, j)->giveref()->print().str();
+					try {temp += atoi(str.c_str());}
+					catch(exception e){return 0;}
         }
     }
-    return ss;
+    return (string) temp;
 }

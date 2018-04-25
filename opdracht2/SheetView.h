@@ -23,7 +23,7 @@ public:
 
   void RowCol(WINDOW *win);
 
-  std::string CheckFormula(std::string str);
+  void CheckFormula(std::string &str);
 
   void PrintCell(WINDOW* win, int x, int y);
 
