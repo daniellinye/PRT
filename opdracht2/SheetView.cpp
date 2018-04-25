@@ -153,7 +153,12 @@ void SheetView::StartEdit(WINDOW* win, int x, int y)
 {
   int ch, n, i = 0;
   int editwidth = 2 * cellwidth;
-  char cell[editwidth] = {0};
+  char cell[editwidth];
+
+  for (n = 0; n < editwidth; n++) {
+    cell[n] = ' ';
+  }
+
   curs_set(1);
 
   WINDOW* edit = subwin(win,cellheigth,editwidth,(y+1)*cellheigth,(x+1)*cellwidth);
@@ -168,14 +173,17 @@ void SheetView::StartEdit(WINDOW* win, int x, int y)
       case KEY_BACKSPACE:   //backspace
         if (i > 0) {
           i--;
-          cell[i] = ' ';
+          for (n = i; n < editwidth - 1; n++) {
+            cell[n] = cell[n+1];
+          }
+          cell[editwidth-1] = ' ';
         }
       break;
       case KEY_DC:          //delete
-        for (n = i + 1; n < editwidth - 1; n++) {
+        for (n = i; n < editwidth - 1; n++) {
           cell[n] = cell[n+1];
         }
-        cell[n] = ' ';
+        cell[editwidth-1] = ' ';
       break;
       case KEY_LEFT:        //left
         i--;
