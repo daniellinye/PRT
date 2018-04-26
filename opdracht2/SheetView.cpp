@@ -70,10 +70,10 @@ void SheetView::RowCol(WINDOW *win)
 //checks whether the cellvalue is a formula and calculates when needed
 void SheetView::CheckFormula(std::string &str)
 {
-  std::string sum("SUM(");
-  std::string count("COUNT(");
-  std::string avg("AVG(");
-  std::string substring;
+  std::string sum("SUM(");      //in every if-statement
+  std::string count("COUNT(");  // - gets checked whether it begins -and ends with the propper syntax
+  std::string avg("AVG(");      // - a substring of the coordinates gets extracted
+  std::string substring;        // - the corresponding function gets called
   std::string begincell = "";
   std::string endcell = "";
   Range tempR = Range();
@@ -86,18 +86,16 @@ void SheetView::CheckFormula(std::string &str)
     str = tempR.iterRows(substring, matrix);
   }
 
-      // =SUM(B2:C3)
-
   else if ((str.find(count) != string::npos) && str.back() == ')') {
     begin = str.find(count);
     substring = str.substr(begin + count.length(),end - begin - count.length());
-    //str = tempR.Count(substring);
+    str = tempR.countcells(substring, matrix);
   }
 
   else if ((str.find(avg) != string::npos) && str.back() == ')') {
     begin = str.find(avg);
     substring = str.substr(begin + avg.length(),end - begin - avg.length());
-    //str = tempR.Count(substring);
+    str = tempR.averageCells(substring, matrix);
   }
 }//CheckFormula
 
@@ -109,7 +107,7 @@ void SheetView::PrintCell(WINDOW* win, int x, int y)
 
   if (str[0] == '=') {CheckFormula(str);}
 
-  const char* cell = str.c_str(); //convert string to const char*
+  const char* cell = str.c_str();       //convert string to const char*
 
   x = cellwidth*(x + 1);
   y = cellheigth*(y + 1);
@@ -266,8 +264,8 @@ void SheetView::Display()
 
   RefreshSheet(win,0,0);
 
-  noecho();                               //keyboard inputs do not need to be
-  while ((ch = wgetch(win)) != 'q'){      //displayed
+  noecho();                                         //keyboard inputs do not
+  while ((ch = wgetch(win)) != 'q' && ch != 'Q'){   //need to be displayed
     noecho();
     int* coords = address->givecoords();
     x = coords[0];
