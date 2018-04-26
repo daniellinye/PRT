@@ -102,3 +102,58 @@ string Range::iterRows(string input, Sheet* matrix)
     }
     return to_string(temp);
 }
+
+string Range::countcells(string input, Sheet* matrix)
+{
+	unsigned int h, temp = 0;
+	bool containsno;
+	string str;
+
+	giveRows(input);
+	int beginx = begin.givex(), beginy = begin.givey(),
+	endy = end.givey(), endx = end.givex();
+
+	for(int i = beginx; i <= endx; i++)
+	{
+		for(int j = beginy; j <= endy; j++)
+	  {
+			containsno = false;
+			string str = matrix->getCell(i, j)->giveref()->print().str();
+			for (h = 0; h < str.size(); h++) {
+				if (isdigit(str[h])) {
+					containsno = true;
+				}
+			}
+			if (containsno) {
+				temp++;
+			}
+	  }
+	}
+	return to_string(temp);
+}
+
+string Range::averageCells(string input, Sheet* matrix)
+{
+	float temp = 0, temp2 = 0;
+	int counter = 0;
+	string str;
+  giveRows(input);
+
+  int beginx = begin.givex(), beginy = begin.givey(),
+	endy = end.givey(), endx = end.givex();
+
+  for(int i = beginx; i <= endx; i++)
+  {
+    for(int j = beginy; j <= endy; j++)
+    {
+			string str = matrix->getCell(i, j)->giveref()->print().str();
+			temp = matrix->getCell(i, j)->giveref()->convertfloat();
+			try {
+				temp2 += atof(str.c_str());
+				if (str == "0" || temp != 0) {counter++;}
+			}
+			catch(exception e){return 0;}
+    }
+  }
+  return to_string(temp2/counter);
+}

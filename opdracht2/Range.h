@@ -43,7 +43,9 @@ public:
 
 	string iterRows(string input, Sheet* matrix);
 
-	stringstream Count(string input);
+	string countcells(string input, Sheet* matrix);
+
+	string averageCells(string input, Sheet* matrix);
 };
 
 #endif
