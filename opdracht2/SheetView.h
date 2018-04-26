@@ -17,24 +17,35 @@ private:
   Sheet* matrix;          //create a pointer to a Sheet
   CellAddress* address;   //create a pointer to a CellAddress
 public:
+  //constructor
   SheetView();
 
+  //check whether given x -and y-coordinates are in the view
   bool isinview(int x, int y);
 
+  //add row -and columnnames to view
   void RowCol(WINDOW *win);
 
+  //check whether a given string (that starts with '=') is a formula, and change
+  // the string to the result of that formula
   void CheckFormula(std::string &str);
 
+  //print a cell with the coordinates x and y
   void PrintCell(WINDOW* win, int x, int y);
 
+  //call PrintCell from every cell in the view
   void FillSheet(WINDOW *win);
 
+  //add a border around the editing subwindow
   void CreateBorder (WINDOW* win);
 
+  //empty and refill the view with updated data
   void RefreshSheet(WINDOW* win, int x, int y);
 
+  //create an edit subwindow and change a cell's value
   void StartEdit(WINDOW* win, int x, int y);
 
+  //create the main window and display the view
 	void Display();
 
 };

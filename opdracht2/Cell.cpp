@@ -27,7 +27,6 @@ std::string CellValueBase::givetid()
 //is -1 when it's null
 float CellValueBase::convertfloat()
 {
-	cout <<"d";
 	return -1;
 }
 
@@ -112,7 +111,6 @@ float CellValue<string>::convertfloat()
 template<>
 float CellValue<float>::convertfloat()
 {
-	//TODO: has to be "value" from the extended class
 	return value;
 }
 

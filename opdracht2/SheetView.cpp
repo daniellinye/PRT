@@ -232,9 +232,8 @@ void SheetView::StartEdit(WINDOW* win, int x, int y)
     }
 
     if (i < 0) {
-      i++;
+      i++;                    //helps to stay within the range of the edit window
     }
-
     else if (i >= maxwidth) {
       i--;
     }
