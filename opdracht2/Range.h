@@ -1,4 +1,3 @@
-
 #include "CellAddress.h"
 #include "Sheet.h"
 
@@ -36,11 +35,11 @@ public:
 	//prints the matrix in a cout
 	void print();
 
-	//returns the original cell* 
+	//returns the original cell*
 	//in location (x, y)
 	Cell* getCell(int x, int y);
 
-	//returns the original cell* 
+	//returns the original cell*
 	//in location (a, col)
 	Cell* getCell(char a, int col);
 
@@ -55,7 +54,6 @@ public:
 	string countcells(string input, Sheet* matrix);
 
 	string averageCells(string input, Sheet* matrix);
-
 	//count method of =METHOD(<coords1>:<coords2>)
 	//used in the cells themselves to call a formula
 	stringstream Count(string input);
