@@ -52,15 +52,12 @@ public:
 	//used in the cells themselves to call a formula
 	string iterRows(string input, Sheet* matrix);
 
-<<<<<<< HEAD
 	string countcells(string input, Sheet* matrix);
 
 	string averageCells(string input, Sheet* matrix);
-=======
 	//count method of =METHOD(<coords1>:<coords2>)
 	//used in the cells themselves to call a formula
 	stringstream Count(string input);
->>>>>>> bf8e8c7c689c43396c0bee4cd61ca47372ff14b8
 };
 
 #endif
