@@ -1,7 +1,7 @@
 #include <string>
 #include <iostream>
 #ifndef CellAddressHVar  // om te voorkomen dat dit .h bestand meerdere keren
-#define CellAddressHVar  // wordt ge-include 
+#define CellAddressHVar  // wordt ge-include
 
 class CellAddress
 {

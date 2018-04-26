@@ -5,9 +5,6 @@
 
 using namespace std;
 
-
-//**********************************************************
-//Sheet
 Sheet::Sheet(int h, int b)
 {
 	this->h = h;
@@ -17,11 +14,6 @@ Sheet::Sheet(int h, int b)
 	{
 		matrix.push_back(Column(h));
 	}
-}
-
-void Sheet::replaceCell(int x, int y, int value)
-{
-	matrix[x].replaceCell(y, value);
 }
 
 void Sheet::replaceCell(int x, int y, string value)
@@ -41,33 +33,6 @@ Cell* Sheet::getCell(char a, int y)
 	else
 		return NULL;
 }
-
-//TODO: move to class Range
-Cell* Sheet::begin(int column)
-{
-	return matrix[column].begin();
-}
-
-//TODO: move to class Range
-Cell* Sheet::end(int column)
-{
-	return matrix[column].end();
-}
-
-void Sheet::print()
-{
-	for(int i = 0; i < b; i++)
-	{
-		for(int j = 0; j < h; j++)
-		{
-			cout << matrix[i].getCell(j)->giveref()->convertfloat();
-		}
-		cout << endl;
-	}
-}
-
-//*****************************************************************************
-//Column
 
 Column::Column(int size)
 {
