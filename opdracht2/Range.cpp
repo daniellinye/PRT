@@ -1,13 +1,5 @@
 #include "Range.h"
 
-/*
-WATCH OUT:
-CELL DECLARATION:
-(1, A)
-CORRESPONDS TO COORDINATES
-(0, 0)
-*/
-
 void Range::initm(Sheet* matrix)
 {
 	this->matrix = matrix;
@@ -15,29 +7,16 @@ void Range::initm(Sheet* matrix)
 	end = CellAddress();
 }
 
+//sets startingcell of the range
 void Range::setbegin(string input)
 {
 	begin.init(input);
 }
 
+//sets endingcell of the range
 void Range::setend(string input)
 {
 	end.init(input);
-}
-
-int* Range::givebegincoords()
-{
-	return begin.givecoords();
-}
-
-int* Range::giveendcoords()
-{
-	return end.givecoords();
-}
-
-void Range::print()
-{
-	matrix->print();
 }
 
 Cell* Range::getCell(int x, int y)

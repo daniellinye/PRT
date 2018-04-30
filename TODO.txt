@@ -1,3 +1,0 @@
-1. shared libraries
-2. cleanup makefile
-3. tests

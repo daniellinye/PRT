@@ -3,7 +3,7 @@
 #include <memory>
 #include <sstream>
 #ifndef SheetHVar  // om te voorkomen dat dit .h bestand meerdere keren
-#define SheetHVar  // wordt ge-include 
+#define SheetHVar  // wordt ge-include
 
 using namespace std;
 
@@ -63,8 +63,6 @@ public:
 
 	//returns the end of a cell in a column
 	Cell* end(int column);
-
-	void print();
 };
 
 #endif
