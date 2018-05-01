@@ -1,0 +1,174 @@
+\documentclass{article}
+\usepackage[margin=1.5cm]{geometry} %Feel free to adjust this margin to your liking
+\usepackage[utf8]{inputenc} %So we can use special characters
+\usepackage{graphicx} %You might need this to include an image
+\usepackage{amsmath} %For various math functions..
+\usepackage{hyperref} %For creating hyperlinks
+
+\title{Databases 2018 - \LaTeX\ Example}
+\author{Leiden Institute of Advanced Computer Science}
+%\date{01-01-1971} %Automatically uses date of compiling unless specified.
+
+%The actual document starts here..
+\begin{document}
+\maketitle %This command uses the data from above to create a title heading
+This is a short example document to help you create a submission written using \LaTeX\ for your second assignment. It is essentially an abbreviated source for the assignment document itself. \\
+
+Students can use the online \LaTeX\ compiler Overleaf: \url{https://www.overleaf.com/}, or install a LaTeX compiler locally, for example Windows users could use MiKTeX for a basic installation: \url{https://miktex.org/download}. 
+
+\section{Relational Algebra}
+You are part of a legitimate data analysis institution that has acquired legitimate data from a certain social media platform. You have received the following schemas:
+\begin{itemize}
+	\item user(\underline{id}, name, gender, age):
+		\begin{itemize}
+		\item id: unique integer identifying the user
+		\item name: string with the user's full name
+		\item gender: string that contains the user's gender
+		\item age: the age of the user
+		\end{itemize}
+	\item invitedToEvent(\underline{id}, \underline{eid}, date, accepted):
+		\begin{itemize}
+		\item id: foreign key referencing user.id
+		\item eid: foreign key referencing event.eid
+		\item date: integer with same formatting as friends.date. Shows when user was invited to the event
+		\item accepted: boolean that shows whether user has accepted invitation or not
+		\end{itemize}
+\end{itemize}
+%Above itemization is indented for readability only, it is not required
+
+\begin{enumerate}
+	\item Find the mids of messages that have been liked 9000 times or more, and have the title "Not clickbait".
+	\item ...
+	\item Find the id of the creator(s) of the most liked message(s).
+\end{enumerate}
+
+\section{Schema Normalization}
+You have been approached to help with the design of a database for a video sharing platform. They currently store their data about videos and comments in a single large table. They want to store the following data in their database:
+\begin{itemize}
+	\item \underline{V}ideo ID
+	\item ...
+	\item Comment \underline{A}uthor
+\end{itemize}
+The above underlinings show suggested abbreviations to be used later in this exercise.\\
+
+They have identified that there is a lot of redundant data in their database right now. Because of this their website is running very slowly and they are running out of server space.\\
+
+They have given you the following statements, some of which might indicate one or more functional dependencies.
+\begin{itemize}
+	\item A video consists of an ID, Title, Uploader, Category, Subcategory and a Description.
+	\item ...
+	\item The Body of a comment may not contain any emoji.
+\end{itemize}
+Currently, the table \texttt{R: VTUCSDNBA} stores the information in the database. For each of the following questions, \emph{show your work} and \emph{explain your answers}. Showing your work is more important than having a correct answer.
+\begin{enumerate}
+	\item Determine all the functional dependencies (F) that are derivable from the points mentioned above.
+	\item ...
+	\item Prove, if $XY\rightarrow B$ and $X \rightarrow Y$ then $X \rightarrow B$.
+\end{enumerate}
+
+\section{Transaction Management}
+{\small %you can try \tiny font size here for a smaller table
+\begin{tabular}{|l||lllllllllllllll|}
+\hline
+T1:&R(C)& & & & &R(B)& &W(C)& & & & &W(A)&&Cmt.\\ \hline
+T2:&& &R(B)& &W(B)& & & & &W(B)& &R(A)& &W(C)&Cmt.\\ \hline
+T3:&&R(A)& &W(A) & & & & &R(A)& & & & &&Cmt.\\ \hline
+T4:&& & & & & &R(C) & & & &W(A)& & &&Cmt.\\ \hline
+\end{tabular}
+}
+
+\begin{enumerate}
+	\item Draw the precedence graph of the above schedule.
+	\item Is the above conflict serializable? Explain your answer.
+	\item Apply Strict 2PL to the above schedule and determine the waits-for graph for the schedule right after the first deadlock occurs.
+\end{enumerate}
+
+\appendix %indicates that we start the appendix section of the document
+\section{\LaTeX\ Reference}
+It is recommended to briefly browse the simple introduction to \LaTeX\ in the wikibook, specifically the Mathematics section thereof: \url{https://en.wikibooks.org/wiki/LaTeX/Mathematics} \\
+
+We put an inline math formula between \$. For example, \verb-$x^2+2x=3$- will become $x^2+2x=3$. If we want to give the math formula more space we put it between double \$. For example \verb+$$f(x)=\delta_{0}-x^i$$+ Will become $$f(x)=\delta_{0}-x^i$$
+
+For Schema Normalization it will probably be enough to know the \verb+$\rightarrow$+: $\rightarrow$. In this way we can make simple derivations of functional dependencies, like this:
+\begin{verbatim}
+\begin{align*} 
+A &\rightarrow B \\
+B &\rightarrow C \\
+A &\rightarrow C \ \text{(Transitivity)}
+\end{align*}
+\end{verbatim}
+\begin{align*} %the * here indicates unnumbered equations
+A &\rightarrow B \\
+B &\rightarrow C \\
+A &\rightarrow C \ \text{(Transitivity)}
+\end{align*}
+The align environment is very useful for multi-lined mathematics, such as what you might be doing with schema normalization.
+
+For Relational Algebra a simple answer to a query might look like this:
+\begin{verbatim}
+\pi_{\text{name}}\sigma_{\text{age} > 18}\text{Students}
+\end{verbatim}
+$$
+\pi_{\text{name}}\sigma_{\text{age} > 18}\text{Students}
+$$
+Here the underscore (\_) denotes the use of sub-script.
+Also, note the use of \verb+\text{}+ for words. This command is from the \emph{amsmath} package. If we didn't use it, \LaTeX\ would interpret all written characters as mathematical variables and not typeset them correctly.\\
+
+Other commands that might be of use for you while writing your Relational Algebra queries:\\
+
+\begin{tabular}{|p{.55\textwidth} | p{.4\textwidth}|}
+\hline
+\begin{verbatim}
+A \bowtie B
+\end{verbatim} & $$A \bowtie B$$\\
+\hline
+\begin{verbatim}
+A \times B
+\end{verbatim}
+&
+$$
+A \times B
+$$
+\\
+\hline
+\begin{verbatim}
+(\text{age}>18 \vee \text{age} < 65) 
+\wedge \text{name}=\text{"Hans"}
+\end{verbatim}
+&
+$$
+(\text{age}>18 \vee \text{age} < 65) \wedge \text{name}=\text{"Hans"}
+$$
+\\
+\hline
+\begin{verbatim}
+\pi\ \sigma\ \rho\
+\end{verbatim} &
+$$\pi\ \sigma\ \rho\ $$ \\
+\hline
+\begin{verbatim}
+S\bowtie_{\text{sid}}R
+\end{verbatim} &
+$$S\bowtie_{\text{sid}}R$$ \\
+\hline
+\begin{verbatim}
+\begin{align*}
+\rho(X_1, \pi_{\text{name}}S) \\
+X_1 \bowtie R
+\end{align*}
+\end{verbatim} &
+\begin{align*}
+\rho(X_1, \pi_{\text{name}}S) \\
+X_1 \bowtie R
+\end{align*} \\
+\hline
+\begin{verbatim}
+A \setminus B, A / B
+\end{verbatim} & $$A \setminus B, A / B$$\\
+\hline
+\end{tabular} \\
+
+For Transaction Management we recommend using the tabular environment as described here: \url{https://en.wikibooks.org/wiki/LaTeX/Tables}
+
+
+\end{document}
