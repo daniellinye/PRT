@@ -4,7 +4,7 @@
 \usepackage{graphicx} %You might need this to include an image
 \usepackage{amsmath} %For various math functions..
 \usepackage{hyperref} %For creating hyperlinks
-
+\usepackage[document]{ragged2e}
 %opening
 \title{Database assignment 2}
 \author{Daniel Lin and Robert Arntzenius}
@@ -20,12 +20,19 @@
 \end{abstract}
 
 \section{Relational Algebra}
-\begin{equation}
-\begin{aligned}
+
+\begin{flushleft}
+
 1.
-$$_{\text{notclickb}} \pi_{\text{mid}}messages(
+$$
+\pi_{\text{mid}}messages(
 \sigma_{\text{"title" = "Not clickbait"} \wedge \text{"likecount"} > 9000 }(messages))
 $$
-\end{aligned}
-\end{equation}
+
+2.
+$$
+\pi_{\text{mid}}messages(
+\sigma_{\text{"title" = "Not clickbait"} \wedge \text{"likecount"} > 9000 }(messages))
+$$
+\end{flushleft}
 \end{document}
