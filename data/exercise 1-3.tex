@@ -67,7 +67,7 @@ invitedToEvent))\bowtie_{\text{id}} user)
 \rho(othergender, \pi_{\text{id}}friends - \pi_{\text{id}}(\pi_{\text{id}}friends)\bowtie_{\text{gender}} user)
 
 %this might not work yet
-\rho(otherage, \pi_{\text{id}}(\pi_{\text{id}}friends)\bowtie_{\text{friends.age} < \text{user.age} \wedge friends.id = user.id}user)
+\rho(otherage, \pi_{\text{id}}(\pi_{\text{id}}friends)\bowtie_{\text{friends.age} < \text{user.age}}user)
 
 \pi_{\text{name}}(friends/(othergender \cap otherage))user
 
@@ -77,15 +77,34 @@ invitedToEvent))\bowtie_{\text{id}} user)
 \rho(one, \pi_{\text{id}}\sigma_{\text{name = "Crazy Cosplay Caroline"}}user)
 
 \rho(onemessages, \pi_{\text{mid}}\rho_{\text{creator=one}}message)
+
 %grab people that have liked the message
+\rho(messageliked, \pi_{\text{id}}\sigma_{\text{mid=onemessages}}messageLikes)
 
 %give names
-
+\pi_{\text{name}}((messageliked)/(\pi_{\text{id, name}}user))
 
 
 \chapter{7.}
 
-\sigma_{\text{"title" = "Not clickbait"} \wedge \text{"likecount"} > 9000 }users
+
+%tip was to use cartesian product
+%or self-joins
+\rho(mes1, \sigma_{likecount > 999}message)
+
+\rho(mes2, \sigma_{likecount > 999}message)
+
+\rho(mes3, \sigma_{likecount > 999}message)
+
+\rho(res1, \pi_{\text{mes1.creator}} (\sigma_{\text{mes1.mid} \neq \text{mes2.mid} \wedge \text{mes2.mid} \neq \text{mes3.mid} \wedge \text{mes1.mid}  \neq \text{mes3.mid}}(mes1 \times mes2 \times mes3) ) )
+
+\rho(res2, \pi_{\text{mes2.creator}} (\sigma_{\text{mes1.mid} \neq \text{mes2.mid} \wedge \text{mes2.mid} \neq \text{mes3.mid} \wedge \text{mes1.mid}  \neq \text{mes3.mid}}(mes1 \times mes2 \times mes3) ) )
+
+\rho(res3, \pi_{\text{mes3.creator}} (\sigma_{\text{mes1.mid} \neq \text{mes2.mid} \wedge \text{mes2.mid} \neq \text{mes3.mid} \wedge \text{mes1.mid}  \neq \text{mes3.mid}}(mes1 \times mes2 \times mes3) ) )
+
+
+\pi_{\text{id}}(\sigma_{\text{res1.creator} = \text{res2.creator} \wedge \text{res2.creator} = \text{res3.creator} \wedge \text{res1.creator}  = \text{res3.creator}}(res1 \times res2 \times res3)})\bowtie_{res.creator=user.id}user
+
 
 
 
