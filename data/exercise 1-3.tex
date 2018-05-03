@@ -33,7 +33,7 @@ invitedToEvent))\bowtie_{\text{id}} user)
 
 \rho(users, \pi_{\text{id}}user)
 
-invited \bowtie_{\text{invited.id $ \neq $ user.id}} users
+\pi_{\text{id}}(invited \bowtie_{\text{invited.id $ \neq $ user.id}} users)
 
 \chapter{3.}
 
@@ -45,10 +45,45 @@ invited \bowtie_{\text{invited.id $ \neq $ user.id}} users
 
 \pi_{\text{id}}(\pi_{\text{mid}}(res)\bowtie_{\text{mid}}messageLikes)\bowtie_{\text{id}}user
 
-\chapter{3.}
+\chapter{4.}
+
+\rho(invited, \pi_{\text{id}}(\sigma_{\text{accepted = "true"}}(\pi_{\text{eid}} \sigma_{\text{name="Nude painting"}} event)\bowtie_{{eid}} 
+invitedToEvent))\bowtie_{\text{id}} user)
+
+\rho(users, \pi_{\text{id}}user)
+
+%grab friends
+\rho(friends, \pi_{\text{id}}(\pi_{fid}friend)\bowtie_{id}user)
+
+
+\pi_{\text{name}}(invited \bowtie_{\text{invited.id = user.id}} users \cup friends)
 
 
 
+\chapter{5.}
+
+\rho(friends, \pi_{\text{id}}(\pi_{fid}friend)\bowtie_{id}user)
+
+\rho(othergender, \pi_{\text{id}}friends - \pi_{\text{id}}(\pi_{\text{id}}friends)\bowtie_{\text{gender}} user)
+
+%this might not work yet
+\rho(otherage, \pi_{\text{id}}(\pi_{\text{id}}friends)\bowtie_{\text{friends.age} < \text{user.age} \wedge friends.id = user.id}user)
+
+\pi_{\text{name}}(friends/(othergender \cap otherage))user
+
+
+\chapter{6.}
+
+\rho(one, \pi_{\text{id}}\sigma_{\text{name = "Crazy Cosplay Caroline"}}user)
+
+\rho(onemessages, \pi_{\text{mid}}\rho_{\text{creator=one}}message)
+%grab people that have liked the message
+
+%give names
+
+
+
+\chapter{7.}
 
 \sigma_{\text{"title" = "Not clickbait"} \wedge \text{"likecount"} > 9000 }users
 
