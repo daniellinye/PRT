@@ -17,7 +17,7 @@ namespace Server
 
 
         [WebMethod]
-        void startup()
+        string startup()
         {
             const int port = 8080;
             const string ip = "127.0.0.1";
@@ -46,6 +46,7 @@ namespace Server
 
             tclient.Close();
             listen.Stop();
+            return "it worked?";
         }
 
         public String Read(NetworkStream stream)
@@ -82,9 +83,9 @@ namespace Server
             SqliteConnection.CreateFile("Users.sqlite");
             SqliteConnection dbconnection = new SqliteConnection("Data Source=Users.sqlite;Version=3;");
             dbconnection.Open();
-            string users = "CREATE TABLE users (id INTEGER , name CHAR(20), password CHAR(20), PRIMARY KEY (id));";
+            string users = "CREATE TABLE users (id INTEGER , name VARCHAR(20), password VARCHAR(20), PRIMARY KEY (id));";
             string chatbox = "CREATE TABLE chatbox (chatid INTEGER, idfrom INTEGER, idto INTEGER, chatroom INTEGER,"
-            +"CHAR(80) message, PRIMARY KEY (chatid, chatroom)"
+            +"message VARCHAR(80) , PRIMARY KEY (chatid, chatroom)"
             + "FOREIGN KEY idfrom REFERENCES users, FOREIGN KEY idto REFERENCES users);";
 
             executecommand(users, dbconnection);
