@@ -76,14 +76,16 @@ namespace Server
             stream.Write(announce, 0, announce.Length);
         }
 
-        /*
+
         public ChatService()
         {
             SqliteConnection.CreateFile("Users.sqlite");
             SqliteConnection dbconnection = new SqliteConnection("Data Source=Users.sqlite;Version=3;");
             dbconnection.Open();
-            string users = "CREATE TABLE users (PRIMARY KEY INT ID, name VARCHAR(20), password VARCHAR(20));";
-            string chatbox = "CREATE TABLE chatbox (PRIMARY KEY INT CHATID, INT IDFROM, INT IDTO);";
+            string users = "CREATE TABLE users (id INTEGER , name CHAR(20), password CHAR(20), PRIMARY KEY (id));";
+            string chatbox = "CREATE TABLE chatbox (chatid INTEGER, idfrom INTEGER, idto INTEGER, chatroom INTEGER,"
+            +"CHAR(80) message, PRIMARY KEY (chatid, chatroom)"
+            + "FOREIGN KEY idfrom REFERENCES users, FOREIGN KEY idto REFERENCES users);";
 
             executecommand(users, dbconnection);
             executecommand(chatbox, dbconnection);
@@ -106,7 +108,7 @@ namespace Server
             return sqlcommand.ExecuteReader();
         }
 
-        */
+
         [WebMethod]
         public string GetTarget()
         {
