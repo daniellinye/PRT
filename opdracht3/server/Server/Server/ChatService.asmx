@@ -36,21 +36,45 @@ namespace Server
 
             //fetch data
             NetworkStream nstream = tclient.GetStream();
-            byte[] buffer = new byte[tclient.RecieveBufferSize];
 
-            //read stream
-            int bytesread = nstream.Read(buffer, 0, tclient.RecieveBufferSize);
+            string input = Read(nstream);
 
-            //convert
-            string data = Encoding.ASCII.GetString(buffer, 0, bytesread);
-            Console.Writeline("Recieved" + data);
+            Console.WriteLine("Recieved" + input);
 
+            StreamWrite(input, "None", nstream);
             //ping back
-            nstream.Write(buffer, 0, bytesread);
-            tclient.close();
+
+            tclient.Close();
             listen.Stop();
         }
 
+        public String Read(NetworkStream stream)
+        {
+
+            byte[] myReadBuffer = new byte[1024];
+            String responseData = String.Empty;
+            Int32 bytes = stream.Read(myReadBuffer, 0, myReadBuffer.Length);
+            responseData = System.Text.Encoding.ASCII.GetString(myReadBuffer, 0, bytes);
+            //Make it so I can actually
+            //Console.WriteLine(responseData);
+            return responseData;
+        }
+
+        public String StreamWrite(String input, String status, NetworkStream stream)
+        {
+            Byte[] login = System.Text.Encoding.ASCII.GetBytes(input);
+            stream.Write(login, 0, login.Length);
+            Console.WriteLine(input);
+            Console.WriteLine(status);
+            return input;
+        }
+
+        public static void Say(String input, NetworkStream stream)
+        {
+            string annstring = input;
+            Byte[] announce = System.Text.Encoding.ASCII.GetBytes(annstring);
+            stream.Write(announce, 0, announce.Length);
+        }
 
         /*
         public ChatService()
