@@ -1,16 +1,7 @@
 #include "Sheet.h"
 #include <vector>
-#include <memory>
-#include <sstream>
-
-using namespace std;
-
-
-#include <memory>
 #include <sstream>
 #include <iostream>
-#include <vector>
-
 using namespace std;
 
 //*****************************************************

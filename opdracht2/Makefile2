@@ -1,0 +1,28 @@
+#!/bin/sh
+	export LD_LIBRARY_PATH=/usr/local/my_lib:./
+
+CC = gcc
+CFLAGS = -fPIC -g -c -Wall -std=c++11
+LDFLAGS =  -shared -lncurses -Wl,-soname,Sheet.so
+OBJS =  Range.o  SheetView.o main.o Sheet.o
+
+all: clean $(OBJS) Sheet.so
+
+clean:
+	rm -f $(OBJS) *.o
+
+Range.o: Range.cpp 
+	$(CC) $(CFLAGS) Range.cpp $(LDFLAGS)
+
+Sheet.o:  Sheet.cpp
+	$(CC) $(CFLAGS) Sheet.cpp $(LDFLAGS)
+
+SheetView.o:  SheetView.cpp
+	$(CC) $(CFLAGS) SheetView.cpp $(LDFLAGS)
+
+main.o: main.cpp
+	$(CC) $(CFLAGS) main.cpp $(LDFLAGS)
+
+Sheet.so: $(OBJS)
+	$(CC) $(LDFLAGS) -o Sheet.so $(OBJS) -lc
+
