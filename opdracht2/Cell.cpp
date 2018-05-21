@@ -7,12 +7,13 @@
 
 using namespace std;
 
-
+//****************************************
+//CellValueBase
 
 std::stringstream CellValueBase::print()
 {
 	std::stringstream ss;
-	ss << " ";
+	ss << "";
 	return ss;
 }
 
@@ -26,14 +27,11 @@ std::string CellValueBase::givetid()
 //is -1 when it's null
 float CellValueBase::convertfloat()
 {
-	cout <<"d";
 	return -1;
 }
 
-void CellValueBase::parsesum(stringstream & ss)
-{
-
-}
+//****************************************
+//CellValue
 
 template <typename T>
 CellValue<T>::CellValue(T init) : CellValueBase()
@@ -48,7 +46,7 @@ T CellValue<T>::formvalue()
 }
 
 template <>
-std::stringstream CellValue<float>::print(void) 
+std::stringstream CellValue<float>::print(void)
 {
 	std::stringstream ss;
 	ss << value;
@@ -56,7 +54,7 @@ std::stringstream CellValue<float>::print(void)
 }
 
 template <>
-std::stringstream CellValue<int>::print(void) 
+std::stringstream CellValue<int>::print(void)
 {
 	std::stringstream ss;
 	ss << value;
@@ -64,7 +62,7 @@ std::stringstream CellValue<int>::print(void)
 }
 
 template <>
-std::stringstream CellValue<string>::print(void) 
+std::stringstream CellValue<string>::print(void)
 {
 	std::stringstream ss;
 	ss << value;
@@ -88,10 +86,24 @@ template<>
 float CellValue<string>::convertfloat()
 {
 	float temp = 0;
+	bool decimal = false;
+	int i, n = 0;
 	for (char chars : value)
 	{
-		if (chars >= '0' && chars <= '9')
+		if (chars == '.' || chars == ',') {
+			decimal = true;
+		}
+		else if (chars >= '0' && chars <= '9') {
 			temp = temp * 10 + (chars - '0');
+			if (decimal) {
+				n++;
+			}
+		}
+	}
+	if (decimal) {
+		for (i = 0; i < n; i++) {
+			temp /= 10;
+		}
 	}
 	return temp;
 }
@@ -99,39 +111,22 @@ float CellValue<string>::convertfloat()
 template<>
 float CellValue<float>::convertfloat()
 {
-	//TODO: has to be "value" from the extended class
 	return value;
 }
 
-template<>
-void CellValue<string>::parsesum(stringstream & ss)
-{
+//****************************************
+//Cell
 
-}
-
-template<>
-void CellValue<int>::parsesum(stringstream & ss)
-{
-
-}
-
-template<>
-void CellValue<float>::parsesum(stringstream & ss)
-{
-
-}
-
-Cell::Cell() 
+Cell::Cell()
 {
 	value.reset(nullptr);
 	value = unique_ptr<CellValueBase>(new CellValue<string>(""));
 }
 
 
-
 void Cell::initCelli(int init)
 {
-	
+
 	auto cvar = new CellValue<int>(init);
 	value = unique_ptr<CellValueBase>(cvar);
 }
@@ -140,14 +135,7 @@ void Cell::initCelli(int init)
 
 void Cell::initCelli(string init)
 {
-	
 	auto cvar = new CellValue<string>(init);
-	value = unique_ptr<CellValueBase>(cvar);
-}
-
-void Cell::initFormula(string init, stringstream & ss)
-{
-	auto cvar = new CellFormula(init, ss);
 	value = unique_ptr<CellValueBase>(cvar);
 }
 
@@ -160,56 +148,3 @@ CellValueBase* Cell::giveref()
 	}
 	return NULL;
 }
-
-
-CellFormula::CellFormula(string init, stringstream & ss) 
-{
-	if(init[0] == '=')
-		this->parse = init;
-	parsesum(ss);
-}
-
-
-
-void CellFormula::parsesum(stringstream & ss)
-{
-	string parser;
-	int temp, total = 0;
-	try
-	{
-		while(ss.rdbuf()->in_avail() != 0)
-		{
-			ss >> parser;
-			temp = atoi(parser.c_str());
-			total += temp;
-		}
-		this->value = total;
-	} catch(exception e)
-	{
-		this->parse = "ERR";
-	}
-}
-
-stringstream CellFormula::print()
-{
-	stringstream ss;
-	if(this->value != NULL)
-	{
-		ss << value;
-	}
-	return ss;
-}
-
-std::string CellFormula::givetid()
-{
-	return "nonetype";
-}
-
-float CellFormula::convertfloat()
-{
-	return this->value;
-}
-
-	
-
-

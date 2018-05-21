@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 #ifndef CellHVar  // om te voorkomen dat dit .h bestand meerdere keren
-#define CellHVar  // wordt ge-include 
+#define CellHVar  // wordt ge-include
 
 
 using namespace std;
@@ -12,7 +12,7 @@ struct CellValueBase
 {
 	CellValueBase() {};
 public:
-    //gives a stringstream with the 
+    //gives a stringstream with the
     //value in the stringstream
     //is empty if it's null
 	virtual std::stringstream print();
@@ -23,8 +23,6 @@ public:
     //returns the value as float
     //is -1 when it's null
 	virtual float convertfloat();
-
-	virtual void parsesum(stringstream & ss);
 };
 
 template<typename T>
@@ -37,12 +35,12 @@ public:
     //constructor
 	CellValue(T init);
 
-    //returns the value in 
+    //returns the value in
     //type T
 	T formvalue();
 
     //gives stringstream with value
-	virtual std::stringstream print();
+	std::stringstream print(void);
 
     //gives typename T in string
 	std::string givetid();
@@ -50,60 +48,26 @@ public:
 	//returns the value into a float
 	virtual float convertfloat();
 
-	virtual void parsesum(stringstream & ss);
-
-};
-
-class CellFormula : public CellValueBase
-{
-private:
-	string parse, operant;
-	float value;
-public:
-	CellFormula(string init, stringstream & ss);
-
-	//grabs the sums of a stringstream input
-	virtual void parsesum(stringstream & values);
-
-	//returns in a print the value;
-	virtual stringstream print();
-
-	//gives typename in string
-	string givetid();
-
-	//returns the value into a float
-	virtual float convertfloat();
 };
 
 class Cell
 {
 private:
+	//initializes as 0's
+	//that's why it first has the compile error
 	unique_ptr<CellValueBase> value;
 public:
+	//constructor
 	Cell();
 
-	void initCell();
-
+	//initializes a new cell with an integer value init
 	void initCelli(int init);
+
+	//initializes a new cell with string value init
 	void initCelli(string init);
-	void initFormula(string init, stringstream & ss);
 
+	//gives the original reference of the unique_ptr
 	CellValueBase* giveref();
-	
-	
-/*
-	Cell* operator +=(Cell *& other)
-	{
-		if (value != nullptr && other->value != nullptr && giveref()->givetid() == other->giveref()->givetid())
-		{
-			float temp = value->convertfloat();
-			temp += other->value->convertfloat();
-			value = new CellValue<float>(temp);
-		}
-		return this;
-	}
-
-*/
 };
 
 #endif
