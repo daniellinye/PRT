@@ -22,3 +22,6 @@ Range.o: Range.cpp Range.h
 
 main.o: main.cpp
 	$(CC) $(CompileParms)  main.cpp
+
+clean:
+	rm *.o

@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 #ifndef CellHVar  // om te voorkomen dat dit .h bestand meerdere keren
-#define CellHVar  // wordt ge-include 
+#define CellHVar  // wordt ge-include
 
 
 using namespace std;
@@ -12,7 +12,7 @@ struct CellValueBase
 {
 	CellValueBase() {};
 public:
-    //gives a stringstream with the 
+    //gives a stringstream with the
     //value in the stringstream
     //is empty if it's null
 	virtual std::stringstream print();
@@ -31,18 +31,11 @@ class CellValue : public CellValueBase
 private:
     //initial value
 	T value;
-
-    //specific float converters for types
-	float convtni();
-
-	float convtnf();
-
-	float convtns();
 public:
     //constructor
 	CellValue(T init);
 
-    //returns the value in 
+    //returns the value in
     //type T
 	T formvalue();
 
@@ -64,32 +57,17 @@ private:
 	//that's why it first has the compile error
 	unique_ptr<CellValueBase> value;
 public:
+	//constructor
 	Cell();
 
-	void initCell();
-
+	//initializes a new cell with an integer value init
 	void initCelli(int init);
+
+	//initializes a new cell with string value init
 	void initCelli(string init);
 
-	void initCell(float init);
-	void initCell(char init);
-
+	//gives the original reference of the unique_ptr
 	CellValueBase* giveref();
-	
-	
-/*
-	Cell* operator +=(Cell *& other)
-	{
-		if (value != nullptr && other->value != nullptr && giveref()->givetid() == other->giveref()->givetid())
-		{
-			float temp = value->convertfloat();
-			temp += other->value->convertfloat();
-			value = new CellValue<float>(temp);
-		}
-		return this;
-	}
-
-*/
 };
 
 #endif

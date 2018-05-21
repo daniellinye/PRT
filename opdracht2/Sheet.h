@@ -3,7 +3,7 @@
 #include <memory>
 #include <sstream>
 #ifndef SheetHVar  // om te voorkomen dat dit .h bestand meerdere keren
-#define SheetHVar  // wordt ge-include 
+#define SheetHVar  // wordt ge-include
 
 using namespace std;
 
@@ -16,10 +16,19 @@ private:
 public:
 	Column(int size);
 
+	//replaces a cell with value int
 	void replaceCell(int index, int value);
+
+	//replaces a cell with value string
 	void replaceCell(int index, string value);
+
+	//gets cell from vector at col index
 	Cell* getCell(int index);
+
+	//returns the begin of the col cell
 	Cell* begin();
+
+	//returns the end of the col cell
 	Cell* end();
 };
 
@@ -36,23 +45,24 @@ public:
 	//height h and width b
 	Sheet(int h, int b);
 
+	//replaces cell at virtual coords x and y with value int
 	void replaceCell(int x, int y, int value);
 
+	//replaces a cell at virtual coords x and y with value string
 	void replaceCell(int x, int y, string value);
 
-	//gets a cell from the 	
+	//gets a cell at coords x and y
 	Cell* getCell(int x, int y);
 
-
+	//gets a cell at coords char a and int y
+	//WARNING: relative coords A1 correspond to "(0, 0)"
 	Cell* getCell(char a, int y);
 
-	//TODO: move to class Range
+	//returns the begin of a cell in a column
 	Cell* begin(int column);
 
-	//TODO: move to class Range
+	//returns the end of a cell in a column
 	Cell* end(int column);
-
-	void print();
 };
 
 #endif

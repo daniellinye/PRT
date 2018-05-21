@@ -4,7 +4,11 @@
 #include "CellAddress.h"
 
 
-CellAddress::CellAddress() {};
+CellAddress::CellAddress()
+{
+	this->x = 0;
+	this->y = 0;
+};
 
 void CellAddress::init(int x, int y)
 {
@@ -14,16 +18,39 @@ void CellAddress::init(int x, int y)
 
 void CellAddress::init(std::string input)
 {
-	if (input[0] - 'A' >= 0)
-		this->x = input[0] - 'A';
-	for (int i = 1; i < input.size() - 1; i++)
-		if (input[i] - '0' >= 0 && input[i] - '0' <= 9)
-			this->y = this->y * 10 + input[i] - '0';
+	int i = 0;
+	int size = input.size();
+	if (size > 0)
+	{
+		this->x = 0;
+		this->y = 0;
+		while (!isdigit(input[i])){
+			this->x = (this->x) * 26 + input[i] - 'A' + 1;
+			i++;
+		}
+		for (; i < size; i++) {
+			if (isdigit(input[i])){
+				this->y = this->y * 10 + input[i] - '0';
+			}
+		}
+	}
+	this->x -= 1;
+	this->y -= 1;
 }
 
 int* CellAddress::givecoords()
 {
 	return new int[2]{ x, y };
+}
+
+int CellAddress::givex()
+{
+	return x;
+}
+
+int CellAddress::givey()
+{
+	return y;
 }
 
 CellAddress* CellAddress::operator +=(CellAddress &a)
