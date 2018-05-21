@@ -86,7 +86,7 @@ namespace Server
             string users = "CREATE TABLE users (id INTEGER , name VARCHAR(20), password VARCHAR(20), PRIMARY KEY (id));";
             string chatbox = "CREATE TABLE chatbox (chatid INTEGER, idfrom INTEGER, idto INTEGER, chatroom INTEGER,"
             +"message VARCHAR(80) , PRIMARY KEY (chatid, chatroom)"
-            + "FOREIGN KEY idfrom REFERENCES users, FOREIGN KEY idto REFERENCES users);";
+            + "FOREIGN KEY (idfrom) REFERENCES users (id), FOREIGN KEY (idto) REFERENCES users (id));";
 
             executecommand(users, dbconnection);
             executecommand(chatbox, dbconnection);

@@ -22,7 +22,7 @@ public partial class MainWindow: Gtk.Window
                 this, DialogFlags.Modal,
                 MessageType.Info,
                 ButtonsType.Ok,
-                "Hello world :P"
+                "YOU SHALL NOT$$$ PASS"
             );
         dlog.Run();
         dlog.Destroy();
