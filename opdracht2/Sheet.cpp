@@ -5,34 +5,174 @@
 
 using namespace std;
 
-Sheet::Sheet(int h, int b)
+
+#include <memory>
+#include <sstream>
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+//*****************************************************
+//CellValueBase
+
+std::stringstream CellValueBase::print()
 {
-	this->h = h;
-	this->b = b;
-	//fill matrix with h x b cells that are empty
-	for(int i = 0; i < b; i++)
+	std::stringstream ss;
+	ss << "";
+	return ss;
+}
+
+//returns typename T as type
+std::string CellValueBase::givetid()
+{
+	return "nonetype";
+}
+
+//returns the value as float
+//is -1 when it's null
+float CellValueBase::convertfloat()
+{
+	return -1;
+}
+
+//*****************************************************
+//CellValue
+
+//constructor
+template <typename T>
+CellValue<T>::CellValue(T init) : CellValueBase()
+{
+	this->value = init;
+}
+
+//returns value in cell
+template <typename T>
+T CellValue<T>::formvalue()
+{
+	return value;
+}
+
+//returns stringstream with value in cell<float>
+template <>
+std::stringstream CellValue<float>::print(void)
+{
+	std::stringstream ss;
+	ss << value;
+	return ss;
+}
+
+//returns stringstream with value in cell<int>
+template <>
+std::stringstream CellValue<int>::print(void)
+{
+	std::stringstream ss;
+	ss << value;
+	return ss;
+}
+
+//returns stringstream with value in cell<string>
+template <>
+std::stringstream CellValue<string>::print(void)
+{
+	std::stringstream ss;
+	ss << value;
+	return ss;
+}
+
+//returns typename of cell
+template <typename T>
+std::string CellValue<T>::givetid()
+{
+	return typeid(T).name();
+}
+
+//returns the value into a float
+template<>
+float CellValue<int>::convertfloat()
+{
+	return (float) value;
+}
+
+//returns the value into a float
+template<>
+float CellValue<string>::convertfloat()
+{
+	float temp = 0;
+	bool decimal = false;
+	int i, n = 0;
+	for (char chars : value)
 	{
-		matrix.push_back(Column(h));
+		if (chars == '.' || chars == ',') {
+			decimal = true;
+		}
+		else if (chars >= '0' && chars <= '9') {
+			temp = temp * 10 + (chars - '0');
+			if (decimal) {
+				n++;
+			}
+		}
 	}
+	if (decimal) {
+		for (i = 0; i < n; i++) {
+			temp /= 10;
+		}
+	}
+	return temp;
 }
 
-void Sheet::replaceCell(int x, int y, string value)
+//returns the value into a float
+template<>
+float CellValue<float>::convertfloat()
 {
-	matrix[x].replaceCell(y, value);
+	return value;
 }
 
-Cell* Sheet::getCell(int x, int y)
+//*****************************************************
+//Cell
+
+//constructor
+Cell::Cell()
 {
-	return matrix[x].getCell(y);
+	value.reset(nullptr);
+	value = unique_ptr<CellValueBase>(new CellValue<string>(""));
 }
 
-Cell* Sheet::getCell(char a, int y)
+//inits the cell with an int
+void Cell::initCelli(int init)
 {
-	if (a >= 'A' && a <= 'Z')
-		return matrix[a - 'A'].getCell(y - 1);
-	else
-		return NULL;
+
+	auto cvar = new CellValue<int>(init);
+	value = unique_ptr<CellValueBase>(cvar);
 }
+
+//inits the cell with a string
+void Cell::initCelli(string init)
+{
+	auto cvar = new CellValue<string>(init);
+	value = unique_ptr<CellValueBase>(cvar);
+}
+
+//inits the cell with a float
+void Cell::initCelli(float init)
+{
+	auto cvar = new CellValue<float>(init);
+	value = unique_ptr<CellValueBase>(cvar);
+}
+
+//returns the cellvaluebase reference pointer
+CellValueBase* Cell::giveref()
+{
+	if (value != 0)
+	{
+		return value.get();
+	}
+	return NULL;
+}
+
+
+//*****************************************************
+//Column
 
 Column::Column(int size)
 {
@@ -49,6 +189,11 @@ void Column::replaceCell(int index, int newvalue)
 }
 
 void Column::replaceCell(int index, string newvalue)
+{
+	col[index]->initCelli(newvalue);
+}
+
+void Column::replaceCell(int index, float newvalue)
 {
 	col[index]->initCelli(newvalue);
 }
@@ -72,4 +217,39 @@ Cell* Column::end()
 		return col[col.size() - 1];
 	else
 		return new Cell();
+}
+
+
+//*****************************************************
+//Sheet
+
+//constructor
+Sheet::Sheet(int h, int b)
+{
+	this->h = h;
+	this->b = b;
+	//fill matrix with h x b cells that are empty
+	for(int i = 0; i < b; i++)
+	{
+		matrix.push_back(Column(h));
+	}
+}
+
+//replaces cell with new value
+void Sheet::replaceCell(int x, int y, string value)
+{
+	matrix[x].replaceCell(y, value);
+}
+
+Cell* Sheet::getCell(int x, int y)
+{
+	return matrix[x].getCell(y);
+}
+
+Cell* Sheet::getCell(char a, int y)
+{
+	if (a >= 'A' && a <= 'Z')
+		return matrix[a - 'A'].getCell(y - 1);
+	else
+		return NULL;
 }

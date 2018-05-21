@@ -2,6 +2,10 @@
 #include "SheetView.h"
 #include <ncurses.h>
 
+//*****************************************************
+//Sheetview
+
+//constructor
 SheetView::SheetView()
 {
   r = Range();
