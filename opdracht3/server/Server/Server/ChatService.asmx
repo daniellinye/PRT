@@ -113,9 +113,14 @@ namespace Server
         [WebMethod]
         public string GetTarget()
         {
-            
-
             return "Hello world";
+        }
+
+        [WebMethod]
+        public string InitDatabases()
+        {
+            startup();
+            return "yay it worked!";
         }
 	}
 }
