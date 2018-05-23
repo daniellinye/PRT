@@ -3,19 +3,47 @@
 
 public partial class MainWindow
 {
+	private global::Gtk.UIManager UIManager;
+
+	private global::Gtk.Action Action;
+
+	private global::Gtk.Action Action1;
+
+	private global::Gtk.Action Action2;
+
 	private global::Gtk.Fixed fixed1;
 
 	private global::Gtk.Button button1;
+
+	private global::Gtk.VSeparator vseparator2;
+
+	private global::Gtk.Entry entry1;
+
+	private global::Gtk.HSeparator hseparator2;
+
+	private global::Gtk.Toolbar toolbar2;
 
 	protected virtual void Build()
 	{
 		global::Stetic.Gui.Initialize(this);
 		// Widget MainWindow
+		this.UIManager = new global::Gtk.UIManager();
+		global::Gtk.ActionGroup w1 = new global::Gtk.ActionGroup("Default");
+		this.Action = new global::Gtk.Action("Action", null, null, null);
+		w1.Add(this.Action, null);
+		this.Action1 = new global::Gtk.Action("Action1", null, null, null);
+		w1.Add(this.Action1, null);
+		this.Action2 = new global::Gtk.Action("Action2", null, null, null);
+		w1.Add(this.Action2, null);
+		this.UIManager.InsertActionGroup(w1, 0);
+		this.AddAccelGroup(this.UIManager.AccelGroup);
 		this.Name = "MainWindow";
 		this.Title = global::Mono.Unix.Catalog.GetString("MainWindow");
 		this.WindowPosition = ((global::Gtk.WindowPosition)(4));
 		// Container child MainWindow.Gtk.Container+ContainerChild
 		this.fixed1 = new global::Gtk.Fixed();
+		this.fixed1.WidthRequest = 20;
+		this.fixed1.HeightRequest = 20;
 		this.fixed1.Name = "fixed1";
 		this.fixed1.HasWindow = false;
 		// Container child fixed1.Gtk.Fixed+FixedChild
@@ -23,20 +51,60 @@ public partial class MainWindow
 		this.button1.CanFocus = true;
 		this.button1.Name = "button1";
 		this.button1.UseUnderline = true;
-		this.button1.Label = global::Mono.Unix.Catalog.GetString("GtkButton");
+		this.button1.Label = global::Mono.Unix.Catalog.GetString("hoi");
 		this.fixed1.Add(this.button1);
-		global::Gtk.Fixed.FixedChild w1 = ((global::Gtk.Fixed.FixedChild)(this.fixed1[this.button1]));
-		w1.X = 169;
-		w1.Y = 155;
+		global::Gtk.Fixed.FixedChild w2 = ((global::Gtk.Fixed.FixedChild)(this.fixed1[this.button1]));
+		w2.X = 42;
+		w2.Y = 38;
+		// Container child fixed1.Gtk.Fixed+FixedChild
+		this.vseparator2 = new global::Gtk.VSeparator();
+		this.vseparator2.HeightRequest = 800;
+		this.vseparator2.Name = "vseparator2";
+		this.fixed1.Add(this.vseparator2);
+		global::Gtk.Fixed.FixedChild w3 = ((global::Gtk.Fixed.FixedChild)(this.fixed1[this.vseparator2]));
+		w3.X = 766;
+		w3.Y = 7;
+		// Container child fixed1.Gtk.Fixed+FixedChild
+		this.entry1 = new global::Gtk.Entry();
+		this.entry1.WidthRequest = 600;
+		this.entry1.HeightRequest = 40;
+		this.entry1.CanFocus = true;
+		this.entry1.ExtensionEvents = ((global::Gdk.ExtensionMode)(1));
+		this.entry1.Name = "entry1";
+		this.entry1.IsEditable = true;
+		this.entry1.ActivatesDefault = true;
+		this.entry1.InvisibleChar = '•';
+		this.fixed1.Add(this.entry1);
+		global::Gtk.Fixed.FixedChild w4 = ((global::Gtk.Fixed.FixedChild)(this.fixed1[this.entry1]));
+		w4.X = 10;
+		w4.Y = 432;
+		// Container child fixed1.Gtk.Fixed+FixedChild
+		this.hseparator2 = new global::Gtk.HSeparator();
+		this.hseparator2.WidthRequest = 700;
+		this.hseparator2.Name = "hseparator2";
+		this.fixed1.Add(this.hseparator2);
+		global::Gtk.Fixed.FixedChild w5 = ((global::Gtk.Fixed.FixedChild)(this.fixed1[this.hseparator2]));
+		w5.X = -28;
+		w5.Y = 418;
+		// Container child fixed1.Gtk.Fixed+FixedChild
+		this.UIManager.AddUiFromString("<ui><toolbar name=\'toolbar2\'><toolitem/></toolbar></ui>");
+		this.toolbar2 = ((global::Gtk.Toolbar)(this.UIManager.GetWidget("/toolbar2")));
+		this.toolbar2.Name = "toolbar2";
+		this.toolbar2.ShowArrow = false;
+		this.fixed1.Add(this.toolbar2);
+		global::Gtk.Fixed.FixedChild w6 = ((global::Gtk.Fixed.FixedChild)(this.fixed1[this.toolbar2]));
+		w6.X = 379;
+		w6.Y = 216;
 		this.Add(this.fixed1);
 		if ((this.Child != null))
 		{
 			this.Child.ShowAll();
 		}
-		this.DefaultWidth = 400;
-		this.DefaultHeight = 300;
+		this.DefaultWidth = 616;
+		this.DefaultHeight = 481;
 		this.Show();
 		this.DeleteEvent += new global::Gtk.DeleteEventHandler(this.OnDeleteEvent);
 		this.button1.Clicked += new global::System.EventHandler(this.OnButton1Clicked);
+		this.entry1.Activated += new global::System.EventHandler(this.sendmessages);
 	}
 }
