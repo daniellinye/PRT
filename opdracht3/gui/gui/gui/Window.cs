@@ -13,9 +13,9 @@ namespace gui
             this.Build();
         }
 
-        protected void klick_login(object sender, EventArgs e)
+        protected void Klick_login(object sender, EventArgs e)
         {
-            int intTemp = Convert.ToInt32(username1);
+            int intTemp = Convert.ToInt32(username1.Text);
             if (intTemp == 1)
             {
                 
