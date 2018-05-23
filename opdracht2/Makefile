@@ -1,27 +1,26 @@
-CC = g++
+CC = gcc
 
-CompileParms = -c -Wall -std=c++11
-LDFLAGS = -lncurses
+CompileParms = -c -Wall -std=c++11 -Iinclude
+CompileFlags = -fPIC
+LDFLAGS = -lncurses -shared
 
-OBJS = Cell.o CellAddress.o Range.o Sheet.o SheetView.o main.o
+OBJS = Range.o Sheet.o SheetView.o main.o 
 
-Opdr: $(OBJS)
-	$(CC) $(OBJS) -o Sheet $(LDFLAGS)
 
-Cell.o: Cell.cpp Cell.h
-	$(CC) $(CompileParms) Cell.cpp
+Sheet.so: $(OBJS)
+	$(CC)  $(OBJS) -o Sheet.so $(CompileFlags) $(LDFLAGS) 
 
-CellAdress.o: CellAdress.cpp CellAdress.h
-	$(CC) $(CompileParms) CellAddress.cpp
-
-Range.o: Range.cpp Range.h
+Range.o: Range.cpp
 	$(CC) $(CompileParms) Range.cpp
 
-Sheet.o:  Sheet.cpp Sheet.h
+Sheet.o:  Sheet.cpp
 	$(CC) $(CompileParms) Sheet.cpp
 
-SheetView.o:  SheetView.cpp SheetView.h
+SheetView.o:  SheetView.cpp
 	$(CC) $(CompileParms) SheetView.cpp
 
 main.o: main.cpp
 	$(CC) $(CompileParms)  main.cpp
+
+clean:
+	rm *.o
