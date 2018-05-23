@@ -17,7 +17,7 @@ namespace Server
 
 
         [WebMethod]
-        string startup()
+        public string Startup()
         {
             const int port = 8080;
             const string ip = "127.0.0.1";
@@ -37,12 +37,13 @@ namespace Server
             //fetch data
             NetworkStream nstream = tclient.GetStream();
 
-            string input = Read(nstream);
 
-            Console.WriteLine("Recieved" + input);
+            string input = Read(nstream);
 
             StreamWrite(input, "None", nstream);
             //ping back
+
+
 
             tclient.Close();
             listen.Stop();
@@ -119,7 +120,6 @@ namespace Server
         [WebMethod]
         public string InitDatabases()
         {
-            startup();
             return "yay it worked!";
         }
 	}
