@@ -34,20 +34,6 @@
         <property name="HeightRequest">20</property>
         <property name="HasWindow">False</property>
         <child>
-          <widget class="Gtk.Button" id="button1">
-            <property name="MemberName" />
-            <property name="CanFocus">True</property>
-            <property name="Type">TextOnly</property>
-            <property name="Label" translatable="yes">hoi</property>
-            <property name="UseUnderline">True</property>
-            <signal name="Clicked" handler="OnButton1Clicked" />
-          </widget>
-          <packing>
-            <property name="X">42</property>
-            <property name="Y">38</property>
-          </packing>
-        </child>
-        <child>
           <widget class="Gtk.VSeparator" id="vseparator2">
             <property name="MemberName" />
             <property name="HeightRequest">800</property>
@@ -85,16 +71,140 @@
           </packing>
         </child>
         <child>
-          <widget class="Gtk.Toolbar" id="toolbar2">
+          <widget class="Gtk.Label" id="label1">
             <property name="MemberName" />
-            <property name="ShowArrow">False</property>
-            <node name="toolbar2" type="Toolbar">
-              <node type="Toolitem" />
-            </node>
           </widget>
           <packing>
-            <property name="X">379</property>
-            <property name="Y">216</property>
+            <property name="X">5</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label2">
+            <property name="MemberName" />
+          </widget>
+          <packing>
+            <property name="Y">25</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label3">
+            <property name="MemberName" />
+          </widget>
+          <packing>
+            <property name="Y">50</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label4">
+            <property name="MemberName" />
+          </widget>
+          <packing>
+            <property name="Y">75</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label5">
+            <property name="MemberName" />
+          </widget>
+          <packing>
+            <property name="Y">100</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label6">
+            <property name="MemberName" />
+          </widget>
+          <packing>
+            <property name="Y">125</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label7">
+            <property name="MemberName" />
+          </widget>
+          <packing>
+            <property name="Y">150</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label8">
+            <property name="MemberName" />
+          </widget>
+          <packing>
+            <property name="Y">175</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label9">
+            <property name="MemberName" />
+          </widget>
+          <packing>
+            <property name="Y">200</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label10">
+            <property name="MemberName" />
+          </widget>
+          <packing>
+            <property name="Y">225</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label11">
+            <property name="MemberName" />
+          </widget>
+          <packing>
+            <property name="X">-6</property>
+            <property name="Y">249</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label12">
+            <property name="MemberName" />
+          </widget>
+          <packing>
+            <property name="Y">275</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label13">
+            <property name="MemberName" />
+          </widget>
+          <packing>
+            <property name="Y">300</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label14">
+            <property name="MemberName" />
+          </widget>
+          <packing>
+            <property name="Y">325</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label15">
+            <property name="MemberName" />
+          </widget>
+          <packing>
+            <property name="Y">350</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label16">
+            <property name="MemberName" />
+          </widget>
+          <packing>
+            <property name="Y">375</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label17">
+            <property name="MemberName" />
+          </widget>
+          <packing>
+            <property name="Y">400</property>
           </packing>
         </child>
       </widget>
