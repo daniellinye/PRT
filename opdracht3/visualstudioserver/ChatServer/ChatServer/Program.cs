@@ -11,7 +11,7 @@ using System.Net;
 
 namespace ChatServer
 {
-    class Program
+    public class Program
     {
 
         /*
@@ -25,10 +25,20 @@ namespace ChatServer
          if message
          add to messagelist
              */
+        ConnectionFunctions cf;
+        IPAddress iadress;
+        TcpListener listen;
+        TcpClient client;
+        NetworkStream stream;
+        ParseFunctions pf;
+
+
         static void Main(string[] args)
         {
             Program p = new Program();
             Console.WriteLine("did stuff");
+
+
             p.Startup();
         }
 
@@ -46,13 +56,16 @@ namespace ChatServer
             Console.WriteLine("Starting");
             listen.Start();
 
+            //init sqldata
             ChatService();
+
             //connect client
-            TcpClient tclient = listen.AcceptTcpClient();
+            TcpClient client = listen.AcceptTcpClient();
 
             //fetch data
-            NetworkStream stream = tclient.GetStream();
+            NetworkStream stream = client.GetStream();
 
+            //parseclass
             ParseFunctions pf = new ParseFunctions();
 
             try
@@ -62,8 +75,17 @@ namespace ChatServer
                     string input = pf.Read(stream);
                     Console.WriteLine(input);
 
-                    //TODO: insert parsefunction class
-                    pf.Parser(input, stream);
+                    if(input != String.Empty)
+                    {
+                        //TODO: insert parsefunction class
+                        pf.Parser(input, stream);
+                    }
+                    else
+                    {
+                        client.Close();
+                        listen.Stop();
+                        Startup();
+                    }
 
                 }
             }
@@ -74,7 +96,7 @@ namespace ChatServer
             finally
             {
 
-                tclient.Close();
+                client.Close();
                 listen.Stop();
             }
 

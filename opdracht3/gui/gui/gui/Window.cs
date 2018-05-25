@@ -46,6 +46,7 @@ namespace gui
                 dlog.Run();
                 dlog.Destroy();
             }
+            client.Close();
         }
 
         public void SendCommand(NetworkStream stream, string commandtype, string args)
