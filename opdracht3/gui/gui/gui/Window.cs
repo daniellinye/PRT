@@ -16,23 +16,32 @@ namespace gui
 
         protected void Klick_login(object sender, EventArgs e)
         {
-
+            //make username and password
             string username = String.Concat(".", username1.Text);
             string password = String.Concat(username, Password.Text);
 
-            Int32 port = 8080;
-            TcpClient client = new TcpClient("127.0.0.1", port);
+            //standard values
+            const Int32 port = 8080;
+            const string ip = "127.0.0.1";
 
+            //new clients
+            TcpClient client = new TcpClient(ip, port);
+
+            //new stream
             NetworkStream stream = client.GetStream();
 
+            //pingpong server
             Console.WriteLine("Pinging Server");
             StreamWrite("Ping", stream);
             Read(stream);
 
+            //send actual command
             SendCommand(stream, "Login", password);
 
+            //read returning message
             String message = Read(stream);
 
+            //give popup if the username wasn't empty
             if (username != String.Empty)
             {
 
@@ -46,6 +55,11 @@ namespace gui
                 dlog.Run();
                 dlog.Destroy();
             }
+
+            //close client
+            //TODO: replace this here when message is 
+            //actually that someone has logged in
+
             client.Close();
         }
 
