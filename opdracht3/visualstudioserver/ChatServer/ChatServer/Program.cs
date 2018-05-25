@@ -100,14 +100,32 @@ namespace ChatServer
 
     } // class Program
 
+    //is a stuct such that we can give users variables whilst online
+    public class TcpUsers : TcpClient
+    {
+        TcpClient client;
+        String name;
+
+        public TcpUsers(TcpClient listener, String newname)
+        {
+            name = newname;
+            client = listener;
+        }
+
+        public String ReturnName()
+        {
+            return name;
+        }
+    }
+
     public class ConnectionFunctions
     {
-        public List<TcpClient> clients = new List<TcpClient>();
+        public List<TcpUsers> clients = new List<TcpUsers>();
 
         public ConnectionFunctions() { }
 
         //adds new client if the user is not logged in yet
-        public void LoginUser(TcpClient client)
+        public void LoginUser(TcpClient client, String name)
         {
             foreach(TcpClient c in clients)
             {
@@ -116,15 +134,15 @@ namespace ChatServer
                     return;
                 }
             }
-            Console.WriteLine("User: " + client.GetStream() + "Logged in");
-            clients.Add(client);
+            Console.WriteLine("User: " + name  + "Logged in");
+            clients.Add(new TcpUsers(client, name));
         }
 
-        public void LogoutUser(TcpClient client)
+        public void LogoutUser(String name)
         {
-            foreach(TcpClient c in clients)
+            foreach(TcpUsers c in clients)
             {
-                if(c.Equals(client))
+                if(c.ReturnName() == name)
                 {
                     clients.Remove(c);
                     return;
