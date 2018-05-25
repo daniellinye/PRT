@@ -33,13 +33,13 @@ namespace gui
             //pingpong server
             Console.WriteLine("Pinging Server");
             StreamWrite("Ping", stream);
-            Read(stream);
+            Console.WriteLine(Read(stream));
 
             //send actual command
-            SendCommand(stream, "Login", password);
+            String message = SendCommand(stream, "Login", password);
 
             //read returning message
-            String message = Read(stream);
+
 
             //give popup if the username wasn't empty
             if (username != String.Empty)
@@ -63,11 +63,14 @@ namespace gui
             client.Close();
         }
 
-        public void SendCommand(NetworkStream stream, string commandtype, string args)
+        //ALWAYS USE THIS COMMAND IN ORDER TO PREVENT DEADLOCK
+        //except pingpong, pingpong is always fine
+        public string SendCommand(NetworkStream stream, string commandtype, string args)
         {
             string total = String.Concat(commandtype, ":");
             total = String.Concat(commandtype, args);
             StreamWrite(total, stream);
+            return Read(stream);
         }
 
 
