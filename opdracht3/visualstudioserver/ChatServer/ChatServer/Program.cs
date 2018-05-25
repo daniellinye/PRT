@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Data.SqlClient;
 using System.Data.SqlTypes;
 using System.Net;
+using System.Threading;
 
 
 namespace ChatServer
@@ -25,24 +26,16 @@ namespace ChatServer
          if message
          add to messagelist
              */
-        ConnectionFunctions cf;
-        IPAddress iadress;
-        TcpListener listen;
-        TcpClient client;
-        NetworkStream stream;
-        ParseFunctions pf;
-
 
         static void Main(string[] args)
         {
             Program p = new Program();
             Console.WriteLine("did stuff");
-
-
             p.Startup();
+
         }
 
-        public string Startup()
+        public void Startup()
         {
             const int port = 8080;
             const string ip = "127.0.0.1";
@@ -77,7 +70,7 @@ namespace ChatServer
 
                     if(input != String.Empty)
                     {
-                        //TODO: insert parsefunction class
+                        //TODO: make multithread when someone actually has logged in
                         pf.Parser(input, stream);
                     }
                     else
@@ -102,7 +95,6 @@ namespace ChatServer
 
             Console.WriteLine("Reading Stream");
 
-            return "it worked?";
         }
 
         //multithreader for new users
