@@ -27,10 +27,13 @@ namespace ChatServer
 
             //start listening at 
             //port 8080
+
+            ConnectionFunctions cf = new ConnectionFunctions();
             IPAddress iaddress = IPAddress.Parse(ip);
             TcpListener listen = new TcpListener(iaddress, port);
             Console.WriteLine("Starting");
             listen.Start();
+
 
             //connect client
             TcpClient tclient = listen.AcceptTcpClient();
@@ -39,11 +42,11 @@ namespace ChatServer
             NetworkStream nstream = tclient.GetStream();
 
             Console.WriteLine("Reading Stream");
-            string input = Read(nstream);
+            string input = cf.Read(nstream);
 
             Console.WriteLine(input);
 
-            StreamWrite(input, "None", nstream);
+            cf.StreamWrite(input, "None", nstream);
             //ping back
 
 
@@ -53,26 +56,12 @@ namespace ChatServer
             return "it worked?";
         }
 
-        public String Read(NetworkStream stream)
+        //multithreader for new users
+        public void CheckNewUsers(TcpListener listener, ConnectionFunctions cf)
         {
 
-            byte[] myReadBuffer = new byte[1024];
-            String responseData = String.Empty;
-            Int32 bytes = stream.Read(myReadBuffer, 0, myReadBuffer.Length);
-            responseData = System.Text.Encoding.ASCII.GetString(myReadBuffer, 0, bytes);
-            //Make it so I can actually
-            //Console.WriteLine(responseData);
-            return responseData;
         }
-
-        public String StreamWrite(String input, String status, NetworkStream stream)
-        {
-            Byte[] login = System.Text.Encoding.ASCII.GetBytes(input);
-            stream.Write(login, 0, login.Length);
-            Console.WriteLine(input);
-            Console.WriteLine(status);
-            return input;
-        }
+        
 
         public static void Say(String input, NetworkStream stream)
         {
@@ -93,14 +82,14 @@ namespace ChatServer
             */
         }
 
-        public void executecommand(string command, SqlConnection scon)
+        public void Executecommand(string command, SqlConnection scon)
         {
             SqlCommand sqlcommand = new SqlCommand(command, scon);
             sqlcommand.ExecuteNonQuery();
         }
 
 
-        public object getTables(SqlConnection dbconnection, string selectargs)
+        public object GetTables(SqlConnection dbconnection, string selectargs)
         {
             SqlCommand sqlcommand = new SqlCommand();
             sqlcommand.CommandText = selectargs;
@@ -109,5 +98,60 @@ namespace ChatServer
             return sqlcommand.ExecuteReader();
         }
 
+    } // class Program
+
+    public class ConnectionFunctions
+    {
+        public List<TcpClient> clients = new List<TcpClient>();
+
+        public ConnectionFunctions() { }
+
+        //adds new client if the user is not logged in yet
+        public void LoginUser(TcpClient client)
+        {
+            foreach(TcpClient c in clients)
+            {
+                if(c.Equals(client))
+                {
+                    return;
+                }
+            }
+            Console.WriteLine("User: " + client.GetStream() + "Logged in");
+            clients.Add(client);
+        }
+
+        public void LogoutUser(TcpClient client)
+        {
+            foreach(TcpClient c in clients)
+            {
+                if(c.Equals(client))
+                {
+                    clients.Remove(c);
+                    return;
+                }
+            }
+            Console.WriteLine("Element was not found in list");
+        }
+
+        //reads rawdata from the newworkstream :D
+        public String Read(NetworkStream stream)
+        {
+            byte[] myReadBuffer = new byte[1024];
+            String responseData = String.Empty;
+            Int32 bytes = stream.Read(myReadBuffer, 0, myReadBuffer.Length);
+            responseData = System.Text.Encoding.ASCII.GetString(myReadBuffer, 0, bytes);
+            return responseData;
+        }
+
+        //writes rawdata to the newtworkstream :D
+        public String StreamWrite(String input, String status, NetworkStream stream)
+        {
+            Byte[] login = System.Text.Encoding.ASCII.GetBytes(input);
+            stream.Write(login, 0, login.Length);
+            Console.WriteLine(input);
+            Console.WriteLine(status);
+            return input;
+        }
     }
+
 }
