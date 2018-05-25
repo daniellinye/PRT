@@ -23,6 +23,11 @@ namespace gui
 
             NetworkStream stream = client.GetStream();
 
+            Console.WriteLine("Pinging Server");
+            StreamWrite("Login Test", stream);
+
+
+            Console.WriteLine("Ponging Server");
             String message = Read(stream);
 
             if (intTemp == 1)
@@ -53,12 +58,11 @@ namespace gui
             return responseData;
         }
 
-        public String StreamWrite(String input, String status, NetworkStream stream)
+        public String StreamWrite(String input, NetworkStream stream)
         {
             Byte[] login = System.Text.Encoding.ASCII.GetBytes(input);
             stream.Write(login, 0, login.Length);
             Console.WriteLine(input);
-            Console.WriteLine(status);
             return input;
         }
 
