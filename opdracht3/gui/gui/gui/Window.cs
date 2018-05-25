@@ -27,9 +27,10 @@ namespace gui
 
             Console.WriteLine("Pinging Server");
             StreamWrite("Ping", stream);
+            Read(stream);
 
+            SendCommand(stream, "Login", password);
 
-            Console.WriteLine("Ponging Server");
             String message = Read(stream);
 
             if (username != String.Empty)

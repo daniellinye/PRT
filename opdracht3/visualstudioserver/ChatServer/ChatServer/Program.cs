@@ -47,26 +47,39 @@ namespace ChatServer
             listen.Start();
 
             ChatService();
-
-
             //connect client
             TcpClient tclient = listen.AcceptTcpClient();
 
             //fetch data
-            NetworkStream nstream = tclient.GetStream();
+            NetworkStream stream = tclient.GetStream();
+
+            ParseFunctions pf = new ParseFunctions();
+
+            try
+            {
+                while (true)
+                {
+                    string input = pf.Read(stream);
+                    Console.WriteLine(input);
+
+                    //TODO: insert parsefunction class
+                    pf.Parser(input, stream);
+
+                }
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            finally
+            {
+
+                tclient.Close();
+                listen.Stop();
+            }
 
             Console.WriteLine("Reading Stream");
-            string input = cf.Read(nstream);
 
-            Console.WriteLine(input);
-
-            cf.StreamWrite(input, "None", nstream);
-            //ping back
-
-
-
-            tclient.Close();
-            listen.Stop();
             return "it worked?";
         }
 
@@ -87,6 +100,7 @@ namespace ChatServer
 
         public void ChatService()
         {
+            //currently hardcoded, tutor would tell us he'd have a way in order to make it online
             using (SqlConnection connection = new SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\Github\\PRT\\opdracht3\\visualstudioserver\\ChatServer\\ChatServer\\users.mdf;Integrated Security=True"))
             {
                 Console.WriteLine("Opening connection");
@@ -103,11 +117,12 @@ namespace ChatServer
         }
 
 
-        public object GetTables(SqlConnection dbconnection, string selectargs)
+        public SqlDataReader GetTables(SqlConnection dbconnection, string selectargs)
         {
             SqlCommand sqlcommand = new SqlCommand();
             sqlcommand.CommandText = selectargs;
             sqlcommand.Connection = dbconnection;
+
 
             return sqlcommand.ExecuteReader();
         }
@@ -165,6 +180,32 @@ namespace ChatServer
             Console.WriteLine("Element was not found in list");
         }
 
+
+    }
+
+    class ParseFunctions
+    {
+        ConnectionFunctions cf;
+        public ParseFunctions()
+        {
+            cf = new ConnectionFunctions();
+        }
+
+        public void Parser(String input, NetworkStream stream)
+        {
+            switch(input)
+            {
+                case "Ping":
+                    StreamWrite("Pong", stream);
+                    break;
+                //standardthing
+                default:
+                    Console.WriteLine("Command " + input + " was not implemented");
+                    StreamWrite("Error:001, command not found", stream);
+                    break;
+            }
+        }
+
         //reads rawdata from the newworkstream :D
         public String Read(NetworkStream stream)
         {
@@ -176,12 +217,11 @@ namespace ChatServer
         }
 
         //writes rawdata to the newtworkstream :D
-        public String StreamWrite(String input, String status, NetworkStream stream)
+        public String StreamWrite(String input, NetworkStream stream)
         {
             Byte[] login = System.Text.Encoding.ASCII.GetBytes(input);
             stream.Write(login, 0, login.Length);
             Console.WriteLine(input);
-            Console.WriteLine(status);
             return input;
         }
     }
