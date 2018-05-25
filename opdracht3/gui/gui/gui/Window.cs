@@ -16,7 +16,9 @@ namespace gui
 
         protected void Klick_login(object sender, EventArgs e)
         {
-            int intTemp = Convert.ToInt32(username1.Text);
+
+            string username = String.Concat(".", username1.Text);
+            string password = String.Concat(username, Password.Text);
 
             Int32 port = 8080;
             TcpClient client = new TcpClient("127.0.0.1", port);
@@ -24,15 +26,15 @@ namespace gui
             NetworkStream stream = client.GetStream();
 
             Console.WriteLine("Pinging Server");
-            StreamWrite("Login Test", stream);
+            StreamWrite("Ping", stream);
 
 
             Console.WriteLine("Ponging Server");
             String message = Read(stream);
 
-            if (intTemp == 1)
+            if (username != String.Empty)
             {
-                
+
                 MessageDialog dlog = new MessageDialog
                     (
                         this, DialogFlags.Modal,
@@ -42,7 +44,14 @@ namespace gui
                     );
                 dlog.Run();
                 dlog.Destroy();
-            }         
+            }
+        }
+
+        public void SendCommand(NetworkStream stream, string commandtype, string args)
+        {
+            string total = String.Concat(commandtype, ":");
+            total = String.Concat(commandtype, args);
+            StreamWrite(total, stream);
         }
 
 

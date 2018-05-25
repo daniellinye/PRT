@@ -13,6 +13,18 @@ namespace ChatServer
 {
     class Program
     {
+
+        /*
+         explanation login and pingpong:
+         if ping
+         write pong
+         if login
+         add to userlist
+         if logout
+         remove from userlist
+         if message
+         add to messagelist
+             */
         static void Main(string[] args)
         {
             Program p = new Program();
@@ -33,6 +45,8 @@ namespace ChatServer
             TcpListener listen = new TcpListener(iaddress, port);
             Console.WriteLine("Starting");
             listen.Start();
+
+            ChatService();
 
 
             //connect client
@@ -73,13 +87,13 @@ namespace ChatServer
 
         public void ChatService()
         {
-            /*using (SqlConnection connection = new SqlConnection("Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=D:\Github\PRT\opdracht3\visualstudioserver\ChatServer\ChatServer\users.mdf;Integrated Security=True"))
+            using (SqlConnection connection = new SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\Github\\PRT\\opdracht3\\visualstudioserver\\ChatServer\\ChatServer\\users.mdf;Integrated Security=True"))
             {
                 Console.WriteLine("Opening connection");
                 connection.Open();
             }
-            Console.WriteLine();
-            */
+            Console.WriteLine("Connection Successful");
+            
         }
 
         public void Executecommand(string command, SqlConnection scon)
