@@ -207,6 +207,9 @@ namespace ChatServer
 
         public void Parser(String input, NetworkStream stream)
         {
+
+            //TODO: REMINDER
+            //whenever a user is logged in, add the current connection to the clients of ConnectionFunctions
             switch(input)
             {
                 case "Ping":
