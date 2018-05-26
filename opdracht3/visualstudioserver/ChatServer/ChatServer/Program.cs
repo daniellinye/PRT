@@ -46,7 +46,9 @@ namespace ChatServer
             Console.WriteLine("Starting");
             listen.Start();
 
-            ChatService();
+            DatabaseFunctions df = new DatabaseFunctions();
+
+            df.LogIn("Robert","wachtwoord");
 
 
             //connect client
@@ -85,32 +87,6 @@ namespace ChatServer
         }
 
 
-        public void ChatService()
-        {
-            using (SqlConnection connection = new SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\Github\\PRT\\opdracht3\\visualstudioserver\\ChatServer\\ChatServer\\users.mdf;Integrated Security=True"))
-            {
-                Console.WriteLine("Opening connection");
-                connection.Open();
-            }
-            Console.WriteLine("Connection Successful");
-            
-        }
-
-        public void Executecommand(string command, SqlConnection scon)
-        {
-            SqlCommand sqlcommand = new SqlCommand(command, scon);
-            sqlcommand.ExecuteNonQuery();
-        }
-
-
-        public object GetTables(SqlConnection dbconnection, string selectargs)
-        {
-            SqlCommand sqlcommand = new SqlCommand();
-            sqlcommand.CommandText = selectargs;
-            sqlcommand.Connection = dbconnection;
-
-            return sqlcommand.ExecuteReader();
-        }
 
     } // class Program
 
@@ -185,5 +161,68 @@ namespace ChatServer
             return input;
         }
     }
+
+    class DatabaseFunctions
+    {
+        public DatabaseFunctions()
+        {
+
+        }
+
+        public void LogIn(string username, string password)
+        {
+
+            try
+            {
+                //Is now hardcoded but should be an online service
+                //service is not available yet, so this is hardcoded
+                //for testing: change the Path after AttachDbFilename=
+                using (SqlConnection connection = new SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\Studie\\PRT\\opdracht3\\visualstudioserver\\ChatServer\\ChatServer\\users.mdf;Integrated Security=True"))
+                {
+                    Console.WriteLine("Opening connection");
+                    connection.Open();
+                    Executecommand(connection, "DELETE FROM users");
+                    Executecommand(connection, "INSERT INTO users (name,password) VALUES ('" + username + "','" + password + "')");
+                    
+                    SqlDataReader reader = GetTables(connection, "SELECT * FROM users");
+
+                    while (reader.Read())
+                    {
+                        Console.WriteLine(reader["name"].ToString());
+                    }
+                }
+                Console.WriteLine("Connection Successful");
+            }
+            catch
+            {
+                Console.WriteLine("Connection Unsuccesfull");
+            }
+
+        }
+
+        public void Executecommand(SqlConnection dbconnection, string query)
+        {
+            try
+            {
+                SqlCommand sqlcommand = new SqlCommand(query, dbconnection);
+                sqlcommand.ExecuteNonQuery();
+            }
+            catch
+            {
+                Console.WriteLine(query);
+            }
+        }
+
+
+        public SqlDataReader GetTables(SqlConnection dbconnection, string query)
+        {
+            SqlCommand sqlcommand = new SqlCommand();
+            sqlcommand.CommandText = query;
+            sqlcommand.Connection = dbconnection;
+
+            return sqlcommand.ExecuteReader();
+        }
+    }
+
 
 }
