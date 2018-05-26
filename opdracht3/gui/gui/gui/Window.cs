@@ -16,22 +16,26 @@ namespace gui
 
         protected void Klick_login(object sender, EventArgs e)
         {
-
+            //make username and password
             string username = String.Concat(".", username1.Text);
             string password = String.Concat(username, Password.Text);
 
-            Int32 port = 8080;
-            TcpClient client = new TcpClient("127.0.0.1", port);
+            //standard values
+            const Int32 port = 8080;
+            const string ip = "127.0.0.1";
 
+            //new clients
+            TcpClient client = new TcpClient(ip, port);
+
+            //new stream
             NetworkStream stream = client.GetStream();
 
-            Console.WriteLine("Pinging Server");
-            StreamWrite("Ping", stream);
+            NetFunctions nf = new NetFunctions();
 
+            //read returning message
+            string message = nf.Login(stream, username, password);
 
-            Console.WriteLine("Ponging Server");
-            String message = Read(stream);
-
+            //give popup if the username wasn't empty
             if (username != String.Empty)
             {
 
@@ -45,17 +49,49 @@ namespace gui
                 dlog.Run();
                 dlog.Destroy();
             }
+
+            //close client
+            //TODO: replace this here when message is 
+            //actually that someone has logged in
+
+            client.Close();
         }
 
-        public void SendCommand(NetworkStream stream, string commandtype, string args)
+
+
+    }
+
+    public class NetFunctions
+    {
+        public NetFunctions()
+        { 
+        
+        }
+
+        //sends a login command to the server
+        public string Login(NetworkStream stream, string username, string password)
+        {
+            //pingpong server
+            Console.WriteLine("Pinging Server");
+            StreamWrite("Ping", stream);
+            Console.WriteLine(Read(stream));
+
+            //send actual command
+            return SendCommand(stream, "Login", password);
+        }
+
+        //ALWAYS USE THIS COMMAND IN ORDER TO PREVENT DEADLOCK
+        //except pingpong, pingpong is always fine
+        public string SendCommand(NetworkStream stream, string commandtype, string args)
         {
             string total = String.Concat(commandtype, ":");
             total = String.Concat(commandtype, args);
             StreamWrite(total, stream);
+            return Read(stream);
         }
 
 
-        public String Read(NetworkStream stream)
+        public string Read(NetworkStream stream)
         {
 
             byte[] myReadBuffer = new byte[1024];
@@ -67,7 +103,7 @@ namespace gui
             return responseData;
         }
 
-        public String StreamWrite(String input, NetworkStream stream)
+        public string StreamWrite(String input, NetworkStream stream)
         {
             Byte[] login = System.Text.Encoding.ASCII.GetBytes(input);
             stream.Write(login, 0, login.Length);
@@ -83,7 +119,5 @@ namespace gui
         }
 
     }
-
-
         
 }

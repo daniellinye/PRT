@@ -7,11 +7,12 @@ using System.Net.Sockets;
 using System.Data.SqlClient;
 using System.Data.SqlTypes;
 using System.Net;
+using System.Threading;
 
 
 namespace ChatServer
 {
-    class Program
+    public class Program
     {
 
         /*
@@ -25,14 +26,16 @@ namespace ChatServer
          if message
          add to messagelist
              */
+
         static void Main(string[] args)
         {
             Program p = new Program();
             Console.WriteLine("did stuff");
             p.Startup();
+
         }
 
-        public string Startup()
+        public void Startup()
         {
             const int port = 8080;
             const string ip = "127.0.0.1";
@@ -52,24 +55,48 @@ namespace ChatServer
 
 
             //connect client
-            TcpClient tclient = listen.AcceptTcpClient();
+            TcpClient client = listen.AcceptTcpClient();
 
             //fetch data
-            NetworkStream nstream = tclient.GetStream();
+            NetworkStream stream = client.GetStream();
+
+            //parseclass
+            ParseFunctions pf = new ParseFunctions();
+
+            try
+            {
+                while (true)
+                {
+                    string input = pf.Read(stream);
+                    Console.WriteLine(input);
+
+                    if(input != String.Empty)
+                    {
+                        //TODO: make multithread when someone actually has logged in
+                        pf.Parser(input, stream);
+                    }
+                    else
+                    {
+                        client.Close();
+                        listen.Stop();
+                        Startup();
+                    }
+
+                }
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            finally
+            {
+
+                client.Close();
+                listen.Stop();
+            }
 
             Console.WriteLine("Reading Stream");
-            string input = cf.Read(nstream);
 
-            Console.WriteLine(input);
-
-            cf.StreamWrite(input, "None", nstream);
-            //ping back
-
-
-
-            tclient.Close();
-            listen.Stop();
-            return "it worked?";
         }
 
         //multithreader for new users
@@ -85,8 +112,6 @@ namespace ChatServer
             Byte[] announce = System.Text.Encoding.ASCII.GetBytes(annstring);
             stream.Write(announce, 0, announce.Length);
         }
-
-
 
     } // class Program
 
@@ -141,6 +166,36 @@ namespace ChatServer
             Console.WriteLine("Element was not found in list");
         }
 
+
+    }
+
+    class ParseFunctions
+    {
+        ConnectionFunctions cf;
+        public ParseFunctions()
+        {
+            cf = new ConnectionFunctions();
+        }
+
+        public void Parser(String input, NetworkStream stream)
+        {
+
+            //TODO: REMINDER
+            //whenever a user is logged in, add the current connection to the clients of ConnectionFunctions
+            string[] parser = input.Split('.');
+            switch(parser[0])
+            {
+                case "Ping":
+                    StreamWrite("Pong", stream);
+                    break;
+                //standardthing
+                default:
+                    Console.WriteLine("Command " + parser[0] + " was not implemented");
+                    StreamWrite("Error:001, command not found", stream);
+                    break;
+            }
+        }
+
         //reads rawdata from the newworkstream :D
         public String Read(NetworkStream stream)
         {
@@ -152,14 +207,26 @@ namespace ChatServer
         }
 
         //writes rawdata to the newtworkstream :D
-        public String StreamWrite(String input, String status, NetworkStream stream)
+        public String StreamWrite(String input, NetworkStream stream)
         {
             Byte[] login = System.Text.Encoding.ASCII.GetBytes(input);
             stream.Write(login, 0, login.Length);
             Console.WriteLine(input);
-            Console.WriteLine(status);
             return input;
         }
+
+        //format has to be: "username:password"
+        public bool Login(String input)
+        {
+            String[] parser = input.Split(':');
+            string username = parser[0];
+            string password = parser[1];
+            //TODO: throw check to database
+
+            return false;
+        }
+
+
     }
 
     class DatabaseFunctions
