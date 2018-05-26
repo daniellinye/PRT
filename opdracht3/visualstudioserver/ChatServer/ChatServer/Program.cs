@@ -210,14 +210,15 @@ namespace ChatServer
 
             //TODO: REMINDER
             //whenever a user is logged in, add the current connection to the clients of ConnectionFunctions
-            switch(input)
+            string[] parser = input.Split('.');
+            switch(parser[0])
             {
                 case "Ping":
                     StreamWrite("Pong", stream);
                     break;
                 //standardthing
                 default:
-                    Console.WriteLine("Command " + input + " was not implemented");
+                    Console.WriteLine("Command " + parser[0] + " was not implemented");
                     StreamWrite("Error:001, command not found", stream);
                     break;
             }
@@ -241,6 +242,19 @@ namespace ChatServer
             Console.WriteLine(input);
             return input;
         }
+
+        //format has to be: "username:password"
+        public bool Login(String input)
+        {
+            String[] parser = input.Split(':');
+            string username = parser[0];
+            string password = parser[1];
+            //TODO: throw check to database
+
+            return false;
+        }
+
+
     }
 
 }

@@ -30,16 +30,10 @@ namespace gui
             //new stream
             NetworkStream stream = client.GetStream();
 
-            //pingpong server
-            Console.WriteLine("Pinging Server");
-            StreamWrite("Ping", stream);
-            Console.WriteLine(Read(stream));
-
-            //send actual command
-            String message = SendCommand(stream, "Login", password);
+            NetFunctions nf = new NetFunctions();
 
             //read returning message
-
+            string message = nf.Login(stream, username, password);
 
             //give popup if the username wasn't empty
             if (username != String.Empty)
@@ -63,6 +57,29 @@ namespace gui
             client.Close();
         }
 
+
+
+    }
+
+    public class NetFunctions
+    {
+        public NetFunctions()
+        { 
+        
+        }
+
+        //sends a login command to the server
+        public string Login(NetworkStream stream, string username, string password)
+        {
+            //pingpong server
+            Console.WriteLine("Pinging Server");
+            StreamWrite("Ping", stream);
+            Console.WriteLine(Read(stream));
+
+            //send actual command
+            return SendCommand(stream, "Login", password);
+        }
+
         //ALWAYS USE THIS COMMAND IN ORDER TO PREVENT DEADLOCK
         //except pingpong, pingpong is always fine
         public string SendCommand(NetworkStream stream, string commandtype, string args)
@@ -74,7 +91,7 @@ namespace gui
         }
 
 
-        public String Read(NetworkStream stream)
+        public string Read(NetworkStream stream)
         {
 
             byte[] myReadBuffer = new byte[1024];
@@ -86,7 +103,7 @@ namespace gui
             return responseData;
         }
 
-        public String StreamWrite(String input, NetworkStream stream)
+        public string StreamWrite(String input, NetworkStream stream)
         {
             Byte[] login = System.Text.Encoding.ASCII.GetBytes(input);
             stream.Write(login, 0, login.Length);
@@ -102,7 +119,5 @@ namespace gui
         }
 
     }
-
-
         
 }
