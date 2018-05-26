@@ -63,8 +63,11 @@ namespace gui
 
     public class NetFunctions
     {
+        //To be setuped when pinging server
+        int id;
+
         public NetFunctions()
-        { 
+        {
         
         }
 

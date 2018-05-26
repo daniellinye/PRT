@@ -120,16 +120,23 @@ namespace ChatServer
     {
         TcpClient client;
         String name;
+        int id;
 
-        public TcpUsers(TcpClient listener, String newname)
+        public TcpUsers(TcpClient listener, String newname, int nid)
         {
             name = newname;
             client = listener;
+            id = nid;
         }
 
         public String ReturnName()
         {
             return name;
+        }
+
+        public int ReturnId()
+        {
+            return id;
         }
     }
 
@@ -150,22 +157,27 @@ namespace ChatServer
                 }
             }
             Console.WriteLine("User: " + name  + "Logged in");
-            clients.Add(new TcpUsers(client, name));
+            clients.Add(new TcpUsers(client, name, clients.Count));
         }
 
-        public void LogoutUser(String name)
+        public void LogoutUser(String name, int id)
         {
             foreach(TcpUsers c in clients)
             {
-                if(c.ReturnName() == name)
+                if(c.ReturnName() == name && c.ReturnId() == id)
                 {
                     clients.Remove(c);
                     return;
                 }
             }
-            Console.WriteLine("Element was not found in list");
+            Console.WriteLine("Error 404:Element was not found in list");
         }
 
+        //pings other clients depended on the messagesender
+        public void Ping(String message, int id)
+        {
+
+        }
 
     }
 
@@ -183,7 +195,12 @@ namespace ChatServer
             //TODO: REMINDER
             //whenever a user is logged in, add the current connection to the clients of ConnectionFunctions
             string[] parser = input.Split('.');
-            switch(parser[0])
+
+            String[] second = parser[1].Split(':');
+            string username = second[0];
+            string password = second[1];
+
+            switch (parser[0])
             {
                 case "Ping":
                     StreamWrite("Pong", stream);
@@ -216,14 +233,34 @@ namespace ChatServer
         }
 
         //format has to be: "username:password"
-        public bool Login(String input)
+        public bool Login(string username, string password, TcpClient client)
         {
-            String[] parser = input.Split(':');
-            string username = parser[0];
-            string password = parser[1];
+            cf.LoginUser(client, username);
+
+
+
             //TODO: throw check to database
 
             return false;
+        }
+
+        public void Message(string username, string password, string message)
+        {
+            //TODO
+            //PING TO OTHER CLIENTS
+
+            //TODO
+            //ADD TO DATABASE
+        }
+
+        public string LoadMessages(string username, string password, string otheruser)
+        {
+            //TODO
+            //PING TO DATABASE TO RETRIEVE
+            //MESSAGES
+            string messages;
+
+            return null;
         }
 
 
