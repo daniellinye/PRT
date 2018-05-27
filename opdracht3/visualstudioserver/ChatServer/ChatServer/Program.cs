@@ -27,16 +27,19 @@ namespace ChatServer
          add to messagelist
              */
 
+        private bool newuser;
+
         static void Main(string[] args)
         {
             Program p = new Program();
             Console.WriteLine("did stuff");
-            p.Startup();
-
+            Thread th = new Thread(p.Startup);
+            th.Start();
         }
 
         public void Startup()
         {
+            newuser = false;
             const int port = 8080;
             const string ip = "127.0.0.1";
 
@@ -60,20 +63,40 @@ namespace ChatServer
             //fetch data
             NetworkStream stream = client.GetStream();
 
+            Thread t = new Thread ( () => LoginRequest(client, listen));
+            if(newuser)
+            {
+                Thread listening = new Thread ( () => ListenToNewUser(client, listen));
+                listening.Start();
+            }
+            t.Start();
+
+        }
+
+        //handles loginrequests
+        public void LoginRequest(TcpClient client, TcpListener listen)
+        {
             //parseclass
             ParseFunctions pf = new ParseFunctions();
-
             try
             {
                 while (true)
                 {
-                    string input = pf.Read(stream);
+                    string input = pf.Read(client.GetStream());
                     Console.WriteLine(input);
 
-                    if(input != String.Empty)
+                    if (input != String.Empty)
                     {
                         //TODO: make multithread when someone actually has logged in
-                        pf.Parser(input, stream);
+                        if(pf.Parser(input, client))
+                        {
+                            //HERE PING BACK NEW MULTITHREAD
+                            newuser = true;
+                        }
+                        else
+                        {
+                            pf.StreamWrite("Invalid login", client.GetStream());
+                        }
                     }
                     else
                     {
@@ -84,27 +107,57 @@ namespace ChatServer
 
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine(e);
             }
             finally
             {
+                client.Close();
+                listen.Stop();
+                Startup();
+            }
+        }
 
+        //multithread to listen to the current users
+        public void ListenToNewUser(TcpClient client, TcpListener listen)
+        {
+            //parseclass
+            ParseFunctions pf = new ParseFunctions();
+            try
+            {
+                while (true)
+                {
+                    string input = pf.Read(client.GetStream());
+                    Console.WriteLine(input);
+
+                    if (input != String.Empty)
+                    {
+                        //TODO: make multithread when someone actually has logged in
+                        pf.Parser(input, client);
+                    }
+                    else
+                    {
+                        client.Close();
+                        listen.Stop();
+                        Startup();
+                    }
+
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Console.WriteLine("User was forcibly logged out.");
+            }
+            finally
+            {
+                //TODO: INSERT LOGOUT FOR CURRENT USER
                 client.Close();
                 listen.Stop();
             }
-
-            Console.WriteLine("Reading Stream");
-
         }
 
-        //multithreader for new users
-        public void CheckNewUsers(TcpListener listener, ConnectionFunctions cf)
-        {
-
-        }
-        
 
         public static void Say(String input, NetworkStream stream)
         {
@@ -153,10 +206,11 @@ namespace ChatServer
             {
                 if(c.Equals(client))
                 {
+                    Console.WriteLine("User " + name + " is already logged in");
                     return;
                 }
             }
-            Console.WriteLine("User: " + name  + "Logged in");
+            Console.WriteLine("User: " + name  + " Logged in");
             clients.Add(new TcpUsers(client, name, clients.Count));
         }
 
@@ -166,6 +220,7 @@ namespace ChatServer
             {
                 if(c.ReturnName() == name && c.ReturnId() == id)
                 {
+                    c.Close();
                     clients.Remove(c);
                     return;
                 }
@@ -184,33 +239,38 @@ namespace ChatServer
     class ParseFunctions
     {
         ConnectionFunctions cf;
+        DatabaseFunctions df;
         public ParseFunctions()
         {
             cf = new ConnectionFunctions();
+            df = new DatabaseFunctions();
         }
 
-        public void Parser(String input, NetworkStream stream)
+        public bool Parser(String input, TcpClient client)
         {
-
+            NetworkStream stream = client.GetStream();
             //TODO: REMINDER
             //whenever a user is logged in, add the current connection to the clients of ConnectionFunctions
-            string[] parser = input.Split('.');
 
-            String[] second = parser[1].Split(':');
-            string username = second[0];
-            string password = second[1];
+            String[] command = input.Split(':');
 
-            switch (parser[0])
+            switch (command[0])
             {
                 case "Ping":
                     StreamWrite("Pong", stream);
                     break;
+                case "Login":
+                    string[] parser = command[1].Split('.');
+                    string username = parser[0];
+                    string password = parser[1];
+                    return Login(username, password, client);
                 //standardthing
                 default:
-                    Console.WriteLine("Command " + parser[0] + " was not implemented");
+                    Console.WriteLine("Command " + command[0] + " was not implemented");
                     StreamWrite("Error:001, command not found", stream);
                     break;
             }
+            return false;
         }
 
         //reads rawdata from the newworkstream :D
@@ -235,11 +295,19 @@ namespace ChatServer
         //format has to be: "username:password"
         public bool Login(string username, string password, TcpClient client)
         {
-            cf.LoginUser(client, username);
-
-
-
             //TODO: throw check to database
+            //that returns null if not found
+            if (df.ExecuteFunction("Login", username + "." + password) != null)
+            {
+                cf.LoginUser(client, username);
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool Logout(string username, string password, TcpClient client)
+        {
 
             return false;
         }
@@ -271,6 +339,22 @@ namespace ChatServer
         public DatabaseFunctions()
         {
 
+        }
+
+        //executes a function on the database and returns values
+        public string ExecuteFunction(string function, string args)
+        {
+            //TODO:
+            //add basic functionalities to login, getmessages
+            //sendmessages, getuser, sendmessages and login
+            switch(function)
+            {
+                default:
+                    Console.WriteLine("DatabaseFunction: " + function + " not recognized or implemented.");
+                    break;
+            }
+
+            return null;
         }
 
         public void LogIn(string username, string password)

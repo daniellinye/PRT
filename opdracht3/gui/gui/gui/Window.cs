@@ -3,6 +3,7 @@ using Gtk;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 
 namespace gui
 {
@@ -17,8 +18,8 @@ namespace gui
         protected void Klick_login(object sender, EventArgs e)
         {
             //make username and password
-            string username = String.Concat(".", username1.Text);
-            string password = String.Concat(username, Password.Text);
+            string username = username1.Text;
+            string password = Password.Text;
 
             //standard values
             const Int32 port = 8080;
@@ -72,6 +73,7 @@ namespace gui
         }
 
         //sends a login command to the server
+        //FORMAT; Login:"username"."password"
         public string Login(NetworkStream stream, string username, string password)
         {
             //pingpong server
@@ -79,17 +81,40 @@ namespace gui
             StreamWrite("Ping", stream);
             Console.WriteLine(Read(stream));
 
+            StringBuilder sb = new StringBuilder();
+            sb.Append(username);
+            sb.Append(".");
+            sb.Append(password);
+
             //send actual command
-            return SendCommand(stream, "Login", password);
+            return SendCommand(stream, "Login", sb.ToString());
+        }
+
+        //sends a message command to the server
+        //FORMAT; Message:"user","recipient"."message"
+        public string Message(NetworkStream stream, string username, string recipient, string message)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append(username);
+            sb.Append(",");
+            sb.Append(recipient);
+            sb.Append(".");
+            sb.Append(message);
+
+            //send actual command
+            return SendCommand(stream, "Message", sb.ToString());
+
         }
 
         //ALWAYS USE THIS COMMAND IN ORDER TO PREVENT DEADLOCK
         //except pingpong, pingpong is always fine
         public string SendCommand(NetworkStream stream, string commandtype, string args)
         {
-            string total = String.Concat(commandtype, ":");
-            total = String.Concat(commandtype, args);
-            StreamWrite(total, stream);
+            StringBuilder sb = new StringBuilder();
+            sb.Append(commandtype);
+            sb.Append(":");
+            sb.Append(args);
+            StreamWrite(sb.ToString(), stream);
             return Read(stream);
         }
 
