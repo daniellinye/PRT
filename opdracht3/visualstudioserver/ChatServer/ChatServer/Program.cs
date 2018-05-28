@@ -33,8 +33,7 @@ namespace ChatServer
         {
             Program p = new Program();
             Console.WriteLine("did stuff");
-            Thread th = new Thread(p.Startup);
-            th.Start();
+            p.Startup();
         }
 
         public void Startup()
@@ -54,7 +53,7 @@ namespace ChatServer
             looper.Start();
         }
 
-        public async void Looper()
+        public void Looper()
         {
             try
             {
@@ -76,58 +75,49 @@ namespace ChatServer
 
                 //fetch data
                 NetworkStream stream = client.GetStream();
-
-                Thread t = new Thread(() => LoginRequest(client, listen));
-                if (newuser)
+                while(true)
                 {
-                    newuser = false;
-                    Thread listening = new Thread(() => ListenToNewUser(client, listen));
-                    listening.Start();
+                    LoginRequest(client, listen);
+                    
+                    if (newuser)
+                    {
+                        newuser = false;
+                        Thread t = new Thread(() => ListenToNewUser(client, listen, cf, cf.GetMostRecent().ReturnId()));
+                        t.Start();
+                    }
                 }
-                t.Start();
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 Console.WriteLine("Tried new socket, but crashed");
             }
-
-
         }
 
         //handles loginrequests
-        public async void LoginRequest(TcpClient client, TcpListener listen)
+        public void LoginRequest(TcpClient client, TcpListener listen)
         {
             //parseclass
             ParseFunctions pf = new ParseFunctions();
             try
             {
-                while (true)
-                {
-                    string input = pf.Read(client.GetStream());
-                    Console.WriteLine(input);
+                string input = pf.Read(client.GetStream());
+                Console.WriteLine(input);
 
-                    if (input != String.Empty)
+                if (input != String.Empty)
+                {
+                    //TODO: make multithread when someone actually has logged in
+                    if(pf.Parser(input, client))
                     {
-                        //TODO: make multithread when someone actually has logged in
-                        if(pf.Parser(input, client))
-                        {
-                            //HERE PING BACK NEW MULTITHREAD
-                            newuser = true;
-                            Console.WriteLine("User Logged in");
-                        }
-                        else
-                        {
-                            pf.StreamWrite("Invalid login", client.GetStream());
-                        }
+                        //HERE PING BACK NEW MULTITHREAD
+                        newuser = true;
+                        Console.WriteLine("User Logged in");
+                        return;
                     }
                     else
                     {
-                        client.Close();
-                        listen.Stop();
-                        Looper();
+                        pf.StreamWrite("Invalid login", client.GetStream());
                     }
-
                 }
             }
             catch (Exception e)
@@ -143,7 +133,7 @@ namespace ChatServer
         }
 
         //multithread to listen to the current users
-        public void ListenToNewUser(TcpClient client, TcpListener listen)
+        public void ListenToNewUser(TcpClient client, TcpListener listen, ConnectionFunctions cf, int id)
         {
             //parseclass
             ParseFunctions pf = new ParseFunctions();
@@ -156,14 +146,13 @@ namespace ChatServer
 
                     if (input != String.Empty)
                     {
-                        //TODO: make multithread when someone actually has logged in
                         pf.Parser(input, client);
                     }
                     else
                     {
-                        client.Close();
-                        listen.Stop();
-                        Startup();
+                        //TODO:
+                        //logout user
+                        cf.LogoutUser(cf.GetName(id).ReturnName(), id);
                     }
 
                 }
@@ -176,9 +165,9 @@ namespace ChatServer
             finally
             {
                 //TODO: INSERT LOGOUT FOR CURRENT USER
-                client.Close();
-                listen.Stop();
+                cf.LogoutUser(cf.GetName(id).ReturnName(), id);
             }
+
         }
 
 
@@ -255,6 +244,16 @@ namespace ChatServer
         public void Ping(String message, int id)
         {
 
+        }
+
+        public TcpUsers GetMostRecent()
+        {
+            return clients[clients.Count - 1];
+        }
+
+        public TcpUsers GetName(int id)
+        {
+            return clients[id];
         }
 
     }
@@ -349,7 +348,6 @@ namespace ChatServer
             //TODO
             //PING TO DATABASE TO RETRIEVE
             //MESSAGES
-            string messages;
 
             return null;
         }
