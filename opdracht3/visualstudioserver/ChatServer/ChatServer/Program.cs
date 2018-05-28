@@ -39,42 +39,64 @@ namespace ChatServer
 
         public void Startup()
         {
-            newuser = false;
-            const int port = 8080;
-            const string ip = "127.0.0.1";
 
-            //start listening at 
-            //port 8080
 
-            ConnectionFunctions cf = new ConnectionFunctions();
-            IPAddress iaddress = IPAddress.Parse(ip);
-            TcpListener listen = new TcpListener(iaddress, port);
-            Console.WriteLine("Starting");
-            listen.Start();
+            //TODO: 
+            //TODO: System.Netsockets Exception
+            //TODO: Only one usage of each socket address, move this to an another place
+            //aka make new function to reset when is dead
 
             DatabaseFunctions df = new DatabaseFunctions();
 
             df.LogIn("Robert","wachtwoord");
 
+            Thread looper = new Thread(() => Looper());
+            looper.Start();
+        }
 
-            //connect client
-            TcpClient client = listen.AcceptTcpClient();
-
-            //fetch data
-            NetworkStream stream = client.GetStream();
-
-            Thread t = new Thread ( () => LoginRequest(client, listen));
-            if(newuser)
+        public async void Looper()
+        {
+            try
             {
-                Thread listening = new Thread ( () => ListenToNewUser(client, listen));
-                listening.Start();
+                newuser = false;
+                const int port = 8080;
+                const string ip = "127.0.0.1";
+
+                //start listening at 
+                //port 8080
+
+                ConnectionFunctions cf = new ConnectionFunctions();
+                IPAddress iaddress = IPAddress.Parse(ip);
+                TcpListener listen = new TcpListener(iaddress, port);
+                Console.WriteLine("Starting");
+                listen.Start();
+
+                //connect client
+                TcpClient client = listen.AcceptTcpClient();
+
+                //fetch data
+                NetworkStream stream = client.GetStream();
+
+                Thread t = new Thread(() => LoginRequest(client, listen));
+                if (newuser)
+                {
+                    newuser = false;
+                    Thread listening = new Thread(() => ListenToNewUser(client, listen));
+                    listening.Start();
+                }
+                t.Start();
             }
-            t.Start();
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Console.WriteLine("Tried new socket, but crashed");
+            }
+
 
         }
 
         //handles loginrequests
-        public void LoginRequest(TcpClient client, TcpListener listen)
+        public async void LoginRequest(TcpClient client, TcpListener listen)
         {
             //parseclass
             ParseFunctions pf = new ParseFunctions();
@@ -92,6 +114,7 @@ namespace ChatServer
                         {
                             //HERE PING BACK NEW MULTITHREAD
                             newuser = true;
+                            Console.WriteLine("User Logged in");
                         }
                         else
                         {
@@ -102,7 +125,7 @@ namespace ChatServer
                     {
                         client.Close();
                         listen.Stop();
-                        Startup();
+                        Looper();
                     }
 
                 }
@@ -115,7 +138,7 @@ namespace ChatServer
             {
                 client.Close();
                 listen.Stop();
-                Startup();
+                Looper();
             }
         }
 

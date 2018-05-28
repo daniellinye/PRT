@@ -103,7 +103,6 @@ namespace gui
 
             //send actual command
             return SendCommand(stream, "Message", sb.ToString());
-
         }
 
         //ALWAYS USE THIS COMMAND IN ORDER TO PREVENT DEADLOCK
