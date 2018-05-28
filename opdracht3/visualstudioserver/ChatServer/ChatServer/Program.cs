@@ -106,10 +106,8 @@ namespace ChatServer
 
                 if (input != String.Empty)
                 {
-                    //TODO: make multithread when someone actually has logged in
                     if(pf.Parser(input, client))
                     {
-                        //HERE PING BACK NEW MULTITHREAD
                         newuser = true;
                         Console.WriteLine("User Logged in");
                         return;
@@ -123,6 +121,7 @@ namespace ChatServer
             catch (Exception e)
             {
                 Console.WriteLine(e);
+                Console.WriteLine("Loginrequest problems");
             }
             finally
             {
@@ -150,7 +149,6 @@ namespace ChatServer
                     }
                     else
                     {
-                        //TODO:
                         //logout user
                         cf.LogoutUser(cf.GetName(id).ReturnName(), id);
                     }
@@ -160,11 +158,11 @@ namespace ChatServer
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Console.WriteLine("User was forcibly logged out.");
+                Console.WriteLine("User {0} was forcibly logged out.", cf.GetName(id).ReturnName());
             }
             finally
             {
-                //TODO: INSERT LOGOUT FOR CURRENT USER
+                //logout current user
                 cf.LogoutUser(cf.GetName(id).ReturnName(), id);
             }
 
@@ -282,11 +280,20 @@ namespace ChatServer
                     StreamWrite("Pong", stream);
                     break;
                 case "Login":
-                    string[] parser = command[1].Split('.');
-                    string username = parser[0];
-                    string password = parser[1];
+                    string[] lparser = command[1].Split('.');
+                    string username = lparser[0];
+                    string password = lparser[1];
                     return Login(username, password, client);
+                    
                 //standardthing
+                case "Message":
+                    string[] uparser = command[1].Split(',');
+                    string[] mparser = uparser[1].Split('.');
+                    string user = uparser[0];
+                    string recipient = mparser[0];
+                    string message = mparser[1];
+                    Message(user, recipient, message, client);
+                    break;
                 default:
                     Console.WriteLine("Command " + command[0] + " was not implemented");
                     StreamWrite("Error:001, command not found", stream);
@@ -314,7 +321,7 @@ namespace ChatServer
             return input;
         }
 
-        //format has to be: "username:password"
+        //format has to be: "username.password"
         public bool Login(string username, string password, TcpClient client)
         {
             //TODO: throw check to database
@@ -334,10 +341,12 @@ namespace ChatServer
             return false;
         }
 
-        public void Message(string username, string password, string message)
+        public void Message(string username, string password, string message, TcpClient client)
         {
             //TODO
             //PING TO OTHER CLIENTS
+
+            StreamWrite("Method is not implemented yet", client.GetStream());
 
             //TODO
             //ADD TO DATABASE
