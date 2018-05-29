@@ -51,7 +51,8 @@ namespace ChatServer
 
             DatabaseFunctions df = new DatabaseFunctions();
 
-            df.LogIn("Robert","wachtwoord");
+            df.LogIn("Robert", "wachtwoord");
+            df.LogIn("Robert", "wachtwoord");
 
 
             //connect client
@@ -233,7 +234,25 @@ namespace ChatServer
     {
         public DatabaseFunctions()
         {
+            try
+            {
+                //Is now hardcoded but should be an online service
+                //service is not available yet, so this is hardcoded
+                //for testing: change the Path after AttachDbFilename=
+                using (connection = new SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\Studie\\PRT\\opdracht3\\visualstudioserver\\ChatServer\\ChatServer\\users.mdf;Integrated Security=True"))
+                {
+                    Console.WriteLine("Opening connection");
+                    connection.Open();
 
+                    Executecommand("DELETE FROM users");
+
+                    Console.WriteLine("Connection Successful");
+                }
+            }
+            catch
+            {
+                Console.WriteLine("Connection Unsuccessful");
+            }
         }
 
         public void LogIn(string username, string password)
@@ -241,54 +260,79 @@ namespace ChatServer
 
             try
             {
-                //Is now hardcoded but should be an online service
-                //service is not available yet, so this is hardcoded
-                //for testing: change the Path after AttachDbFilename=
-                using (SqlConnection connection = new SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\Studie\\PRT\\opdracht3\\visualstudioserver\\ChatServer\\ChatServer\\users.mdf;Integrated Security=True"))
+                Executecommand("INSERT INTO users (id,username,password) VALUES (0,\"Piet\",\"piet3\")");
+                int id = CreateNewId();
+                if (id != -1)
                 {
-                    Console.WriteLine("Opening connection");
-                    connection.Open();
-                    Executecommand(connection, "DELETE FROM users");
-                    Executecommand(connection, "INSERT INTO users (name,password) VALUES ('" + username + "','" + password + "')");
-                    
-                    SqlDataReader reader = GetTables(connection, "SELECT * FROM users");
-
-                    while (reader.Read())
-                    {
-                        Console.WriteLine(reader["name"].ToString());
-                    }
+                    Console.WriteLine("id != -1");
+                    Executecommand("INSERT INTO users (id,username,password) VALUES (" + id + ",'" + username + "','" + password + "')");
                 }
-                Console.WriteLine("Connection Successful");
+                Console.WriteLine("id == -1");
+
+                SqlDataReader reader = GetTables("SELECT * FROM users");
+
+                while (reader.Read())
+                {
+                    Console.WriteLine(reader["id"].ToString());
+                    Console.WriteLine(reader["username"].ToString());
+                    Console.WriteLine(reader["password"].ToString());
+                }
+
+                Console.WriteLine("Log in succesfull");
             }
             catch
             {
-                Console.WriteLine("Connection Unsuccesfull");
+                Console.WriteLine("Failed to log in");
             }
 
         }
 
-        public void Executecommand(SqlConnection dbconnection, string query)
+        public void Executecommand(string query)
         {
             try
             {
-                SqlCommand sqlcommand = new SqlCommand(query, dbconnection);
+                SqlCommand sqlcommand = new SqlCommand(query, connection);
                 sqlcommand.ExecuteNonQuery();
             }
             catch
             {
-                Console.WriteLine(query);
+                Console.WriteLine("De query : \"" + query + "\" werkt niet");
             }
         }
 
-
-        public SqlDataReader GetTables(SqlConnection dbconnection, string query)
+        private int CreateNewId()
         {
-            SqlCommand sqlcommand = new SqlCommand();
-            sqlcommand.CommandText = query;
-            sqlcommand.Connection = dbconnection;
+            try
+            {
+                string query = "SELECT COUNT(*) FROM dbo.users";
+                SqlCommand cmd = new SqlCommand(query, connection);
+                Int32 id = (Int32)cmd.ExecuteScalar();
 
-            return sqlcommand.ExecuteReader();
+                return id;
+            }
+            catch
+            {
+                Console.WriteLine("Could not create a new ID");
+                return -1;
+            }
         }
+
+        public SqlDataReader GetTables(string query)
+        {
+            SqlDataReader reader = null;
+            try
+            {
+                SqlCommand sqlcommand = new SqlCommand(query, connection);
+                sqlcommand.ExecuteReader();
+            }
+            catch
+            {
+                Console.WriteLine("Could not retrieve table");
+            }
+            return reader;
+        }
+
+        private SqlConnection connection;
     }
 
 
