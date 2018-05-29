@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.Data.SqlTypes;
+using System.IO;
 
 
 namespace ChatServer
@@ -46,7 +47,9 @@ namespace ChatServer
                 //Is now hardcoded but should be an online service
                 //service is not available yet, so this is hardcoded
                 //for testing: change the Path after AttachDbFilename=
-                using (SqlConnection connection = new SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=D:\\Studie\\PRT\\opdracht3\\visualstudioserver\\ChatServer\\ChatServer\\users.mdf;Integrated Security=True"))
+                string localpath = @"users.mdf";
+
+                using (SqlConnection connection = new SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=" + (Path.GetFullPath(localpath) + ";Integrated Security=True")))
                 {
                     Console.WriteLine("Opening connection");
                     connection.Open();
