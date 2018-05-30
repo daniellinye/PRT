@@ -162,7 +162,7 @@ namespace ChatServer
         {
             //TODO: throw check to database
             //that returns null if not found
-            if (df.ExecuteFunction("Login", username + "." + password) != null)
+            if (df.ExecuteFunction("Login", username + "." + password))
             {
                 cf.LoginUser(client, username);
                 return true;

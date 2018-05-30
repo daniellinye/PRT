@@ -53,23 +53,27 @@ namespace ChatServer
         }
 
         //executes a function on the database and returns values
-        public string ExecuteFunction(string function, string args)
+        public bool ExecuteFunction(string function, string args)
         {
             //TODO:
             //add basic functionalities to login, getmessages
             //sendmessages, getuser, sendmessages and login
             switch (function)
             {
+                case "Login":
+                    string[] parser = args.Split('.');
+                    Console.WriteLine("Loggin in" + args);
+                    return LogIn(parser[0], parser[1]);
                 default:
                     Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "DatabaseFunction: " + function + " not recognized or implemented.");
                     break;
             }
 
-            return null;
+            return false;
         }
 
         //logs user in if username and password match
-        public void LogIn(string username, string password)
+        public bool LogIn(string username, string password)
         {
             try
             {
@@ -83,6 +87,7 @@ namespace ChatServer
                         userId = (int)reader["id"];
                         ingelogd = true;
                         Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "User: " + username + ", is logged in.");
+                        return true;
                     }
                     else
                     {
@@ -99,6 +104,7 @@ namespace ChatServer
             {
                 Console.WriteLine("Log in attempt failed.");
             }
+            return false;
 
         }
 
@@ -120,20 +126,24 @@ namespace ChatServer
                 SqlDataReader reader = FetchData("SELECT * FROM Messages WHERE (idfrom=" + userId +
                     " AND idto=" + buddyId + ")" + "OR idto=" + userId + " AND idfrom=" + buddyId + " ORDER BY datetime");
 
-                while (reader.Read())
+                if(reader != null)
                 {
-                    namereader = FetchData("SELECT username FROM users WHERE id=" + reader["idfrom"]);
-                    description = (string)reader["description"];
-                    datetime = (DateTime)reader["datetime"];
-                    while(reader.Read())
+                    while (reader.Read())
                     {
-                        name = (string)reader["username"];
-                        Console.WriteLine(name);
+                        namereader = FetchData("SELECT username FROM users WHERE id=" + reader["idfrom"]);
+                        description = (string)reader["description"];
+                        datetime = (DateTime)reader["datetime"];
+                        while (reader.Read())
+                        {
+                            name = (string)reader["username"];
+                            Console.WriteLine(name);
+                        }
+                        messages.Add(new Message(description, datetime, "hallo"));
                     }
-                    messages.Add(new Message (description, datetime, "hallo"));
+
+                    Console.WriteLine("[" + messages[0].datetime + "]" + messages[0].description);
                 }
 
-                Console.WriteLine("[" + messages[0].datetime + "]" + messages[0].description);
 
                 return messages;
             }
