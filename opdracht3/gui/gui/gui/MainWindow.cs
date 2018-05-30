@@ -78,33 +78,66 @@ public partial class MainWindow : Gtk.Window
     protected void scroll(object o, ChangeValueArgs args)
     {
         int hoi = Convert.ToInt32(persoonbar.Value);
-        label18.Text = hoi.ToString();
+
+        button1.Label = hoi.ToString();
         hoi++;
-        label19.Text = hoi.ToString();
+        button2.Label = hoi.ToString();
         hoi++;
-        label20.Text = hoi.ToString();
+        button3.Label = hoi.ToString();
         hoi++;
-        label21.Text = hoi.ToString();
+        button4.Label = hoi.ToString();
         hoi++;
-        label22.Text = hoi.ToString();
+        button5.Label = hoi.ToString();
         hoi++;
-        label23.Text = hoi.ToString();
+        button6.Label = hoi.ToString();
         hoi++;
-        label29.Text = hoi.ToString();
+        button7.Label = hoi.ToString();
         hoi++;
-        label24.Text = hoi.ToString();
+        button8.Label = hoi.ToString();
         hoi++;
-        label25.Text = hoi.ToString();
+        button9.Label = hoi.ToString();
         hoi++;
-        label26.Text = hoi.ToString();
-        hoi++;
-        label27.Text = hoi.ToString();
-        hoi++;
-        label28.Text = hoi.ToString();
-        hoi++;
-        label30.Text = hoi.ToString();
-        hoi++;
-        label31.Text = hoi.ToString();
+        button10.Label = hoi.ToString();
+    }
+
+//    protected void Click herclie to add a new handler(object sender, EventArgs e)
+//    {
+//    }
+
+    protected void user1(object sender, EventArgs e)
+    {
+    }
+
+    protected void user3(object sender, EventArgs e)
+    {
+    }
+
+    protected void user4(object sender, EventArgs e)
+    {
+    }
+
+    protected void user5(object sender, EventArgs e)
+    {
+    }
+
+    protected void user6(object sender, EventArgs e)
+    {
+    }
+
+    protected void user7(object sender, EventArgs e)
+	{
+	}
+   
+    protected void user8(object sender, EventArgs e)
+    {
+    }
+  
+    protected void user9(object sender, EventArgs e)
+    {
+    }
+ 
+    protected void user10(object sender, EventArgs e)
+    {
     }
 }
 

@@ -1,6 +1,7 @@
 #include <vector>
 #include <memory>
 #include <sstream>
+#include <stdlib.h>
 
 #ifndef SheetHVar  // om te voorkomen dat dit .h bestand meerdere keren
 #define SheetHVar  // wordt ge-include
