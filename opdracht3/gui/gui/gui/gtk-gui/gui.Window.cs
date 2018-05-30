@@ -81,7 +81,7 @@ namespace gui
 			this.DefaultWidth = 400;
 			this.DefaultHeight = 300;
 			this.Show();
-			this.button9.Clicked += new global::System.EventHandler(this.Klick_login);
+			this.button9.Clicked += new global::System.EventHandler(this.click);
 		}
 	}
 }

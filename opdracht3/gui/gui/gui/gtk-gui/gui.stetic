@@ -8,7 +8,7 @@
     <widget-library name="glade-sharp, Version=2.12.0.0, Culture=neutral, PublicKeyToken=35e10195dab3c99f" />
     <widget-library name="../bin/Debug/gui.exe" internal="true" />
   </import>
-  <widget class="Gtk.Window" id="MainWindow" design-size="616 481">
+  <widget class="Gtk.Window" id="MainWindow" design-size="620 481">
     <action-group name="Default">
       <action id="Action">
         <property name="Type">Action</property>
@@ -445,7 +445,7 @@
             <property name="Type">TextOnly</property>
             <property name="Label" translatable="yes">Login</property>
             <property name="UseUnderline">True</property>
-            <signal name="Clicked" handler="klick_login" />
+            <signal name="Clicked" handler="click" />
           </widget>
           <packing>
             <property name="X">170</property>
