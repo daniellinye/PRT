@@ -150,6 +150,10 @@ namespace ChatServer
                     string message = mparser[1];
                     Message(user, recipient, message, client);
                     break;
+                case "GetMessage":
+                    //TODO: make this do between two users such that
+                    StreamWrite(df.GetMessages(Int32.Parse(command[1])).ToString(), stream);
+                    break;
                 default:
                     Console.WriteLine("Command " + command[0] + " was not implemented");
                     StreamWrite("Error:001, command not found", stream);
