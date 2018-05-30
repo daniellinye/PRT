@@ -46,16 +46,17 @@ namespace ChatServer
         //adds new client if the user is not logged in yet
         public void LoginUser(TcpClient client, String name)
         {
-            foreach (TcpClient c in clients)
+            int id = clients.Count;
+            foreach (TcpUsers c in clients)
             {
                 if (c.Equals(client))
                 {
                     Console.WriteLine("User " + name + " is already logged in");
-                    return;
+                    id = c.ReturnId();
                 }
             }
             Console.WriteLine("User: " + name + " Logged in");
-            clients.Add(new TcpUsers(client, name, clients.Count));
+            clients.Add(new TcpUsers(client, name, id));
         }
 
         public void LogoutUser(String name, int id)
