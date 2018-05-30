@@ -15,7 +15,7 @@ namespace gui
             this.Build();
         }
 
-        protected void Klick_login(object sender, EventArgs e)
+        protected TcpClient Klick_login(object sender, EventArgs e)
         {
             //make username and password
             string username = username1.Text;
@@ -56,7 +56,7 @@ namespace gui
             //TODO: replace this here when message is 
             //actually that someone has logged in
 
-            client.Close();
+            return client;
         }
 
 
