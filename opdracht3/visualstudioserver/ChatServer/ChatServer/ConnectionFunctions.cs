@@ -107,6 +107,7 @@ namespace ChatServer
             //whenever a user is logged in, add the current connection to the clients of ConnectionFunctions
 
             String[] command = input.Split(':');
+            Console.WriteLine(input);
 
             switch (command[0])
             {
@@ -117,10 +118,19 @@ namespace ChatServer
                     string[] lparser = command[1].Split('.');
                     string username = lparser[0];
                     string password = lparser[1];
-                    return Login(username, password, client);
-
+                    Console.WriteLine(username + "login attempt.");
+                    if(Login(username, password, client))
+                    {
+                        cf.LoginUser(client, username);
+                        int id = cf.GetMostRecent().ReturnId();
+                        StreamWrite("Login successfull id given:" + id, stream);
+                        return true;
+                    }
+                    break;
                 //standardthing
                 case "Message":
+
+                    //TODO: give id a proper way to identify between clients
                     string[] uparser = command[1].Split(',');
                     string[] mparser = uparser[1].Split('.');
                     string user = uparser[0];
@@ -160,7 +170,7 @@ namespace ChatServer
         {
             //TODO: throw check to database
             //that returns null if not found
-            if (df.ExecuteFunction("Login", username + "." + password) != null)
+            if (df.ExecuteFunction("Login", username + "." + password))
             {
                 cf.LoginUser(client, username);
                 return true;

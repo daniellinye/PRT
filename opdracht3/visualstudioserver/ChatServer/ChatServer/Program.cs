@@ -101,7 +101,7 @@ namespace ChatServer
             try
             {
                 string input = pf.Read(client.GetStream());
-                Console.WriteLine(input);
+                Console.WriteLine("input:" + input);
 
                 if (input != String.Empty)
                 {

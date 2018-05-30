@@ -15,7 +15,7 @@ namespace gui
             this.Build();
         }
 
-        protected void Klick_login(object sender, EventArgs e)
+        protected TcpClient Klick_login(object sender, EventArgs e)
         {
             //make username and password
             string username = username1.Text;
@@ -36,6 +36,7 @@ namespace gui
             //read returning message
             string message = nf.Login(stream, username, password);
 
+
             //give popup if the username wasn't empty
             if (username != String.Empty)
             {
@@ -55,7 +56,7 @@ namespace gui
             //TODO: replace this here when message is 
             //actually that someone has logged in
 
-            client.Close();
+            return client;
         }
 
 
@@ -76,10 +77,6 @@ namespace gui
         //FORMAT; Login:"username"."password"
         public string Login(NetworkStream stream, string username, string password)
         {
-            //pingpong server
-            Console.WriteLine("Pinging Server");
-            StreamWrite("Ping", stream);
-            Console.WriteLine(Read(stream));
 
             StringBuilder sb = new StringBuilder();
             sb.Append(username);
@@ -87,7 +84,10 @@ namespace gui
             sb.Append(password);
 
             //send actual command
-            return SendCommand(stream, "Login", sb.ToString());
+            string total = SendCommand(stream, "Login", sb.ToString());
+            string[] idmessage = total.Split(':');
+            id = Int32.Parse(idmessage[1]);
+            return idmessage[0];
         }
 
         //sends a message command to the server
@@ -95,6 +95,7 @@ namespace gui
         public string Message(NetworkStream stream, string username, string recipient, string message)
         {
             StringBuilder sb = new StringBuilder();
+            //TODO: insert id as parameter when using the client
             sb.Append(username);
             sb.Append(",");
             sb.Append(recipient);

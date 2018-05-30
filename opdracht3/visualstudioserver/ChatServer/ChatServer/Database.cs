@@ -53,30 +53,33 @@ namespace ChatServer
         }
 
         //executes a function on the database and returns values
-        public string ExecuteFunction(string function, string args)
+        public bool ExecuteFunction(string function, string args)
         {
             //TODO:
             //add basic functionalities to login, getmessages
             //sendmessages, getuser, sendmessages and login
-            //switch (function)
-            //{
-            //    default:
-            //        Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "DatabaseFunction: " + function + " not recognized or implemented.");
-            //        break;
-            //}
-
-
+            
             LogIn("Robert", "wachtwoord");
 
             int buddyId = 1;
             SendMessage(buddyId, "Hallo Piet");
             GetMessages(buddyId);
 
-            return null;
+            switch (function)
+            {
+                case "Login":
+                    string[] parser = args.Split('.');
+                    Console.WriteLine("Loggin in" + args);
+                    return LogIn(parser[0], parser[1]);
+                default:
+                    Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "DatabaseFunction: " + function + " not recognized or implemented.");
+                    break;
+            }
+            return false;
         }
 
         //logs user in if username and password match
-        private void LogIn(string username, string password)
+        public bool LogIn(string username, string password)
         {
             try
             {
@@ -90,6 +93,7 @@ namespace ChatServer
                         userId = (int)reader["id"];
                         ingelogd = true;
                         Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "User: " + username + ", is logged in.");
+                        return true;
                     }
                     else
                     {
@@ -107,13 +111,21 @@ namespace ChatServer
             {
                 Console.WriteLine("Log in attempt failed.");
             }
+            return false;
 
         }
 
         private void SendMessage(int toId, string description)
         {
-            string format = "yyyy-MM-dd HH:mm:ss";
-            Executecommand("INSERT INTO Messages(Mid,description,idfrom,idto,datetime) VALUES(2,'" + description + "'," + userId + "," + toId + ",'" + DateTime.Now.ToString(format) + "')");
+            try
+            {
+                string format = "yyyy-MM-dd HH:mm:ss";
+                Executecommand("INSERT INTO Messages(Mid,description,idfrom,idto,datetime) VALUES(1,'" + description + "'," + userId + "," + toId + ",'" + DateTime.Now.ToString(format) + "')");
+            }
+            catch
+            {
+                Console.WriteLine("Failed to send message.");
+            }
         }
 
         private List<Message> GetMessages(int buddyId)
@@ -126,22 +138,31 @@ namespace ChatServer
                 List<Message> messages = new List<Message>();
 
                 SqlDataReader reader = FetchData("SELECT * FROM Messages WHERE (idfrom=" + userId +
-                    " AND idto=" + buddyId + ")" + "OR idto=" + userId + " AND idfrom=" + buddyId + " ORDER BY datetime");
+                    " AND idto=" + buddyId + ")" + " OR (idto=" + userId + " AND idfrom=" + buddyId + ") ORDER BY datetime");
 
-                while (reader.Read())
+                if(reader != null)
                 {
                     namereader = FetchData("SELECT username FROM users WHERE id=" + reader["idfrom"]);
                     description = (string)reader["description"];
                     datetime = (DateTime)reader["datetime"];
                     while(namereader != null && namereader.Read())
+
+                    while (reader.Read())
                     {
-                        name = (string)reader["username"];
-                        Console.WriteLine(name);
+                        namereader = FetchData("SELECT username FROM users WHERE id=" + reader["idfrom"]);
+                        description = (string)reader["description"];
+                        datetime = (DateTime)reader["datetime"];
+                        while (reader.Read())
+                        {
+                            name = (string)reader["username"];
+                            Console.WriteLine(name);
+                        }
+                        messages.Add(new Message(description, datetime, "hallo"));
                     }
-                    messages.Add(new Message (description, datetime, "hallo"));
+
+                    Console.WriteLine("[" + messages[0].datetime + "]" + messages[0].description);
                 }
 
-                Console.WriteLine("[" + messages[0].datetime + "]" + messages[0].description);
 
                 return messages;
             }
