@@ -40,9 +40,9 @@ namespace ChatServer
                 Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "Opening connection");
                 connection.Open();
 
-                Executecommand("INSERT INTO users(Id,username,password) VALUES(0,'Robert','wachtwoord')");
-                Executecommand("INSERT INTO users(Id,username,password) VALUES(1,'Piet','wachtwoord')");
-                Executecommand("INSERT INTO users(Id,username,password) VALUES(2,'Hein','wachtwoord')");
+                Executecommand("INSERT INTO users(Id,username,password,online) VALUES(0,'Robert','wachtwoord',0)");
+                Executecommand("INSERT INTO users(Id,username,password,online) VALUES(1,'Piet','wachtwoord',1)");
+                Executecommand("INSERT INTO users(Id,username,password,online) VALUES(2,'Hein','wachtwoord',1)");
                 
                 Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "Connection Successful");
             }
@@ -58,18 +58,25 @@ namespace ChatServer
             //TODO:
             //add basic functionalities to login, getmessages
             //sendmessages, getuser, sendmessages and login
-            switch (function)
-            {
-                default:
-                    Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "DatabaseFunction: " + function + " not recognized or implemented.");
-                    break;
-            }
+            //switch (function)
+            //{
+            //    default:
+            //        Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "DatabaseFunction: " + function + " not recognized or implemented.");
+            //        break;
+            //}
+
+
+            LogIn("Robert", "wachtwoord");
+
+            int buddyId = 1;
+            SendMessage(buddyId, "Hallo Piet");
+            GetMessages(buddyId);
 
             return null;
         }
 
         //logs user in if username and password match
-        public void LogIn(string username, string password)
+        private void LogIn(string username, string password)
         {
             try
             {
@@ -94,6 +101,7 @@ namespace ChatServer
                     Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "Username does not exist.");
                 }
                 reader.Close();
+                Executecommand("UPDATE users SET online=1 WHERE id=" + userId);
             }
             catch
             {
@@ -102,13 +110,13 @@ namespace ChatServer
 
         }
 
-        public void SendMessage(int toId, string description)
+        private void SendMessage(int toId, string description)
         {
             string format = "yyyy-MM-dd HH:mm:ss";
             Executecommand("INSERT INTO Messages(Mid,description,idfrom,idto,datetime) VALUES(2,'" + description + "'," + userId + "," + toId + ",'" + DateTime.Now.ToString(format) + "')");
         }
 
-        public List<Message> GetMessages(int buddyId)
+        private List<Message> GetMessages(int buddyId)
         {
             if (ingelogd)
             {
@@ -125,7 +133,7 @@ namespace ChatServer
                     namereader = FetchData("SELECT username FROM users WHERE id=" + reader["idfrom"]);
                     description = (string)reader["description"];
                     datetime = (DateTime)reader["datetime"];
-                    while(reader.Read())
+                    while(namereader != null && namereader.Read())
                     {
                         name = (string)reader["username"];
                         Console.WriteLine(name);
@@ -140,7 +148,7 @@ namespace ChatServer
             return null;
         }
 
-        public void Executecommand(string query)
+        private void Executecommand(string query)
         {
             try
             {
@@ -154,7 +162,7 @@ namespace ChatServer
         }
 
 
-        public SqlDataReader FetchData(string query)
+        private SqlDataReader FetchData(string query)
         {
             try
             {

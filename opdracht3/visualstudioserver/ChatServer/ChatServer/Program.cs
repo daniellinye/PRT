@@ -46,11 +46,7 @@ namespace ChatServer
 
             DatabaseFunctions df = new DatabaseFunctions();
 
-            df.LogIn("Robert", "wachtwoord");
-
-            int buddyId = 1;
-            df.SendMessage(buddyId, "Hallo Piet");
-            df.GetMessages(buddyId);
+            df.ExecuteFunction("","");
 
             Thread looper = new Thread(() => Looper());
             looper.Start();
