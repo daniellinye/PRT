@@ -119,8 +119,12 @@ namespace ChatServer
                     string username = lparser[0];
                     string password = lparser[1];
                     Console.WriteLine(username + "login attempt.");
-                    return Login(username, password, client);
-
+                    if(Login(username, password, client))
+                    {
+                        StreamWrite("Login successfull", stream);
+                        return true;
+                    }
+                    break;
                 //standardthing
                 case "Message":
                     string[] uparser = command[1].Split(',');
