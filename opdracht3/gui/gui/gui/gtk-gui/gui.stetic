@@ -207,6 +207,149 @@
             <property name="Y">400</property>
           </packing>
         </child>
+        <child>
+          <widget class="Gtk.VScrollbar" id="persoonbar">
+            <property name="MemberName" />
+            <property name="HeightRequest">400</property>
+            <property name="Lower">1</property>
+            <property name="Upper">100</property>
+            <property name="PageIncrement">1</property>
+            <property name="PageSize">1</property>
+            <property name="StepIncrement">1</property>
+            <property name="Value">1</property>
+            <signal name="ChangeValue" handler="scroll" />
+          </widget>
+          <packing>
+            <property name="X">590</property>
+            <property name="Y">9</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label18">
+            <property name="MemberName" />
+          </widget>
+          <packing>
+            <property name="X">530</property>
+            <property name="Y">10</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label19">
+            <property name="MemberName" />
+          </widget>
+          <packing>
+            <property name="X">530</property>
+            <property name="Y">40</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label20">
+            <property name="MemberName" />
+          </widget>
+          <packing>
+            <property name="X">530</property>
+            <property name="Y">70</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label21">
+            <property name="MemberName" />
+          </widget>
+          <packing>
+            <property name="X">530</property>
+            <property name="Y">100</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label22">
+            <property name="MemberName" />
+          </widget>
+          <packing>
+            <property name="X">530</property>
+            <property name="Y">130</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label23">
+            <property name="MemberName" />
+          </widget>
+          <packing>
+            <property name="X">530</property>
+            <property name="Y">160</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label24">
+            <property name="MemberName" />
+          </widget>
+          <packing>
+            <property name="X">530</property>
+            <property name="Y">220</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label25">
+            <property name="MemberName" />
+          </widget>
+          <packing>
+            <property name="X">530</property>
+            <property name="Y">250</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label26">
+            <property name="MemberName" />
+          </widget>
+          <packing>
+            <property name="X">530</property>
+            <property name="Y">280</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label27">
+            <property name="MemberName" />
+          </widget>
+          <packing>
+            <property name="X">530</property>
+            <property name="Y">310</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label28">
+            <property name="MemberName" />
+          </widget>
+          <packing>
+            <property name="X">530</property>
+            <property name="Y">340</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label29">
+            <property name="MemberName" />
+          </widget>
+          <packing>
+            <property name="X">530</property>
+            <property name="Y">190</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label30">
+            <property name="MemberName" />
+          </widget>
+          <packing>
+            <property name="X">530</property>
+            <property name="Y">370</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label31">
+            <property name="MemberName" />
+          </widget>
+          <packing>
+            <property name="X">530</property>
+            <property name="Y">400</property>
+          </packing>
+        </child>
       </widget>
     </child>
   </widget>
