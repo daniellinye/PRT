@@ -107,6 +107,7 @@ namespace ChatServer
             //whenever a user is logged in, add the current connection to the clients of ConnectionFunctions
 
             String[] command = input.Split(':');
+            Console.WriteLine(input);
 
             switch (command[0])
             {
@@ -117,6 +118,7 @@ namespace ChatServer
                     string[] lparser = command[1].Split('.');
                     string username = lparser[0];
                     string password = lparser[1];
+                    Console.WriteLine(username + "login attempt.");
                     return Login(username, password, client);
 
                 //standardthing

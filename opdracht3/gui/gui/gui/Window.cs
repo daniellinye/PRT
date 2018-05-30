@@ -76,10 +76,6 @@ namespace gui
         //FORMAT; Login:"username"."password"
         public string Login(NetworkStream stream, string username, string password)
         {
-            //pingpong server
-            Console.WriteLine("Pinging Server");
-            StreamWrite("Ping", stream);
-            Console.WriteLine(Read(stream));
 
             StringBuilder sb = new StringBuilder();
             sb.Append(username);
