@@ -121,12 +121,16 @@ namespace ChatServer
                     Console.WriteLine(username + "login attempt.");
                     if(Login(username, password, client))
                     {
-                        StreamWrite("Login successfull", stream);
+                        cf.LoginUser(client, username);
+                        int id = cf.GetMostRecent().ReturnId();
+                        StreamWrite("Login successfull id given:" + id, stream);
                         return true;
                     }
                     break;
                 //standardthing
                 case "Message":
+
+                    //TODO: give id a proper way to identify between clients
                     string[] uparser = command[1].Split(',');
                     string[] mparser = uparser[1].Split('.');
                     string user = uparser[0];

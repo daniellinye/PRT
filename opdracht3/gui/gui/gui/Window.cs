@@ -36,6 +36,7 @@ namespace gui
             //read returning message
             string message = nf.Login(stream, username, password);
 
+
             //give popup if the username wasn't empty
             if (username != String.Empty)
             {
@@ -83,7 +84,10 @@ namespace gui
             sb.Append(password);
 
             //send actual command
-            return SendCommand(stream, "Login", sb.ToString());
+            string total = SendCommand(stream, "Login", sb.ToString());
+            string[] idmessage = total.Split(':');
+            id = Int32.Parse(idmessage[1]);
+            return idmessage[0];
         }
 
         //sends a message command to the server
@@ -91,6 +95,7 @@ namespace gui
         public string Message(NetworkStream stream, string username, string recipient, string message)
         {
             StringBuilder sb = new StringBuilder();
+            //TODO: insert id as parameter when using the client
             sb.Append(username);
             sb.Append(",");
             sb.Append(recipient);
