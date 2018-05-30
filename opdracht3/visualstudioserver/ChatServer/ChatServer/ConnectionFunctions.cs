@@ -89,6 +89,17 @@ namespace ChatServer
             return clients[id];
         }
 
+        public TcpUsers GetClient(string name)
+        {
+            foreach (TcpUsers c in clients)
+            {
+                if(c.ReturnName() == name)
+                {
+                    return c;
+                }
+            }
+            return null;
+        }
     }
 
     class ParseFunctions

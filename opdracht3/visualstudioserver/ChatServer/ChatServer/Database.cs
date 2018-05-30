@@ -69,8 +69,8 @@ namespace ChatServer
                     parser = args.Split('.');
                     messages = GetMessages(Convert.ToInt32(parser[0]));
                     return true;
-                case "Sendmessage":
-                    parser = args.Split('.');
+                case "Message":
+                    parser = args.Split(',');
                     return SendMessage(Convert.ToInt32(parser[0]),parser[1]);
                 default:
                     Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "DatabaseFunction: " + function + " not recognized or implemented.");
