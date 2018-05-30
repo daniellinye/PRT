@@ -55,11 +55,10 @@ namespace gui
             //close client
             //TODO: replace this here when message is 
             //actually that someone has logged in
+            stream.Close();
             client.Close();
+
         }
-
-
-
     }
 
 
@@ -78,17 +77,24 @@ namespace gui
         //FORMAT; Login:"username"."password"
         public string Login(NetworkStream stream, string username, string password)
         {
+            try
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.Append(username);
+                sb.Append(".");
+                sb.Append(password);
 
-            StringBuilder sb = new StringBuilder();
-            sb.Append(username);
-            sb.Append(".");
-            sb.Append(password);
+                //send actual command
+                string total = SendCommand(stream, "Login", sb.ToString());
+                string[] idmessage = total.Split(':');
+                id = Int32.Parse(idmessage[1]);
+                return idmessage[0];
+            }
+            catch
+            {
+                return "Invalid Login";
+            }
 
-            //send actual command
-            string total = SendCommand(stream, "Login", sb.ToString());
-            string[] idmessage = total.Split(':');
-            id = Int32.Parse(idmessage[1]);
-            return idmessage[0];
         }
 
         //sends a message command to the server

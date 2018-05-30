@@ -1,26 +1,28 @@
+#!/bin/sh
+
 CC = gcc
+CFLAGS = -fPIC -g -c -Wall -std=c++11 -l
+LDFLAGS =  -shared -lncurses -Wl,-soname,Sheet.so
+OBJS =  Range.o  SheetView.o main.o Sheet.o
 
-CompileParms = -c -Wall -std=c++11 -Iinclude
-CompileFlags = -fPIC
-LDFLAGS = -lncurses -shared
-
-OBJS = Range.o Sheet.o SheetView.o main.o 
-
-
-Sheet.so: $(OBJS)
-	$(CC)  $(OBJS) -o Sheet.so $(CompileFlags) $(LDFLAGS) 
-
-Range.o: Range.cpp
-	$(CC) $(CompileParms) Range.cpp
-
-Sheet.o:  Sheet.cpp
-	$(CC) $(CompileParms) Sheet.cpp
-
-SheetView.o:  SheetView.cpp
-	$(CC) $(CompileParms) SheetView.cpp
-
-main.o: main.cpp
-	$(CC) $(CompileParms)  main.cpp
+all: clean $(OBJS) Sheet.so
+	$(CC) $(CFLAGS) $(OBJS) Sheet.so $(LDFLAGS)
 
 clean:
-	rm *.o
+	rm -f $(OBJS) *.o
+
+Range.o: Range.cpp Range.h
+	$(CC) $(CFLAGS) Range.cpp $(LDFLAGS)
+
+Sheet.o:  Sheet.cpp Sheet.h
+	$(CC) $(CFLAGS) Sheet.cpp $(LDFLAGS)
+
+SheetView.o:  SheetView.cpp SheetView.h
+	$(CC) $(CFLAGS) SheetView.cpp $(LDFLAGS)
+
+main.o: main.cpp
+	$(CC) $(CFLAGS) main.cpp $(LDFLAGS)
+
+Sheet.so: $(OBJS)
+	$(CC) $(LDFLAGS) -o Sheet.so $(OBJS) -lc
+
