@@ -75,8 +75,36 @@ public partial class MainWindow : Gtk.Window
 //        dlog.Destroy();
     }
 
-    protected void test(object o, KeyPressEventArgs args)
+    protected void scroll(object o, ChangeValueArgs args)
     {
+        int hoi = Convert.ToInt32(persoonbar.Value);
+        label18.Text = hoi.ToString();
+        hoi++;
+        label19.Text = hoi.ToString();
+        hoi++;
+        label20.Text = hoi.ToString();
+        hoi++;
+        label21.Text = hoi.ToString();
+        hoi++;
+        label22.Text = hoi.ToString();
+        hoi++;
+        label23.Text = hoi.ToString();
+        hoi++;
+        label29.Text = hoi.ToString();
+        hoi++;
+        label24.Text = hoi.ToString();
+        hoi++;
+        label25.Text = hoi.ToString();
+        hoi++;
+        label26.Text = hoi.ToString();
+        hoi++;
+        label27.Text = hoi.ToString();
+        hoi++;
+        label28.Text = hoi.ToString();
+        hoi++;
+        label30.Text = hoi.ToString();
+        hoi++;
+        label31.Text = hoi.ToString();
     }
 }
 
