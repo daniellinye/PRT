@@ -125,9 +125,10 @@ namespace ChatServer
         public bool Parser(String input, TcpClient client)
         {
             NetworkStream stream = client.GetStream();
-            //TODO: REMINDER
+
             //whenever a user is logged in, add the current connection to the clients of ConnectionFunctions
 
+            //format is command:args,args2.args3
             String[] command = input.Split(':');
             Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + input);
 
