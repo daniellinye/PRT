@@ -77,7 +77,7 @@ namespace ChatServer
                 }
 
                 Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Connection Successful.");
-
+                
             }
             catch(Exception e)
             {
@@ -193,18 +193,20 @@ namespace ChatServer
         {
             string format = "yyyy-MM-dd HH:mm:ss";
             Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Sending message from " + username + " to " + to);
-            return Executecommand("INSERT INTO Messages(Mid,description,idfrom,idto,datetime) VALUES(" + NewMessageId() + ",'" + description + "'," + GetId(username) + "," + GetId(to) + ",'" + DateTime.Now.ToString(format) + "')");
+            return Executecommand("INSERT INTO Messages(Mid,description,idfrom,idto,datetime) VALUES(" + NewMessageId() + ",'" +
+                description + "'," + GetId(username) + "," + GetId(to) + ",'" + DateTime.Now.ToString(format) + "')");
         }
 
         //fetches all messages between user and contact
-        public List<string> GetMessages(string username, string recieving)
+        public List<string> GetMessages(int vanaf, string username, string recieving)
         {
             if (Ingelogd(username))
             {
                 try
                 {
+                    const int aantal = 17;                                  //Always needs to return 17 messages
                     string description;
-                    int id;
+                    int i, id;
                     DateTime datetime;
                     List<Message> messages = new List<Message>();
                     List<string> returnmessages = new List<string>();
@@ -224,12 +226,30 @@ namespace ChatServer
 
                     reader.Close();
 
-                    foreach (Message message in messages)                   //Here the data is converted to a list of strings, so it can be sent to the client
+                    if (vanaf + aantal - 1 <= messages.Count)
                     {
-                        returnmessages.Add(GetUserName(message.senderId) + "`" + message.description + "`" + message.datetime.ToString("HH:mm"));
+                        for (i = vanaf - 1; i < vanaf + aantal - 1; i++)
+                        {                                                       //Here the data is converted to a list of strings, so it can be sent to the client
+                            returnmessages.Add(GetUserName(messages[i].senderId) + "`" + messages[i].description + "`" + messages[i].datetime.ToString("HH:mm"));
+                        }
+                        return returnmessages;
                     }
-
-                    return returnmessages;
+                    else if (aantal <= messages.Count)
+                    {
+                        for (i = messages.Count - aantal - 1; i < messages.Count; i++)
+                        {                                                       //Here the data is converted to a list of strings, so it can be sent to the client
+                            returnmessages.Add(GetUserName(messages[i].senderId) + "`" + messages[i].description + "`" + messages[i].datetime.ToString("HH:mm"));
+                        }
+                        return returnmessages;
+                    }
+                    else
+                    {
+                        foreach (Message message in messages)
+                        {                                                       //Here the data is converted to a list of strings, so it can be sent to the client
+                            returnmessages.Add(GetUserName(message.senderId) + "`" + message.description + "`" + message.datetime.ToString("HH:mm"));
+                        }
+                        return returnmessages;
+                    }
                 }
                 catch
                 {

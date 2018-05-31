@@ -160,7 +160,7 @@ namespace ChatServer
                 case "GetMessage":
                     //TODO: make this do between two users such that
                     string[] gmparser = command[1].Split(',');
-                    StreamWrite(df.GetMessages(gmparser[0], gmparser[1]).ToString(), stream);
+                    StreamWrite(df.GetMessages(1,gmparser[0], gmparser[1]).ToString(), stream);
                     break;
                 default:
                     Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Command " + command[0] + " was not implemented");
