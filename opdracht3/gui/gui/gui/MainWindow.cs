@@ -74,7 +74,7 @@ public partial class MainWindow : Gtk.Window
         a.RetVal = true;
     }
 
-    protected async Task ListenerAsync()
+    public async Task ListenerAsync()
     {
         nf = new NetFunctions();
 
@@ -107,13 +107,36 @@ public partial class MainWindow : Gtk.Window
 
     protected void Sender(string input)
     {
+
+        //standard values
+        const Int32 port = 8080;
+        const string ip = "127.0.0.1";
+
+        //new clients
+        TcpClient client = new TcpClient(ip, port);
+
+        //new stream
         NetworkStream stream = client.GetStream();
+
+        NetFunctions nf = new NetFunctions();
+
         nf.Message(stream, username, "Piet", input);
     }
 
+    //is bound to texbox
     protected void sendmessages(object sender, EventArgs e)
     {
         entry1.Text = "";
+
+        MessageDialog dlog = new MessageDialog
+    (
+        this, DialogFlags.Modal,
+        MessageType.Info,
+        ButtonsType.Ok,
+        "Hoi"
+    );
+
+        label17.Text = entry1.Text;
 
         if(entry1.Text != "")
         {
@@ -121,11 +144,8 @@ public partial class MainWindow : Gtk.Window
             Thread send = new Thread(()=> Sender(entry1.Text));
             send.Start();
         }
-
-        //thread listener
-        Thread listen = new Thread(() => ListenerAsync());
-        listen.Start();
         
+
 
         //        MessageDialog dlog = new MessageDialog
         //            (
