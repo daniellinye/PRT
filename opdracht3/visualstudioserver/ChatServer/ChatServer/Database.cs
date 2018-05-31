@@ -8,6 +8,7 @@ using System.Data.SqlClient;
 using System.Data.SqlTypes;
 using System.Data.Sql;
 using System.IO;
+using Microsoft.SqlServer.Server;
 
 namespace ChatServer
 {
@@ -49,7 +50,26 @@ namespace ChatServer
             }
             catch
             {
-                Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "Connection Unsuccesfull");
+                try
+                {
+                    string connstring = "Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=ccwebgrity;Data Source=SURAJIT\\SQLEXPRESS";
+
+                    string users = @"users.sql";
+                    string path = File.ReadAllText(Path.GetFullPath(users));
+
+                    connection = new SqlConnection(connstring);
+                    SqlCommand command = new SqlCommand(path);
+                    command.ExecuteNonQuery();
+                }
+                catch
+                {
+                    Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "Connection Unsuccesfull");
+                }
+                finally
+                {
+                    Console.WriteLine("First server not online, concluded we're running on Linux");
+                }
+                
             }
         }
 
@@ -71,6 +91,7 @@ namespace ChatServer
                     messages = GetMessages(Convert.ToInt32(parser[0]));
                     return true;
                 case "Message":
+                    //TODO: change args to sender, reciever, description
                     parser = args.Split(',');
                     return SendMessage(Convert.ToInt32(parser[0]),parser[1]);
                 default:

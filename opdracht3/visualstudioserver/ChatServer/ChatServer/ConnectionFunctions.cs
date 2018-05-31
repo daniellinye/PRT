@@ -73,9 +73,17 @@ namespace ChatServer
         }
 
         //pings other clients depended on the messagesender
-        public void Ping(String message, int id)
+        public TcpClient Ping(String message, string name)
         {
             //TODO: implement
+            foreach (TcpUsers u in clients)
+            {
+                if(u.ReturnName() == name)
+                {
+                    return u;
+                }
+            }
+            return null;
         }
 
         public TcpUsers GetMostRecent()
@@ -200,16 +208,22 @@ namespace ChatServer
             return false;
         }
 
-        public void Message(string username, string password, string message, TcpClient client)
-        {
-            //TODO
-            //PING TO OTHER CLIENTS
-
-            StreamWrite("Method is not implemented yet", client.GetStream());
+        public void Message(string username, string recieving, string message, TcpClient client)
+        { 
             //PING OTHER USERS
+            TcpClient recieve = cf.Ping(message, recieving);
+            if(recieve != null)
+            {
+                StreamWrite(message, recieve.GetStream());
+                StreamWrite("Message Send", client.GetStream());
+                //TODO
+                //ADD TO DATABASE
+            }
+            else
+            {
+                StreamWrite("Could not send message", client.GetStream());
+            }
 
-            //TODO
-            //ADD TO DATABASE
         }
 
         public string LoadMessages(string username, string password, string otheruser)
