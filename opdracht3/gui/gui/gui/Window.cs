@@ -65,6 +65,15 @@ namespace gui
                 win.Show();
             }
         }
+
+        protected void regristreren(object sender, EventArgs e) 
+        {
+            //TODO: tell server to make a new useraccount
+
+            //make username and password
+            string username = username1.Text;
+            string password = Password.Text;
+        }
     }
 
 

@@ -465,6 +465,20 @@
           </packing>
         </child>
         <child>
+          <widget class="Gtk.Button" id="register">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="Type">TextOnly</property>
+            <property name="Label" translatable="yes">regristreren</property>
+            <property name="UseUnderline">True</property>
+            <signal name="Clicked" handler="regristreren" />
+          </widget>
+          <packing>
+            <property name="X">224</property>
+            <property name="Y">194</property>
+          </packing>
+        </child>
+        <child>
           <widget class="Gtk.Button" id="button9">
             <property name="MemberName" />
             <property name="CanFocus">True</property>
@@ -474,8 +488,8 @@
             <signal name="Clicked" handler="click" />
           </widget>
           <packing>
-            <property name="X">170</property>
-            <property name="Y">193</property>
+            <property name="X">157</property>
+            <property name="Y">192</property>
           </packing>
         </child>
       </widget>
