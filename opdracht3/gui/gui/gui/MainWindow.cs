@@ -39,6 +39,19 @@ public partial class MainWindow : Gtk.Window
         labels.Add(label15);
         labels.Add(label16);
         labels.Add(label17);
+
+        List<Button> buttons = new List<Button>();
+
+        buttons.Add(button1);
+        buttons.Add(button2);
+        buttons.Add(button3);
+        buttons.Add(button4);
+        buttons.Add(button5);
+        buttons.Add(button6);
+        buttons.Add(button7);
+        buttons.Add(button8);
+        buttons.Add(button9);
+        buttons.Add(button10);
     }
 
     protected void OnDeleteEvent(object sender, DeleteEventArgs a)
@@ -50,11 +63,6 @@ public partial class MainWindow : Gtk.Window
     protected void sendmessages(object sender, EventArgs e)
     {
        
-
-
-
-
-        
         label1.Text = label2.Text;
         label2.Text = label3.Text;
         label3.Text = label4.Text;
