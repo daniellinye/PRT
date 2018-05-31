@@ -30,6 +30,7 @@ public partial class MainWindow : Gtk.Window
 
     protected void sendmessages(object sender, EventArgs e)
     {
+        List<Label> labels = new List<Label>
         label1.Text = label2.Text;
         label2.Text = label3.Text;
         label3.Text = label4.Text;
@@ -88,7 +89,6 @@ public partial class MainWindow : Gtk.Window
 //    protected void Click herclie to add a new handler(object sender, EventArgs e)
 //    {
 //    }
-
 
     protected void user1(object sender, EventArgs e) //establish connection user on place 1
     {
