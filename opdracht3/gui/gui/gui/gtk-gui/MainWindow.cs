@@ -75,6 +75,10 @@ public partial class MainWindow
 
 	private global::Gtk.Button button10;
 
+	private global::Gtk.VSeparator vseparator1;
+
+	private global::Gtk.VScrollbar vscrollbar1;
+
 	protected virtual void Build()
 	{
 		global::Stetic.Gui.Initialize(this);
@@ -355,6 +359,26 @@ public partial class MainWindow
 		global::Gtk.Fixed.FixedChild w32 = ((global::Gtk.Fixed.FixedChild)(this.fixed1[this.button10]));
 		w32.X = 500;
 		w32.Y = 370;
+		// Container child fixed1.Gtk.Fixed+FixedChild
+		this.vseparator1 = new global::Gtk.VSeparator();
+		this.vseparator1.HeightRequest = 390;
+		this.vseparator1.Name = "vseparator1";
+		this.fixed1.Add(this.vseparator1);
+		global::Gtk.Fixed.FixedChild w33 = ((global::Gtk.Fixed.FixedChild)(this.fixed1[this.vseparator1]));
+		w33.X = 480;
+		w33.Y = 18;
+		// Container child fixed1.Gtk.Fixed+FixedChild
+		this.vscrollbar1 = new global::Gtk.VScrollbar(null);
+		this.vscrollbar1.HeightRequest = 400;
+		this.vscrollbar1.Name = "vscrollbar1";
+		this.vscrollbar1.Adjustment.Upper = 100D;
+		this.vscrollbar1.Adjustment.PageIncrement = 10D;
+		this.vscrollbar1.Adjustment.PageSize = 10D;
+		this.vscrollbar1.Adjustment.StepIncrement = 1D;
+		this.fixed1.Add(this.vscrollbar1);
+		global::Gtk.Fixed.FixedChild w34 = ((global::Gtk.Fixed.FixedChild)(this.fixed1[this.vscrollbar1]));
+		w34.X = 448;
+		w34.Y = 13;
 		this.Add(this.fixed1);
 		if ((this.Child != null))
 		{

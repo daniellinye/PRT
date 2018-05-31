@@ -159,7 +159,8 @@ namespace ChatServer
                     break;
                 case "GetMessage":
                     //TODO: make this do between two users such that
-                    StreamWrite(df.GetMessages(Int32.Parse(command[1])).ToString(), stream);
+                    string[] gmparser = command[1].Split(',');
+                    StreamWrite(df.GetMessages(gmparser[0], gmparser[1]).ToString(), stream);
                     break;
                 default:
                     Console.WriteLine("Command " + command[0] + " was not implemented");

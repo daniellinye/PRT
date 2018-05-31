@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using gui;
+using System.Collections.Generic;
 
 public partial class MainWindow : Gtk.Window
 {
@@ -29,6 +30,38 @@ public partial class MainWindow : Gtk.Window
 
 
         Build();
+        List<Label> labels = new List<Label>();
+
+        labels.Add(label1);
+        labels.Add(label2);
+        labels.Add(label3);
+        labels.Add(label4);
+        labels.Add(label5);
+        labels.Add(label6);
+        labels.Add(label7);
+        labels.Add(label8);
+        labels.Add(label9);
+        labels.Add(label10);
+        labels.Add(label11);
+        labels.Add(label12);
+        labels.Add(label13);
+        labels.Add(label14);
+        labels.Add(label15);
+        labels.Add(label16);
+        labels.Add(label17);
+
+        List<Button> buttons = new List<Button>();
+
+        buttons.Add(button1);
+        buttons.Add(button2);
+        buttons.Add(button3);
+        buttons.Add(button4);
+        buttons.Add(button5);
+        buttons.Add(button6);
+        buttons.Add(button7);
+        buttons.Add(button8);
+        buttons.Add(button9);
+        buttons.Add(button10);
     }
 
     protected void OnDeleteEvent(object sender, DeleteEventArgs a)
@@ -74,7 +107,6 @@ public partial class MainWindow : Gtk.Window
 
     protected void sendmessages(object sender, EventArgs e)
     {
-        Console.WriteLine("hai");
         entry1.Text = "";
 
         if(entry1.Text != "")

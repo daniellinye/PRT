@@ -2,32 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Data;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.Data.SqlTypes;
-using System.Data.Sql;
 using System.IO;
-using Microsoft.SqlServer.Server;
+
 
 namespace ChatServer
 {
     class Database
     {
 
-    }
-
-    class Message
-    {
-        public string description;
-        public DateTime datetime;
-        public int senderId;
-        public Message(string desc, DateTime date, int id)
-        {
-            description = desc;
-            datetime = date;
-            senderId = id;
-        }
     }
 
     class DatabaseFunctions
@@ -42,9 +27,9 @@ namespace ChatServer
                 Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "Opening connection");
                 connection.Open();
 
-                Executecommand("INSERT INTO users(Id,username,password) VALUES(0,'Robert','wachtwoord')");
-                Executecommand("INSERT INTO users(Id,username,password) VALUES(1,'Piet','wachtwoord')");
-                Executecommand("INSERT INTO users(Id,username,password) VALUES(2,'Hein','wachtwoord')");
+                Executecommand("INSERT INTO users(Id,username,password,online) VALUES(0,'Robert','wachtwoord',0)");
+                Executecommand("INSERT INTO users(Id,username,password,online) VALUES(1,'Piet','wachtwoord',1)");
+                Executecommand("INSERT INTO users(Id,username,password,online) VALUES(2,'Hein','wachtwoord',1)");
 
                 Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "Connection Successful");
             }
@@ -69,7 +54,7 @@ namespace ChatServer
                 {
                     Console.WriteLine("First server not online, concluded we're running on Linux");
                 }
-                
+
             }
         }
 
@@ -80,20 +65,14 @@ namespace ChatServer
             //add basic functionalities to login, getmessages
             //sendmessages, getuser, sendmessages and login
             string[] parser;
-            List<Message> messages;
             switch (function)
             {
                 case "Login":
                     parser = args.Split('.');
                     return LogIn(parser[0], parser[1]);
-                case "Getmessages":
+                case "Sendmessage":
                     parser = args.Split('.');
-                    messages = GetMessages(Convert.ToInt32(parser[0]));
-                    return true;
-                case "Message":
-                    //TODO: change args to sender, reciever, description
-                    parser = args.Split(',');
-                    return SendMessage(Convert.ToInt32(parser[0]),parser[1]);
+                    return SendMessage(parser[0], parser[1], parser[2]);
                 default:
                     Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "DatabaseFunction: " + function + " not recognized or implemented.");
                     break;
@@ -114,8 +93,6 @@ namespace ChatServer
                     exists = true;
                     if ((string)reader["password"] == password)
                     {
-                        userId = (int)reader["id"];
-                        ingelogd = true;
                         Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "User: " + username + ", is logged in.");
                         reader.Close();
                         return true;
@@ -140,35 +117,38 @@ namespace ChatServer
 
         }
 
-        public bool SendMessage(int toId, string description)
+        //sends message to database
+        public bool SendMessage(string username, string description, string to)
         {
+            Console.WriteLine(username + " has sent this message: " + description);
             string format = "yyyy-MM-dd HH:mm:ss";
-            return Executecommand("INSERT INTO Messages(Mid,description,idfrom,idto,datetime) VALUES(2,'" + description + "'," + userId + "," + toId + ",'" + DateTime.Now.ToString(format) + "')");
+            return Executecommand("INSERT INTO Messages(Mid,description,idfrom,idto,datetime) VALUES(" + NewMessageId() + ",'" + description + "'," + GetId(username) + "," + GetId(to) + ",'" + DateTime.Now.ToString(format) + "')");
         }
 
-        public List<Message> GetMessages(int buddyId)
+        //fetches all messages between user and contact
+        public List<string> GetMessages(string username, string recieving)
         {
-            if (ingelogd)
+            if (Ingelogd(username))
             {
                 string description;
                 int id;
                 DateTime datetime;
-                List<Message> messages = new List<Message>();
+                List<string> messages = new List<string>();
 
-                SqlDataReader reader = FetchData("SELECT * FROM Messages WHERE (idfrom=" + userId +
-                    " AND idto=" + buddyId + ")" + "OR idto=" + userId + " AND idfrom=" + buddyId + " ORDER BY datetime");
+                SqlDataReader reader = FetchData("SELECT * FROM Messages WHERE (idfrom=" + GetId(username) +
+                    " AND idto=" + GetId(recieving) + ")" + "OR idto=" + GetId(username) + " AND idfrom=" + GetId(recieving) + " ORDER BY datetime");
 
                 while (reader.Read())
                 {
                     description = (string)reader["description"];
                     datetime = (DateTime)reader["datetime"];
                     id = (int)reader["idfrom"];
-                    messages.Add(new Message(description, datetime, id));
+                    messages.Add(description + "." + datetime + "." + id);
                 }
 
-                foreach (Message message in messages)
+                foreach (string message in messages)
                 {
-                    Console.WriteLine("[" + message.datetime + "]" + message.description);
+                    Console.WriteLine(message);
                 }
 
                 return messages;
@@ -176,6 +156,65 @@ namespace ChatServer
             return null;
         }
 
+        //fetches all online users and returns list
+        public List<string> GetUsers()
+        {
+            List<string> users = new List<string>();
+
+            SqlDataReader reader = FetchData("SELECT username FROM users WHERE online=1");
+
+            while (reader.Read())
+            {
+                users.Add((string)reader["username"]);
+            }
+
+            reader.Close();
+            return users;
+        }
+
+        //returns Id from username
+        private int GetId(string username)
+        {
+            int id;
+
+            SqlDataReader reader = FetchData("SELECT id FROM users WHERE username='" + username + "'");
+            reader.Read();
+            id = (int)reader["id"];
+            reader.Close();
+
+            return id;
+        }
+
+        private bool Ingelogd(string username)
+        {
+            bool ingelogd = false;
+
+            SqlDataReader reader = FetchData("SELECT online FROM users WHERE username='" + username + "'");
+            while(reader.Read())
+            {
+                ingelogd = (bool)reader["online"];
+            }
+            reader.Close();
+
+            return ingelogd;
+        }
+
+        //returns id for a new message
+        private int NewMessageId ()
+        {
+            List<string> messages = new List<string>();
+            SqlDataReader reader = FetchData("SELECT * FROM Messages");
+
+            while (reader.Read())
+            {
+                messages.Add(" ");
+            }
+            reader.Close();
+
+            return messages.Count;
+        }
+
+        //executes sql query without return
         public bool Executecommand(string query)
         {
             try
@@ -191,7 +230,8 @@ namespace ChatServer
             }
         }
 
-
+        //executes sql query and returns the data as an SqlDataReader
+        //after using this function and getting the data from the reader, the reader needs to be closed
         public SqlDataReader FetchData(string query)
         {
             try
@@ -200,19 +240,15 @@ namespace ChatServer
                 SqlDataReader reader = sqlcommand.ExecuteReader();
                 return reader;
 
-
             }
             catch
             {
-
                 Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "The query: \"" + query + "\" failed to be executed.");
                 return null;
             }
         }
 
-        private SqlConnection connection;
-        private int userId;
-        private bool ingelogd;
+        readonly private SqlConnection connection;
     }
 
 }
