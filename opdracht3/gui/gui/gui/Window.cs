@@ -20,25 +20,36 @@ namespace gui
 
         protected void click(object sender, EventArgs e)
         {
-            //make username and password
-            string username = username1.Text;
-            string password = Password.Text;
-
-            //standard values
-            const Int32 port = 8080;
-            const string ip = "127.0.0.1";
-
-            //new clients
-            TcpClient client = new TcpClient(ip, port);
-
-            //new stream
-            NetworkStream stream = client.GetStream();
-
+            string message = "", username = "", password = "";
             NetFunctions nf = new NetFunctions();
+            TcpClient client = new TcpClient();
+            NetworkStream stream = null;
+            try
+            {
+                //make username and password
+                username = username1.Text;
+                password = Password.Text;
 
-            //read returning message
-            string message = nf.Login(stream, username, password);
+                //standard values
+                const Int32 port = 8080;
+                const string ip = "127.0.0.1";
 
+                //new clients
+                client = new TcpClient(ip, port);
+
+                //new stream
+                stream = client.GetStream();
+
+
+
+                //read returning message
+                message = nf.Login(stream, username, password);
+            }
+            catch
+            {
+                message = "Could not connect to databse";
+                username = "lol";
+            }
 
 
             //give popup if the username wasn't empty
@@ -60,8 +71,11 @@ namespace gui
             //actually that someone has logged in
             if(nf.id != 0)
             {
-                MainWindow win = new MainWindow(client, username, password, 0);
+                MainWindow win = new MainWindow(username, password, 0);
+                Thread connect = new Thread(() => win.InitConnection());
+                connect.Start();
                 Thread listen = new Thread(() => win.ListenerAsync());
+                listen.Start();
                 win.Show();
             }
         }
