@@ -53,8 +53,8 @@ namespace ChatServer
                 try
                 {
                     SqliteConnection.CreateFile("users.sqlite");
-                    SqliteConnection scon = new SqliteConnection("Data Source=users.sqlite;Version=3;");
-                    scon.Open();
+                    sqlitecon = new SqliteConnection("Data Source=users.sqlite;Version=3;");
+                    sqlitecon.Open();
 
                     StringBuilder sb = new StringBuilder();
                     sb.Append("CREATE TABLE users (");
@@ -64,7 +64,7 @@ namespace ChatServer
                     sb.Append("online   BIT NULL,");
                     sb.Append("PRIMARY KEY (Id, username)");
                     sb.Append(");");
-                    SqliteCommand command = new SqliteCommand(sb.ToString(), scon);
+                    SqliteCommand command = new SqliteCommand(sb.ToString(), sqlitecon);
                     command.ExecuteNonQuery();
 
                     StringBuilder ub = new StringBuilder();
@@ -78,7 +78,7 @@ namespace ChatServer
                     sb.Append("FOREIGN KEY (idfrom) REFERENCES users(Id),");
                     sb.Append("FOREIGN KEY (idto) REFERENCES users(Id)");
                     sb.Append(");");
-                    SqliteCommand command2 = new SqliteCommand(ub.ToString(), scon);
+                    SqliteCommand command2 = new SqliteCommand(ub.ToString(), sqlitecon);
                     command2.ExecuteNonQuery();
 
                 }
@@ -203,6 +203,16 @@ namespace ChatServer
             }
             catch
             {
+                try
+                {
+                    SqliteCommand sqliteCommand = new SqliteCommand(query, sqlitecon);
+                    sqliteCommand.ExecuteNonQuery();
+                    return true;
+                }
+                catch
+                {
+                    Console.WriteLine("Sqliteconnection also failed");
+                }
                 Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "The query: \"" + query + "\" failed to be executed.");
                 return false;
             }
@@ -217,15 +227,30 @@ namespace ChatServer
                 SqlDataReader reader = sqlcommand.ExecuteReader();
                 return reader;
 
+
             }
             catch
             {
+                try
+                {
+                    SqliteCommand sqliteCommand = new SqliteCommand(query, sqlitecon);
+                    sqliteCommand.ExecuteScalar();
+                    SqliteDataAdapter sqla = new SqliteDataAdapter(sqliteCommand);
+                    DataSet ds = new DataSet();
+                    sqla.Fill(ds);
+                    
+                }
+                catch
+                {
+
+                }
                 Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "The query: \"" + query + "\" failed to be executed.");
                 return null;
             }
         }
 
         private SqlConnection connection;
+        private SqliteConnection sqlitecon;
         private int userId;
         private bool ingelogd;
     }
