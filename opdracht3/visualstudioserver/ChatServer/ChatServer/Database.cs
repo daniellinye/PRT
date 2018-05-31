@@ -38,6 +38,7 @@ namespace ChatServer
             {
                 SQLiteConnection.CreateFile("users.sqlite");
                 connection = new SQLiteConnection("Data Source=users.sqlite;Version=3;");
+                connection.Open();
 
                 StringBuilder sb = new StringBuilder();
                 sb.Append("CREATE TABLE users (");
@@ -66,27 +67,10 @@ namespace ChatServer
 
                 Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "Connection Successful");
             }
-            catch
+            catch(Exception e)
             {
-                try
-                {
-                    string connstring = "Integrated Security=SSPI;Persist Security Info=False;Initial Catalog=ccwebgrity;Data Source=SURAJIT\\SQLEXPRESS";
-
-                    string users = @"users.sql";
-                    string path = File.ReadAllText(Path.GetFullPath(users));
-
-                    connection = new SQLiteConnection(connstring);
-                    SqlCommand command = new SqlCommand(path);
-                    command.ExecuteNonQuery();
-                }
-                catch
-                {
-                    Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "Connection Unsuccesfull");
-                }
-                finally
-                {
-                    Console.WriteLine("First server not online, concluded we're running on Linux");
-                }
+                Console.WriteLine(e);
+                Console.WriteLine("Connection Unsuccesfull");
 
             }
         }
