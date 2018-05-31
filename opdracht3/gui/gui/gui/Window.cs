@@ -88,8 +88,9 @@ namespace gui
 
                 //send actual command
                 string total = SendCommand(stream, "Login", sb.ToString());
+
                 string[] idmessage = total.Split(':');
-                id = Int32.Parse(idmessage[1]);
+                //id = Int32.Parse(idmessage[1]);
                 return idmessage[0];
             }
             catch (Exception e)

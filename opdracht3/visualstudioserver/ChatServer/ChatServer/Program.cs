@@ -13,6 +13,8 @@ namespace ChatServer
 {
     public class Program
     {
+        //parseclass
+        ParseFunctions pf = new ParseFunctions();
         //TODO: migrathe the database to linux and try testrunning on monodevelop
         //https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-migrate-restore-database?view=sql-server-linux-2017
         /*
@@ -38,21 +40,6 @@ namespace ChatServer
 
         public void Startup()
         {
-
-
-            //TODO: 
-            //TODO: System.Netsockets Exception
-            //TODO: Only one usage of each socket address, move this to an another place
-            //aka make new function to reset when is dead
-
-            DatabaseFunctions df = new DatabaseFunctions();
-
-            df.ExecuteFunction("Login", "Robert.wachtwoord");
-            df.ExecuteFunction("Login", "Daniel.wachtwoord");
-            df.ExecuteFunction("Login", "Jelle.wachtwoord");
-            df.ExecuteFunction("Login", "Yaboii.wachtwoord");
-            df.ExecuteFunction("Login", "Piet.wachtwoord");
-            df.GetUsers();
 
             Thread looper = new Thread(() => Looper());
             looper.Start();
@@ -103,8 +90,7 @@ namespace ChatServer
         //handles loginrequests
         public void LoginRequest(TcpClient client, TcpListener listen)
         {
-            //parseclass
-            ParseFunctions pf = new ParseFunctions();
+
             try
             {
                 string input = pf.Read(client.GetStream());
