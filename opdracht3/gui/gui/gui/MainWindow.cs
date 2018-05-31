@@ -26,7 +26,6 @@ public partial class MainWindow : Gtk.Window
 
     public MainWindow(string username, string password, int id) : base(Gtk.WindowType.Toplevel)
     {
-
         this.username = username;
         this.password = password;
         this.id = id;
@@ -96,8 +95,6 @@ public partial class MainWindow : Gtk.Window
             message = "Could not connect to databse";
             username = String.Empty;
         }
-
-
     }
 
     protected void OnDeleteEvent(object sender, DeleteEventArgs a)
@@ -181,11 +178,10 @@ public partial class MainWindow : Gtk.Window
 
     protected void getUsers()
     {
-        while(true)
+        NetFunctions nf = new NetFunctions();
+        while (true)
         {
-            NetFunctions nf = new NetFunctions();
-            TcpClient client = new TcpClient();
-            NetworkStream stream = null;
+
             string message;
             try
             {
@@ -195,22 +191,24 @@ public partial class MainWindow : Gtk.Window
                 const string ip = "127.0.0.1";
 
                 //new clients
-                client = new TcpClient(ip, port);
+                TcpClient client = new TcpClient(ip, port);
 
-                stream = client.GetStream();
+                NetworkStream stream = client.GetStream();
 
                 //sendmessage
-                var users = nf.GetUsers(stream);
+                List<string> users = nf.GetUsers(stream);
                 int i = 0;
-                foreach(string user in users)
-                {
-                    buttons[i].Label = user;
-                    labels[i].Text = user;
-                    i++;
-                }
+                if(i < buttons.Count)
+                    foreach(string user in users)
+                    {
+                        buttons[i].Label = user;
+                        labels[i].Text = user;
+                        i++;
+                    }
             }
-            catch
+            catch(Exception e)
             {
+                label1.Text = e.ToString();
                 message = "Could not connect to databse";
                 username = String.Empty;
             }
