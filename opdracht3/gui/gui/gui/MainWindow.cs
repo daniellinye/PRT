@@ -99,7 +99,7 @@ public partial class MainWindow : Gtk.Window
 
     }
 
-    protected async void Sender(string input)
+    protected void Sender(string input)
     {
         NetworkStream stream = client.GetStream();
         nf.Message(stream, username, "Piet", input);
@@ -109,10 +109,16 @@ public partial class MainWindow : Gtk.Window
     {
         entry1.Text = "";
 
+        if(entry1.Text != "")
+        {
+            //thread sender
+            Thread send = new Thread(()=> Sender(entry1.Text));
+            send.Start();
+        }
 
-        label17.Text = "yy";
-        //thread sender
-
+        //thread listener
+        Thread listen = new Thread(() => ListenerAsync());
+        listen.Start();
         
 
         //        MessageDialog dlog = new MessageDialog
