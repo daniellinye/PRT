@@ -66,6 +66,13 @@ namespace ChatServer
                 SQLiteCommand command2 = new SQLiteCommand(ub.ToString(), connection);
                 command2.ExecuteNonQuery();
                 Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "Connection Successful");
+
+                ExecuteFunction("Login", "Robert.wachtwoord");
+                ExecuteFunction("Login", "Daniel.wachtwoord");
+                ExecuteFunction("Login", "Jelle.wachtwoord");
+                ExecuteFunction("Login", "Yaboii.wachtwoord");
+                ExecuteFunction("Login", "Piet.wachtwoord");
+                GetUsers();
             }
             catch(Exception e)
             {
