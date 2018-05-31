@@ -2,10 +2,19 @@
 using System;
 using Gtk;
 using System.IO;
+using System.Threading
 
 
 public partial class MainWindow : Gtk.Window
 {
+    Thread t = new Thread(Receive);
+    T.Start();
+
+    static void Receive()
+    {
+        
+    }
+
     public static string passingtext;
 
     public MainWindow() : base(Gtk.WindowType.Toplevel)
@@ -55,13 +64,13 @@ public partial class MainWindow : Gtk.Window
     {
         int hoi = Convert.ToInt32(persoonbar.Value);
 
-        button1.Label = hoi.ToString();
+        button1.Label = hoi.ToString(); //ask for *th user online
         hoi++;
-        button2.Label = hoi.ToString();
+        button2.Label = hoi.ToString(); //ask for *th +1 user online
         hoi++;
-        button3.Label = hoi.ToString();
+        button3.Label = hoi.ToString(); //ask for *th +2 user online
         hoi++;
-        button4.Label = hoi.ToString();
+        button4.Label = hoi.ToString(); //ask for *th +3 user online
         hoi++;
         button5.Label = hoi.ToString();
         hoi++;
