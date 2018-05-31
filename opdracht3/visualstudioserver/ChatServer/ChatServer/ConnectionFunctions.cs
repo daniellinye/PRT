@@ -202,9 +202,9 @@ namespace ChatServer
             return false;
         }
 
-        public bool Logout(string username, string password, TcpClient client)
+        public bool Logout(string username, int sessionid, TcpClient client)
         {
-
+            cf.LogoutUser(username, sessionid);
             return false;
         }
 

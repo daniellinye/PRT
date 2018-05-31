@@ -9,7 +9,6 @@ using System.Threading;
 public partial class MainWindow : Gtk.Window
 {
     Thread hey = new Thread(Receive);
-   
 
     static void Receive()
     {
