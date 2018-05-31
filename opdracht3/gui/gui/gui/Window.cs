@@ -15,7 +15,9 @@ namespace gui
             this.Build();
         }
 
-        protected void Klick_login(object sender, EventArgs e)
+
+
+        protected void click(object sender, EventArgs e)
         {
             //make username and password
             string username = username1.Text;
@@ -51,13 +53,11 @@ namespace gui
                 dlog.Run();
                 dlog.Destroy();
             }
-
             //close client
             //TODO: replace this here when message is 
             //actually that someone has logged in
             stream.Close();
             client.Close();
-
         }
     }
 
@@ -75,6 +75,8 @@ namespace gui
 
         //sends a login command to the server
         //FORMAT; Login:"username"."password"
+        //sends a login command to the server
+        //FORMAT; Login:"username"."password"
         public string Login(NetworkStream stream, string username, string password)
         {
             try
@@ -90,9 +92,9 @@ namespace gui
                 id = Int32.Parse(idmessage[1]);
                 return idmessage[0];
             }
-            catch
-            {
-                return "Invalid Login";
+            catch (Exception e)
+            {   
+                return e.ToString();
             }
 
         }
