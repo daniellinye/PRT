@@ -367,6 +367,7 @@ public partial class MainWindow
 		this.entry1.Activated += new global::System.EventHandler(this.sendmessages);
 		this.persoonbar.ChangeValue += new global::Gtk.ChangeValueHandler(this.scroll);
 		this.button1.Clicked += new global::System.EventHandler(this.user1);
+		this.button2.Clicked += new global::System.EventHandler(this.user2);
 		this.button3.Clicked += new global::System.EventHandler(this.user3);
 		this.button4.Clicked += new global::System.EventHandler(this.user4);
 		this.button5.Clicked += new global::System.EventHandler(this.user5);

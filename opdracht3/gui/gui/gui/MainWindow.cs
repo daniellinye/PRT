@@ -1,14 +1,16 @@
 ﻿using System.Text;
+using System.Collections.Generic;
 using System;
 using Gtk;
 using System.IO;
-using System.Threading
+using System.Threading;
 
 
 public partial class MainWindow : Gtk.Window
 {
     Thread t = new Thread(Receive);
-    T.Start();
+   
+    t.Start ();
 
     static void Receive()
     {
