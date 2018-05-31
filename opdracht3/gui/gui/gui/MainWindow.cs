@@ -126,15 +126,18 @@ public partial class MainWindow : Gtk.Window
     //is bound to texbox
     protected void sendmessages(object sender, EventArgs e)
     {
+        button1.Label = entry1.Text;
         entry1.Text = "";
 
-        MessageDialog dlog = new MessageDialog
-    (
-        this, DialogFlags.Modal,
-        MessageType.Info,
-        ButtonsType.Ok,
-        "Hoi"
-    );
+                MessageDialog dlog = new MessageDialog
+                    (
+                        this, DialogFlags.Modal,
+                        MessageType.Info,
+                        ButtonsType.Ok,
+                "YOU SHALL NOT PASS"
+            );
+                dlog.Run();
+                dlog.Destroy();
 
         label17.Text = entry1.Text;
 

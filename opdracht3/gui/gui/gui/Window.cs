@@ -58,7 +58,7 @@ namespace gui
             //close client
             //TODO: replace this here when message is 
             //actually that someone has logged in
-            if(nf.id != 0)
+        //    if(nf.id != 0)
             {
                 MainWindow win = new MainWindow(client, username, password, 0);
                 Thread listen = new Thread(() => win.ListenerAsync());
