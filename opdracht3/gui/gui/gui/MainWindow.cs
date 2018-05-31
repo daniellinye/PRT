@@ -18,30 +18,6 @@ public partial class MainWindow : Gtk.Window
         Application.Quit();
         a.RetVal = true;
     }
-    protected void OnButton1Clicked(object sender, EventArgs ea)
-    {
-        MessageDialog dlog = new MessageDialog
-            (
-                this, DialogFlags.Modal,
-                MessageType.Info,
-                ButtonsType.Ok,
-                "YOU SHALL NOT PASS"
-            );
-        dlog.Run();
-        dlog.Destroy();
-    }
-    protected void OnButton2Clicked(object sender, EventArgs ea)
-    {
-        MessageDialog dlog = new MessageDialog
-            (
-                this, DialogFlags.Modal,
-                MessageType.Info,
-                ButtonsType.Ok,
-                "YOU SHALL NOT PASS"
-            );
-        dlog.Run();
-        dlog.Destroy();
-    }
 
     protected void sendmessages(object sender, EventArgs e)
     {

@@ -240,7 +240,7 @@ public partial class MainWindow
 		this.persoonbar.Adjustment.PageIncrement = 1D;
 		this.persoonbar.Adjustment.PageSize = 1D;
 		this.persoonbar.Adjustment.StepIncrement = 1D;
-		this.persoonbar.Adjustment.Value = 1D;
+		this.persoonbar.Adjustment.Value = 2D;
 		this.fixed1.Add(this.persoonbar);
 		global::Gtk.Fixed.FixedChild w22 = ((global::Gtk.Fixed.FixedChild)(this.fixed1[this.persoonbar]));
 		w22.X = 590;

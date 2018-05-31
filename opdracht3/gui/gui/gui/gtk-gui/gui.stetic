@@ -216,7 +216,7 @@
             <property name="PageIncrement">1</property>
             <property name="PageSize">1</property>
             <property name="StepIncrement">1</property>
-            <property name="Value">1</property>
+            <property name="Value">2</property>
             <signal name="ChangeValue" handler="scroll" />
           </widget>
           <packing>
