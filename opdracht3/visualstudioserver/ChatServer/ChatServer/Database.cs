@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.Data.SqlTypes;
 using System.IO;
+using System.Data.SQLite;
 
 
 namespace ChatServer
@@ -35,11 +36,34 @@ namespace ChatServer
             connection = null;
             try
             {
-                string localpath = @"users.mdf";
-                connection = new SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=" + (Path.GetFullPath(localpath) + ";Integrated Security=True"));
-                Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "Opening connection");
-                connection.Open();
-                
+                SQLiteConnection.CreateFile("users.sqlite");
+                connection = new SQLiteConnection("Data Source=users.sqlite;Version=3;");
+
+                StringBuilder sb = new StringBuilder();
+                sb.Append("CREATE TABLE users (");
+                sb.Append("Id       INT NOT NULL,");
+                sb.Append("username VARCHAR(10) NOT NULL,");
+                sb.Append("password VARCHAR(10) NOT NULL,");
+                sb.Append("online   BIT NULL,");
+                sb.Append("PRIMARY KEY (Id, username)");
+                sb.Append(");");
+                SQLiteCommand command = new SQLiteCommand(sb.ToString(), connection);
+                command.ExecuteNonQuery();
+
+                StringBuilder ub = new StringBuilder();
+                sb.Append("CREATE TABLE Messages (");
+                sb.Append("Mid       INT NOT NULL,");
+                sb.Append("description VARCHAR(255) NOT NULL,");
+                sb.Append("idfrom    INT NOT NULL,");
+                sb.Append("idto      INT NOT NULL,");
+                sb.Append("date      DATETIME");
+                sb.Append("PRIMARY KEY CLUSTERED(Mid ASC),");
+                sb.Append("FOREIGN KEY (idfrom) REFERENCES users(Id),");
+                sb.Append("FOREIGN KEY (idto) REFERENCES users(Id)");
+                sb.Append(");");
+                SQLiteCommand command2 = new SQLiteCommand(ub.ToString(), connection);
+                command2.ExecuteNonQuery();
+
                 Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "Connection Successful");
             }
             catch
@@ -51,7 +75,7 @@ namespace ChatServer
                     string users = @"users.sql";
                     string path = File.ReadAllText(Path.GetFullPath(users));
 
-                    connection = new SqlConnection(connstring);
+                    connection = new SQLiteConnection(connstring);
                     SqlCommand command = new SqlCommand(path);
                     command.ExecuteNonQuery();
                 }
@@ -96,7 +120,7 @@ namespace ChatServer
             try
             {
                 bool exists = false;
-                SqlDataReader reader = FetchData("SELECT * FROM users WHERE username='" + username + "'");
+                SQLiteDataReader reader = FetchData("SELECT * FROM users WHERE username='" + username + "'");
                 while (reader != null && reader.Read())
                 {
                     exists = true;
@@ -159,7 +183,7 @@ namespace ChatServer
                 List<Message> messages = new List<Message>();
                 List<string> returnmessages = new List<string>();
 
-                SqlDataReader reader = FetchData("SELECT * FROM Messages WHERE (idfrom=" + GetId(username) +
+                SQLiteDataReader reader = FetchData("SELECT * FROM Messages WHERE (idfrom=" + GetId(username) +
                     " AND idto=" + GetId(recieving) + ")" + "OR idto=" + GetId(username) + " AND idfrom=" + GetId(recieving) + " ORDER BY datetime");
 
                 while (reader.Read())
@@ -187,15 +211,22 @@ namespace ChatServer
         {
             List<string> users = new List<string>();
 
-            SqlDataReader reader = FetchData("SELECT username FROM users WHERE online=1");
-
-            while (reader.Read())
+            SQLiteDataReader reader = FetchData("SELECT username FROM users WHERE online=1");
+            try
             {
-                users.Add((string)reader["username"]);
-                Console.WriteLine(reader["username"]);
+                while (reader.Read())
+                {
+                    users.Add((string)reader["username"]);
+                    Console.WriteLine(reader["username"]);
+                }
+
+                reader.Close();
+            }
+            catch
+            {
+
             }
 
-            reader.Close();
             return users;
         }
 
@@ -206,7 +237,7 @@ namespace ChatServer
             {
                 int id;
 
-                SqlDataReader reader = FetchData("SELECT id FROM users WHERE username='" + username + "'");
+                SQLiteDataReader reader = FetchData("SELECT id FROM users WHERE username='" + username + "'");
                 reader.Read();
                 id = (int)reader["id"];
                 reader.Close();
@@ -225,7 +256,7 @@ namespace ChatServer
         {
             string username;
 
-            SqlDataReader reader = FetchData("SELECT username FROM users WHERE id='" + id + "'");
+            SQLiteDataReader reader = FetchData("SELECT username FROM users WHERE id='" + id + "'");
             reader.Read();
             username = (string)reader["username"];
             reader.Close();
@@ -238,7 +269,7 @@ namespace ChatServer
         {
             bool ingelogd = false;
 
-            SqlDataReader reader = FetchData("SELECT online FROM users WHERE username='" + username + "'");
+            SQLiteDataReader reader = FetchData("SELECT online FROM users WHERE username='" + username + "'");
             while(reader.Read())
             {
                 ingelogd = (bool)reader["online"];
@@ -252,7 +283,7 @@ namespace ChatServer
         private int NewMessageId ()
         {
             List<string> messages = new List<string>();
-            SqlDataReader reader = FetchData("SELECT * FROM Messages");
+            SQLiteDataReader reader = FetchData("SELECT * FROM Messages");
 
             while (reader.Read())
             {
@@ -267,7 +298,7 @@ namespace ChatServer
         private int NewUserId()
         {
             List<string> users = new List<string>();
-            SqlDataReader reader = FetchData("SELECT * FROM users");
+            SQLiteDataReader reader = FetchData("SELECT * FROM users");
 
             while (reader.Read())
             {
@@ -283,7 +314,7 @@ namespace ChatServer
         {
             try
             {
-                SqlCommand sqlcommand = new SqlCommand(query, connection);
+                SQLiteCommand sqlcommand = new SQLiteCommand(query, connection);
                 sqlcommand.ExecuteNonQuery();
                 return true;
             }
@@ -296,12 +327,12 @@ namespace ChatServer
 
         //executes sql query and returns the data as an SqlDataReader
         //after using this function and getting the data from the reader, the reader needs to be closed
-        public SqlDataReader FetchData(string query)
+        public SQLiteDataReader FetchData(string query)
         {
             try
             {
-                SqlCommand sqlcommand = new SqlCommand(query, connection);
-                SqlDataReader reader = sqlcommand.ExecuteReader();
+                SQLiteCommand sqlcommand = new SQLiteCommand(query, connection);
+                SQLiteDataReader reader = sqlcommand.ExecuteReader();
                 return reader;
 
             }
@@ -312,7 +343,7 @@ namespace ChatServer
             }
         }
 
-        readonly private SqlConnection connection;
+        readonly private SQLiteConnection connection;
     }
 
 }
