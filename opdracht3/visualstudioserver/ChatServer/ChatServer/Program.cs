@@ -45,7 +45,7 @@ namespace ChatServer
             looper.Start();
         }
 
-        public async void Looper()
+        public void Looper()
         {
             try
             {
@@ -76,8 +76,6 @@ namespace ChatServer
                         newuser = false;
                         Thread restart = new Thread(new ThreadStart(Startup));
                         restart.Start();
-                        await Task.Run(() =>ListenToNewUser(client, listen, cf, cf.GetMostRecent().ReturnId()));
-                        
                     }
                 }
             }
