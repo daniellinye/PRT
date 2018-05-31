@@ -34,7 +34,7 @@ namespace ChatServer
         static void Main(string[] args)
         {
             Program p = new Program();
-            Console.WriteLine("did stuff");
+            Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Initialized TcpListener");
             p.Startup();
         }
 
@@ -59,7 +59,7 @@ namespace ChatServer
                 ConnectionFunctions cf = new ConnectionFunctions();
                 IPAddress iaddress = IPAddress.Parse(ip);
                 TcpListener listen = new TcpListener(iaddress, port);
-                Console.WriteLine("Starting");
+                Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Starting");
                 listen.Start();
 
                 //connect client
@@ -84,7 +84,7 @@ namespace ChatServer
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                Console.WriteLine("Tried new socket, but crashed");
+                Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Tried new socket, but crashed");
                 Console.ReadLine();
             }
         }
@@ -96,26 +96,26 @@ namespace ChatServer
             try
             {
                 string input = pf.Read(client.GetStream());
-                Console.WriteLine("input:" + input);
+                Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "input:" + input);
 
                 if (input != String.Empty)
                 {
                     if (pf.Parser(input, client))
                     {
                         newuser = true;
-                        Console.WriteLine("User Logged in");
+                        Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "User Logged in");
                         return;
                     }
                     else
                     {
-                        pf.StreamWrite("Invalid login", client.GetStream());
+                        pf.StreamWrite(DateTime.Now.ToString("[HH:mm:ss] ") + "Invalid login", client.GetStream());
                     }
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                Console.WriteLine("Loginrequest problems");
+                Console.WriteLine("\n" + e + "\n");
+                Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Loginrequest problems");
             }
             finally
             {
@@ -151,8 +151,8 @@ namespace ChatServer
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-                Console.WriteLine("User {0} was forcibly logged out.", cf.GetName(id).ReturnName());
+                Console.WriteLine("\n" + e + "\n");
+                Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "User {0} was forcibly logged out.", cf.GetName(id).ReturnName());
             }
             finally
             {

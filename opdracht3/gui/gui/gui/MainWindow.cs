@@ -149,15 +149,6 @@ public partial class MainWindow : Gtk.Window
     //is bound to texbox
     protected void sendmessages(object sender, EventArgs e)
     {
-  
-
-        MessageDialog dlog = new MessageDialog
-        (
-            this, DialogFlags.Modal,
-            MessageType.Info,
-            ButtonsType.Ok,
-            "Hoi"
-        );
 
         label17.Text = entry1.Text;
 

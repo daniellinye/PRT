@@ -42,6 +42,7 @@ namespace gui
 			this.Password.CanFocus = true;
 			this.Password.Name = "Password";
 			this.Password.IsEditable = true;
+			this.Password.Visibility = false;
 			this.Password.InvisibleChar = '•';
 			this.fixed2.Add(this.Password);
 			global::Gtk.Fixed.FixedChild w2 = ((global::Gtk.Fixed.FixedChild)(this.fixed2[this.Password]));

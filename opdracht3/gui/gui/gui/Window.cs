@@ -69,15 +69,24 @@ namespace gui
             //close client
             //TODO: replace this here when message is 
             //actually that someone has logged in
-            if(nf.id != 0)
+        //    if(nf.id != 0)
             {
                 MainWindow win = new MainWindow(username, password, 0);
                 Thread connect = new Thread(() => win.InitConnection());
                 connect.Start();
                 Thread listen = new Thread(() => win.ListenerAsync());
-                listen.Start();
+                //listen.Start();
                 win.Show();
             }
+        }
+
+        protected void regristreren(object sender, EventArgs e) 
+        {
+            //TODO: tell server to make a new useraccount
+
+            //make username and password
+            string username = username1.Text;
+            string password = Password.Text;
         }
     }
 

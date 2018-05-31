@@ -50,11 +50,11 @@ namespace ChatServer
             {
                 if (c.Equals(client))
                 {
-                    Console.WriteLine("User " + name + " is already logged in");
+                    Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "User: " + name + " is already logged in");
                     id = c.ReturnId();
                 }
             }
-            Console.WriteLine("User: " + name + " Logged in");
+            Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "User: " + name + " Logged in");
             clients.Add(new TcpUsers(client, name, id));
         }
 
@@ -69,7 +69,7 @@ namespace ChatServer
                     return;
                 }
             }
-            Console.WriteLine("Error 404:Element was not found in list");
+            Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Error 404:Element was not found in list");
         }
 
         //pings other clients depended on the messagesender
@@ -126,18 +126,18 @@ namespace ChatServer
             //whenever a user is logged in, add the current connection to the clients of ConnectionFunctions
 
             String[] command = input.Split(':');
-            Console.WriteLine(input);
+            Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + input);
 
             switch (command[0])
             {
                 case "Ping":
-                    StreamWrite("Pong", stream);
+                    StreamWrite(DateTime.Now.ToString("[HH:mm:ss] ") + "Pong", stream);
                     break;
                 case "Login":
                     string[] lparser = command[1].Split('.');
                     string username = lparser[0];
                     string password = lparser[1];
-                    Console.WriteLine(username + "login attempt.");
+                    Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + username + "login attempt.");
                     if(Login(username, password, client))
                     {
                         cf.LoginUser(client, username);
@@ -163,8 +163,8 @@ namespace ChatServer
                     StreamWrite(df.GetMessages(gmparser[0], gmparser[1]).ToString(), stream);
                     break;
                 default:
-                    Console.WriteLine("Command " + command[0] + " was not implemented");
-                    StreamWrite("Error:001, command not found", stream);
+                    Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Command " + command[0] + " was not implemented");
+                    StreamWrite(DateTime.Now.ToString("[HH:mm:ss] ") + "Error:001, command not found", stream);
                     break;
             }
             return false;

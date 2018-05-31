@@ -36,47 +36,54 @@ namespace ChatServer
             connection = null;
             try
             {
-                SQLiteConnection.CreateFile("users.sqlite");
                 connection = new SQLiteConnection("Data Source=users.sqlite;Version=3;");
                 connection.Open();
 
-                StringBuilder sb = new StringBuilder();
-                sb.Append("CREATE TABLE users (");
-                sb.Append("Id       INT NOT NULL,");
-                sb.Append("username VARCHAR(10) NOT NULL,");
-                sb.Append("password VARCHAR(10) NOT NULL,");
-                sb.Append("online   BIT NULL,");
-                sb.Append("PRIMARY KEY (Id, username)");
-                sb.Append(");");
-                SQLiteCommand command = new SQLiteCommand(sb.ToString(), connection);
-                command.ExecuteNonQuery();
+                try
+                {
+                    StringBuilder sb = new StringBuilder();         //creates table users, if it does not exist already
+                    sb.Append("CREATE TABLE users (");
+                    sb.Append("Id       INT NOT NULL,");
+                    sb.Append("username VARCHAR(10) NOT NULL,");
+                    sb.Append("password VARCHAR(10) NOT NULL,");
+                    sb.Append("online   BIT NULL,");
+                    sb.Append("PRIMARY KEY (Id, username)");
+                    sb.Append(");");
+                    SQLiteCommand command = new SQLiteCommand(sb.ToString(), connection);
+                    command.ExecuteNonQuery();
+                }
+                catch
+                {
 
-                StringBuilder ub = new StringBuilder();
-                ub.Append("CREATE TABLE Messages (");
-                ub.Append("Mid       INT PRIMARY KEY NOT NULL,");
-                ub.Append("description VARCHAR(255) NOT NULL,");
-                ub.Append("idfrom    INT NOT NULL,");
-                ub.Append("idto      INT NOT NULL,");
-                ub.Append("date      DATETIME,");
-                ub.Append("FOREIGN KEY (idfrom) REFERENCES users(Id),");
-                ub.Append("FOREIGN KEY (idto) REFERENCES users(Id)");
-                ub.Append(");");
-                SQLiteCommand command2 = new SQLiteCommand(ub.ToString(), connection);
-                command2.ExecuteNonQuery();
+                }
+                try
+                {
+                    StringBuilder ub = new StringBuilder();
+                    ub.Append("CREATE TABLE Messages (");
+                    ub.Append("Mid       INT PRIMARY KEY NOT NULL,");
+                    ub.Append("description VARCHAR(255) NOT NULL,");
+                    ub.Append("idfrom    INT NOT NULL,");
+                    ub.Append("idto      INT NOT NULL,");
+                    ub.Append("date      DATETIME,");
+                    ub.Append("FOREIGN KEY (idfrom) REFERENCES users(Id),");
+                    ub.Append("FOREIGN KEY (idto) REFERENCES users(Id)");
+                    ub.Append(");");
+                    SQLiteCommand command2 = new SQLiteCommand(ub.ToString(), connection);
+                    command2.ExecuteNonQuery();
+                }
+                catch
+                {
 
-                ExecuteFunction("Login", "Robert.wachtwoord");
-                ExecuteFunction("Login", "Daniel.wachtwoord");
-                ExecuteFunction("Login", "Jelle.wachtwoord");
-                ExecuteFunction("Login", "Yaboii.wachtwoord");
-                ExecuteFunction("Login", "Piet.wachtwoord");
-                GetUsers();
+                }
 
-                Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "Connection Successful");
+                LogIn("Frank","wachtwoord");
+
+                Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Connection Successful.");
             }
             catch(Exception e)
             {
-                Console.WriteLine(e);
-                Console.WriteLine("Connection Unsuccesfull");
+                Console.WriteLine("\n" + e + "\n");
+                Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Connection Unsuccesfull.");
 
             }
         }
@@ -97,7 +104,7 @@ namespace ChatServer
                     parser = args.Split('.');
                     return SendMessage(parser[0], parser[1], parser[2]);
                 default:
-                    Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "DatabaseFunction: " + function + " not recognized or implemented.");
+                    Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "DatabaseFunction: " + function + " not recognized or implemented.");
                     break;
             }
 
@@ -116,14 +123,14 @@ namespace ChatServer
                     exists = true;
                     if ((string)reader["password"] == password)
                     {                        
-                        Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "User: " + username + ", is logged in.");
+                        Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "User: " + username + ", is logged in.");
                         reader.Close();
                         Executecommand("UPDATE users SET online=1 WHERE username='" + username + "'");
                         return true;
                     }
                     else
                     {
-                        Console.WriteLine(DateTime.Now.ToString("[hh: mm:ss] ") + "Password incorrect.");
+                        Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Password incorrect.");
                     }
                 }
                 reader.Close();
@@ -135,7 +142,7 @@ namespace ChatServer
             }
             catch
             {
-                Console.WriteLine("Log in attempt failed.");
+                Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Log in attempt failed.");
                 return false;
             }
         }
@@ -150,7 +157,7 @@ namespace ChatServer
             }
             catch
             {
-                Console.WriteLine("Failed to create new user");
+                Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Failed to create new user.");
                 return false;
             }
         }
@@ -236,7 +243,7 @@ namespace ChatServer
             }
             catch
             {
-                Console.WriteLine("Could not find id from user: " + username);
+                Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Could not find id from user: " + username);
                 return -1;
             }
         }
@@ -310,7 +317,7 @@ namespace ChatServer
             }
             catch
             {
-                Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "The query: \"" + query + "\" failed to be executed.");
+                Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "The query: \"" + query + "\" failed to be executed.");
                 return false;
             }
         }
@@ -328,7 +335,7 @@ namespace ChatServer
             }
             catch
             {
-                Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "The query: \"" + query + "\" failed to be executed.");
+                Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "The query: \"" + query + "\" failed to be executed.");
                 return null;
             }
         }
