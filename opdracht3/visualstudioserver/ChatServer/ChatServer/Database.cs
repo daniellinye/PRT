@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Data;
 using System.Threading.Tasks;
 using System.Data.SqlClient;
 using System.Data.SqlTypes;
+using System.Data.Sql;
 using System.IO;
-
+using Mono.Data.Sqlite;
 
 namespace ChatServer
 {
@@ -48,6 +50,43 @@ namespace ChatServer
             }
             catch
             {
+                try
+                {
+                    SqliteConnection.CreateFile("users.sqlite");
+                    SqliteConnection scon = new SqliteConnection("Data Source=users.sqlite;Version=3;");
+                    scon.Open();
+
+                    StringBuilder sb = new StringBuilder();
+                    sb.Append("CREATE TABLE users (");
+                    sb.Append("Id       INT NOT NULL,");
+                    sb.Append("username VARCHAR(10) NOT NULL,");
+                    sb.Append("password VARCHAR(10) NOT NULL,");
+                    sb.Append("online   BIT NULL,");
+                    sb.Append("PRIMARY KEY (Id, username)");
+                    sb.Append(");");
+                    SqliteCommand command = new SqliteCommand(sb.ToString(), scon);
+                    command.ExecuteNonQuery();
+
+                    StringBuilder ub = new StringBuilder();
+                    sb.Append("CREATE TABLE Messages (");
+                    sb.Append("Mid       INT NOT NULL,");
+                    sb.Append("description VARCHAR(255) NOT NULL,");
+                    sb.Append("idfrom    INT NOT NULL,");
+                    sb.Append("idto      INT NOT NULL,");
+                    sb.Append("date      DATETIME");
+                    sb.Append("PRIMARY KEY CLUSTERED(Mid ASC),");
+                    sb.Append("FOREIGN KEY (idfrom) REFERENCES users(Id),");
+                    sb.Append("FOREIGN KEY (idto) REFERENCES users(Id)");
+                    sb.Append(");");
+                    SqliteCommand command2 = new SqliteCommand(ub.ToString(), scon);
+                    command2.ExecuteNonQuery();
+
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+
                 Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "Connection Unsuccesfull");
             }
         }

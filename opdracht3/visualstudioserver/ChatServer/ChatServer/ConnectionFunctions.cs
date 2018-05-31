@@ -11,7 +11,6 @@ using ChatServer;
 
 namespace ChatServer
 {
-
     //is a stuct such that we can give users variables whilst online
     public class TcpUsers : TcpClient
     {

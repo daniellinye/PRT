@@ -13,7 +13,8 @@ namespace ChatServer
 {
     public class Program
     {
-
+        //TODO: migrathe the database to linux and try testrunning on monodevelop
+        //https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-migrate-restore-database?view=sql-server-linux-2017
         /*
          explanation login and pingpong:
          if ping
