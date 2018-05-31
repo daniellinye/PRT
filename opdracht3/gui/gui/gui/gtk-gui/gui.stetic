@@ -385,6 +385,16 @@
           </packing>
         </child>
         <child>
+          <widget class="Gtk.VSeparator" id="vseparator1">
+            <property name="MemberName" />
+            <property name="HeightRequest">390</property>
+          </widget>
+          <packing>
+            <property name="X">480</property>
+            <property name="Y">18</property>
+          </packing>
+        </child>
+        <child>
           <widget class="Gtk.VScrollbar" id="vscrollbar1">
             <property name="MemberName" />
             <property name="HeightRequest">400</property>
@@ -394,18 +404,8 @@
             <property name="StepIncrement">1</property>
           </widget>
           <packing>
-            <property name="X">462</property>
-            <property name="Y">10</property>
-          </packing>
-        </child>
-        <child>
-          <widget class="Gtk.VSeparator" id="vseparator1">
-            <property name="MemberName" />
-            <property name="HeightRequest">390</property>
-          </widget>
-          <packing>
-            <property name="X">480</property>
-            <property name="Y">18</property>
+            <property name="X">448</property>
+            <property name="Y">13</property>
           </packing>
         </child>
       </widget>

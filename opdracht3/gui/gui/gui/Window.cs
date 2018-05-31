@@ -56,9 +56,8 @@ namespace gui
             //close client
             //TODO: replace this here when message is 
             //actually that someone has logged in
-
-            stream.Close();
-            client.Close();
+            MainWindow win = new MainWindow(client, username, password, 0);
+            win.Show();
         }
     }
 
@@ -106,6 +105,8 @@ namespace gui
         {
             StringBuilder sb = new StringBuilder();
             //TODO: insert id as parameter when using the client
+            sb.Append("Message");
+            sb.Append(":");
             sb.Append(username);
             sb.Append(",");
             sb.Append(recipient);
@@ -113,7 +114,7 @@ namespace gui
             sb.Append(message);
 
             //send actual command
-            return SendCommand(stream, "Message", sb.ToString());
+            return StreamWrite(sb.ToString(), stream);
         }
 
         //ALWAYS USE THIS COMMAND IN ORDER TO PREVENT DEADLOCK
