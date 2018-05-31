@@ -147,6 +147,12 @@ namespace gui
             return StreamWrite(sb.ToString(), stream);
         }
 
+        public string GetUsers(NetworkStream stream)
+        {
+             StreamWrite("GetUsers", stream);
+            return Read(stream);
+        }
+
         //ALWAYS USE THIS COMMAND IN ORDER TO PREVENT DEADLOCK
         //except pingpong, pingpong is always fine
         public string SendCommand(NetworkStream stream, string commandtype, string args)
@@ -170,6 +176,13 @@ namespace gui
             //Make it so I can actually
             //Console.WriteLine(responseData);
             return responseData;
+        }
+
+        public string GetMessages(NetworkStream stream)
+        {
+            StreamWrite("GetMessages", stream);
+            return Read(stream);
+
         }
 
         public string StreamWrite(String input, NetworkStream stream)

@@ -162,6 +162,9 @@ namespace ChatServer
                     string[] gmparser = command[1].Split(',');
                     StreamWrite(df.GetMessages(gmparser[0], gmparser[1]).ToString(), stream);
                     break;
+                case "GetUsers":
+                    StreamWrite(df.GetUsers().ToString(), stream);
+                    break;
                 default:
                     Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Command " + command[0] + " was not implemented");
                     StreamWrite(DateTime.Now.ToString("[HH:mm:ss] ") + "Error:001, command not found", stream);
