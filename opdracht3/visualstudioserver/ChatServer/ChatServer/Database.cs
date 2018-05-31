@@ -41,13 +41,6 @@ namespace ChatServer
                 connection.Open();
                 
                 Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "Connection Successful");
-
-                ExecuteFunction("Login", "Robert.wachtwoord");
-                ExecuteFunction("Login", "Daniel.wachtwoord");
-                ExecuteFunction("Login", "Jelle.wachtwoord");
-                ExecuteFunction("Login", "Yaboii.wachtwoord");
-                ExecuteFunction("Login", "Piet.wachtwoord");
-                GetUsers();
             }
             catch
             {
