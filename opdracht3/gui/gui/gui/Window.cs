@@ -5,11 +5,14 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace gui
 {
     public partial class Window : Gtk.Window
     {
+        string selecteduser = "Piet";
         public Window() :
                 base(Gtk.WindowType.Toplevel)
         {
@@ -161,10 +164,18 @@ namespace gui
             return StreamWrite(sb.ToString(), stream);
         }
 
-        public string GetUsers(NetworkStream stream)
+        public List<string> GetUsers(NetworkStream stream)
         {
-             StreamWrite("GetUsers", stream);
-            return Read(stream);
+            List<string> users = new List<string>();
+            StreamWrite("GetUsers", stream);
+            string reading = Read(stream);
+
+            while(reading != "")
+            {
+                users.Add(reading);
+            }
+
+            return users;
         }
 
         //ALWAYS USE THIS COMMAND IN ORDER TO PREVENT DEADLOCK
