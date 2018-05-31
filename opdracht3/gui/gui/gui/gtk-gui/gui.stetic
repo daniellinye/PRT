@@ -249,6 +249,7 @@
             <property name="Type">TextOnly</property>
             <property name="Label" translatable="yes" />
             <property name="UseUnderline">True</property>
+            <signal name="Clicked" handler="user2" />
           </widget>
           <packing>
             <property name="X">500</property>

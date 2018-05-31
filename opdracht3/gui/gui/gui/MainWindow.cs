@@ -80,41 +80,48 @@ public partial class MainWindow : Gtk.Window
 //    {
 //    }
 
-    protected void user1(object sender, EventArgs e)
+
+    protected void user1(object sender, EventArgs e) //establish connection user on place 1
     {
     }
 
-    protected void user3(object sender, EventArgs e)
+    protected void user2(object sender, EventArgs e) //establish connection user on place 2
     {
     }
 
-    protected void user4(object sender, EventArgs e)
+    protected void user3(object sender, EventArgs e) //establish connection user on place 3
     {
     }
 
-    protected void user5(object sender, EventArgs e)
+    protected void user4(object sender, EventArgs e) //establish connection user on place 4
     {
     }
 
-    protected void user6(object sender, EventArgs e)
+    protected void user5(object sender, EventArgs e) //establish connection user on place 5
     {
     }
 
-    protected void user7(object sender, EventArgs e)
+    protected void user6(object sender, EventArgs e) //establish connection user on place 6
+    {
+    }
+
+    protected void user7(object sender, EventArgs e) //establish connection user on place 7
 	{
 	}
    
-    protected void user8(object sender, EventArgs e)
+    protected void user8(object sender, EventArgs e) //establish connection user on place 8
     {
     }
   
-    protected void user9(object sender, EventArgs e)
+    protected void user9(object sender, EventArgs e) //establish connection user on place 9
     {
     }
  
-    protected void user10(object sender, EventArgs e)
+    protected void user10(object sender, EventArgs e) //establish connection user on place 10
     {
     }
+
+
 }
 
 
