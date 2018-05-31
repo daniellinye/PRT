@@ -11,7 +11,6 @@ using ChatServer;
 
 namespace ChatServer
 {
-
     //is a stuct such that we can give users variables whilst online
     public class TcpUsers : TcpClient
     {
@@ -74,9 +73,17 @@ namespace ChatServer
         }
 
         //pings other clients depended on the messagesender
-        public void Ping(String message, int id)
+        public TcpClient Ping(String message, string name)
         {
             //TODO: implement
+            foreach (TcpUsers u in clients)
+            {
+                if(u.ReturnName() == name)
+                {
+                    return u;
+                }
+            }
+            return null;
         }
 
         public TcpUsers GetMostRecent()
@@ -150,6 +157,11 @@ namespace ChatServer
                     string message = mparser[1];
                     Message(user, recipient, message, client);
                     break;
+                case "GetMessage":
+                    //TODO: make this do between two users such that
+                    string[] gmparser = command[1].Split(',');
+                    StreamWrite(df.GetMessages(gmparser[0], gmparser[1]).ToString(), stream);
+                    break;
                 default:
                     Console.WriteLine("Command " + command[0] + " was not implemented");
                     StreamWrite("Error:001, command not found", stream);
@@ -191,22 +203,28 @@ namespace ChatServer
             return false;
         }
 
-        public bool Logout(string username, string password, TcpClient client)
+        public bool Logout(string username, int sessionid, TcpClient client)
         {
-
+            cf.LogoutUser(username, sessionid);
             return false;
         }
 
-        public void Message(string username, string password, string message, TcpClient client)
-        {
-            //TODO
-            //PING TO OTHER CLIENTS
-
-            StreamWrite("Method is not implemented yet", client.GetStream());
+        public void Message(string username, string recieving, string message, TcpClient client)
+        { 
             //PING OTHER USERS
+            TcpClient recieve = cf.Ping(message, recieving);
+            if(recieve != null)
+            {
+                StreamWrite(message, recieve.GetStream());
+                StreamWrite("Message Send", client.GetStream());
+                //TODO
+                //ADD TO DATABASE
+            }
+            else
+            {
+                StreamWrite("Could not send message", client.GetStream());
+            }
 
-            //TODO
-            //ADD TO DATABASE
         }
 
         public string LoadMessages(string username, string password, string otheruser)

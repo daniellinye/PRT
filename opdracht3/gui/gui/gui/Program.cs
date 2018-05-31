@@ -11,8 +11,9 @@ namespace gui
 			Application.Init ();
             Window login = new Window();
             login.Show();
-			MainWindow win = new MainWindow ();
-			win.Show ();
+            MainWindow win = new MainWindow();
+            win.Show();
+
 			Application.Run ();
 		}
 	}

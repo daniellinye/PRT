@@ -56,6 +56,7 @@ namespace gui
             //close client
             //TODO: replace this here when message is 
             //actually that someone has logged in
+
             stream.Close();
             client.Close();
         }

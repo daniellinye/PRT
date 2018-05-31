@@ -1,11 +1,20 @@
 ﻿using System.Text;
+using System.Collections.Generic;
 using System;
 using Gtk;
 using System.IO;
+using System.Threading;
 
 
 public partial class MainWindow : Gtk.Window
 {
+    Thread hey = new Thread(Receive);
+
+    static void Receive()
+    {
+        
+    }
+
     public static string passingtext;
 
     public MainWindow() : base(Gtk.WindowType.Toplevel)
@@ -17,30 +26,6 @@ public partial class MainWindow : Gtk.Window
     {
         Application.Quit();
         a.RetVal = true;
-    }
-    protected void OnButton1Clicked(object sender, EventArgs ea)
-    {
-        MessageDialog dlog = new MessageDialog
-            (
-                this, DialogFlags.Modal,
-                MessageType.Info,
-                ButtonsType.Ok,
-                "YOU SHALL NOT PASS"
-            );
-        dlog.Run();
-        dlog.Destroy();
-    }
-    protected void OnButton2Clicked(object sender, EventArgs ea)
-    {
-        MessageDialog dlog = new MessageDialog
-            (
-                this, DialogFlags.Modal,
-                MessageType.Info,
-                ButtonsType.Ok,
-                "YOU SHALL NOT PASS"
-            );
-        dlog.Run();
-        dlog.Destroy();
     }
 
     protected void sendmessages(object sender, EventArgs e)
@@ -79,13 +64,13 @@ public partial class MainWindow : Gtk.Window
     {
         int hoi = Convert.ToInt32(persoonbar.Value);
 
-        button1.Label = hoi.ToString();
+        button1.Label = hoi.ToString(); //ask for *th user online
         hoi++;
-        button2.Label = hoi.ToString();
+        button2.Label = hoi.ToString(); //ask for *th +1 user online
         hoi++;
-        button3.Label = hoi.ToString();
+        button3.Label = hoi.ToString(); //ask for *th +2 user online
         hoi++;
-        button4.Label = hoi.ToString();
+        button4.Label = hoi.ToString(); //ask for *th +3 user online
         hoi++;
         button5.Label = hoi.ToString();
         hoi++;
@@ -104,41 +89,48 @@ public partial class MainWindow : Gtk.Window
 //    {
 //    }
 
-    protected void user1(object sender, EventArgs e)
+
+    protected void user1(object sender, EventArgs e) //establish connection user on place 1
     {
     }
 
-    protected void user3(object sender, EventArgs e)
+    protected void user2(object sender, EventArgs e) //establish connection user on place 2
     {
     }
 
-    protected void user4(object sender, EventArgs e)
+    protected void user3(object sender, EventArgs e) //establish connection user on place 3
     {
     }
 
-    protected void user5(object sender, EventArgs e)
+    protected void user4(object sender, EventArgs e) //establish connection user on place 4
     {
     }
 
-    protected void user6(object sender, EventArgs e)
+    protected void user5(object sender, EventArgs e) //establish connection user on place 5
     {
     }
 
-    protected void user7(object sender, EventArgs e)
+    protected void user6(object sender, EventArgs e) //establish connection user on place 6
+    {
+    }
+
+    protected void user7(object sender, EventArgs e) //establish connection user on place 7
 	{
 	}
    
-    protected void user8(object sender, EventArgs e)
+    protected void user8(object sender, EventArgs e) //establish connection user on place 8
     {
     }
   
-    protected void user9(object sender, EventArgs e)
+    protected void user9(object sender, EventArgs e) //establish connection user on place 9
     {
     }
  
-    protected void user10(object sender, EventArgs e)
+    protected void user10(object sender, EventArgs e) //establish connection user on place 10
     {
     }
+
+
 }
 
 

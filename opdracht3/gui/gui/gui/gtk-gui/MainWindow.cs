@@ -240,7 +240,7 @@ public partial class MainWindow
 		this.persoonbar.Adjustment.PageIncrement = 1D;
 		this.persoonbar.Adjustment.PageSize = 1D;
 		this.persoonbar.Adjustment.StepIncrement = 1D;
-		this.persoonbar.Adjustment.Value = 1D;
+		this.persoonbar.Adjustment.Value = 2D;
 		this.fixed1.Add(this.persoonbar);
 		global::Gtk.Fixed.FixedChild w22 = ((global::Gtk.Fixed.FixedChild)(this.fixed1[this.persoonbar]));
 		w22.X = 590;
@@ -367,6 +367,7 @@ public partial class MainWindow
 		this.entry1.Activated += new global::System.EventHandler(this.sendmessages);
 		this.persoonbar.ChangeValue += new global::Gtk.ChangeValueHandler(this.scroll);
 		this.button1.Clicked += new global::System.EventHandler(this.user1);
+		this.button2.Clicked += new global::System.EventHandler(this.user2);
 		this.button3.Clicked += new global::System.EventHandler(this.user3);
 		this.button4.Clicked += new global::System.EventHandler(this.user4);
 		this.button5.Clicked += new global::System.EventHandler(this.user5);

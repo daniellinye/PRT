@@ -13,7 +13,8 @@ namespace ChatServer
 {
     public class Program
     {
-
+        //TODO: migrathe the database to linux and try testrunning on monodevelop
+        //https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-migrate-restore-database?view=sql-server-linux-2017
         /*
          explanation login and pingpong:
          if ping
@@ -47,8 +48,8 @@ namespace ChatServer
             DatabaseFunctions df = new DatabaseFunctions();
 
             df.ExecuteFunction("Login", "Robert.wachtwoord");
-            df.ExecuteFunction("Sendmessage", "1.Hello");
-            df.ExecuteFunction("Getmessages", "1");
+            df.ExecuteFunction("Sendmessage", "Robert.Hallo Piet.Piet");
+            df.GetMessages("Robert","Piet");
 
             Thread looper = new Thread(() => Looper());
             looper.Start();

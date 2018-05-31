@@ -216,7 +216,7 @@
             <property name="PageIncrement">1</property>
             <property name="PageSize">1</property>
             <property name="StepIncrement">1</property>
-            <property name="Value">1</property>
+            <property name="Value">2</property>
             <signal name="ChangeValue" handler="scroll" />
           </widget>
           <packing>
@@ -249,6 +249,7 @@
             <property name="Type">TextOnly</property>
             <property name="Label" translatable="yes" />
             <property name="UseUnderline">True</property>
+            <signal name="Clicked" handler="user2" />
           </widget>
           <packing>
             <property name="X">500</property>
@@ -381,6 +382,30 @@
           <packing>
             <property name="X">500</property>
             <property name="Y">370</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.VScrollbar" id="vscrollbar1">
+            <property name="MemberName" />
+            <property name="HeightRequest">400</property>
+            <property name="Upper">100</property>
+            <property name="PageIncrement">10</property>
+            <property name="PageSize">10</property>
+            <property name="StepIncrement">1</property>
+          </widget>
+          <packing>
+            <property name="X">462</property>
+            <property name="Y">10</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.VSeparator" id="vseparator1">
+            <property name="MemberName" />
+            <property name="HeightRequest">390</property>
+          </widget>
+          <packing>
+            <property name="X">480</property>
+            <property name="Y">18</property>
           </packing>
         </child>
       </widget>
