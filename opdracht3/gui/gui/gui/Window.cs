@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 
 namespace gui
 {
@@ -39,6 +40,7 @@ namespace gui
             string message = nf.Login(stream, username, password);
 
 
+
             //give popup if the username wasn't empty
             if (username != String.Empty)
             {
@@ -56,8 +58,12 @@ namespace gui
             //close client
             //TODO: replace this here when message is 
             //actually that someone has logged in
-            MainWindow win = new MainWindow(client, username, password, 0);
-            win.Show();
+            if(nf.id != 0)
+            {
+                MainWindow win = new MainWindow(client, username, password, 0);
+                Thread listen = new Thread(() => win.ListenerAsync());
+                win.Show();
+            }
         }
     }
 
@@ -66,7 +72,7 @@ namespace gui
     public class NetFunctions
     {
         //To be setuped when pinging server
-        int id;
+        public int id;
 
         public NetFunctions()
         {
