@@ -48,11 +48,11 @@ namespace ChatServer
             DatabaseFunctions df = new DatabaseFunctions();
 
             df.ExecuteFunction("Login", "Robert.wachtwoord");
-            df.ExecuteFunction("Sendmessage", "Robert.Hallo Piet.Piet");
-            df.ExecuteFunction("Sendmessage", "Piet.Hallo Robert.Robert");
-            df.ExecuteFunction("Sendmessage", "Robert.Hoe gaat het met jou.Piet");
-            df.ExecuteFunction("Sendmessage", "Piet.Wel lekker.Robert");
-            df.GetMessages("Robert","Piet");
+            df.ExecuteFunction("Login", "Daniel.wachtwoord");
+            df.ExecuteFunction("Login", "Jelle.wachtwoord");
+            df.ExecuteFunction("Login", "Yaboii.wachtwoord");
+            df.ExecuteFunction("Login", "Piet.wachtwoord");
+            df.GetUsers();
 
             Thread looper = new Thread(() => Looper());
             looper.Start();

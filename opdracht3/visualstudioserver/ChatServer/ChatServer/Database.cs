@@ -39,11 +39,7 @@ namespace ChatServer
                 connection = new SqlConnection("Data Source=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=" + (Path.GetFullPath(localpath) + ";Integrated Security=True"));
                 Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "Opening connection");
                 connection.Open();
-
-                Executecommand("INSERT INTO users(Id,username,password,online) VALUES(0,'Robert','wachtwoord',0)");
-                Executecommand("INSERT INTO users(Id,username,password,online) VALUES(1,'Piet','wachtwoord',1)");
-                Executecommand("INSERT INTO users(Id,username,password,online) VALUES(2,'Hein','wachtwoord',1)");
-
+                
                 Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "Connection Successful");
             }
             catch
@@ -116,11 +112,11 @@ namespace ChatServer
                         Console.WriteLine(DateTime.Now.ToString("[hh: mm:ss] ") + "Password incorrect.");
                     }
                 }
+                reader.Close();
                 if (!exists)
                 {
-                    Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "Username does not exist.");
+                    CreateNewUser(username, password);
                 }
-                reader.Close();
                 return false;
             }
             catch
@@ -128,7 +124,21 @@ namespace ChatServer
                 Console.WriteLine("Log in attempt failed.");
                 return false;
             }
+        }
 
+        //creates new user
+        private bool CreateNewUser(string username, string password)
+        {
+            try
+            {
+                Executecommand("INSERT INTO users(Id,username,password,online) VALUES(" + NewUserId() + ",'" + username + "','" + password + "',1)");
+                return true;
+            }
+            catch
+            {
+                Console.WriteLine("Failed to create new user");
+                return false;
+            }
         }
 
         //sends message to database
@@ -167,11 +177,6 @@ namespace ChatServer
                     returnmessages.Add(GetUserName(message.senderId) + "`" + message.description + "`" + message.datetime);
                 }
 
-                foreach (string message in returnmessages)
-                {
-                    Console.WriteLine(message);
-                }
-
                 return returnmessages;
             }
             return null;
@@ -187,25 +192,35 @@ namespace ChatServer
             while (reader.Read())
             {
                 users.Add((string)reader["username"]);
+                Console.WriteLine(reader["username"]);
             }
 
             reader.Close();
             return users;
         }
 
-        //returns Id from username
+        //returns id from username
         private int GetId(string username)
         {
-            int id;
+            try
+            {
+                int id;
 
-            SqlDataReader reader = FetchData("SELECT id FROM users WHERE username='" + username + "'");
-            reader.Read();
-            id = (int)reader["id"];
-            reader.Close();
+                SqlDataReader reader = FetchData("SELECT id FROM users WHERE username='" + username + "'");
+                reader.Read();
+                id = (int)reader["id"];
+                reader.Close();
 
-            return id;
+                return id;
+            }
+            catch
+            {
+                Console.WriteLine("Could not find id from user: " + username);
+                return -1;
+            }
         }
 
+        //returns username from id
         private string GetUserName(int id)
         {
             string username;
@@ -218,6 +233,7 @@ namespace ChatServer
             return username;
         }
 
+        //returns whether user is logged in
         private bool Ingelogd(string username)
         {
             bool ingelogd = false;
@@ -247,6 +263,21 @@ namespace ChatServer
             return messages.Count;
         }
 
+        //returns id for a new message
+        private int NewUserId()
+        {
+            List<string> users = new List<string>();
+            SqlDataReader reader = FetchData("SELECT * FROM users");
+
+            while (reader.Read())
+            {
+                users.Add("");
+            }
+            reader.Close();
+
+            return users.Count;
+        }
+        
         //executes sql query without return
         public bool Executecommand(string query)
         {
