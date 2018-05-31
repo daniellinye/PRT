@@ -52,16 +52,15 @@ namespace ChatServer
                 command.ExecuteNonQuery();
 
                 StringBuilder ub = new StringBuilder();
-                sb.Append("CREATE TABLE Messages (");
-                sb.Append("Mid       INT NOT NULL,");
-                sb.Append("description VARCHAR(255) NOT NULL,");
-                sb.Append("idfrom    INT NOT NULL,");
-                sb.Append("idto      INT NOT NULL,");
-                sb.Append("date      DATETIME");
-                sb.Append("PRIMARY KEY CLUSTERED(Mid ASC),");
-                sb.Append("FOREIGN KEY (idfrom) REFERENCES users(Id),");
-                sb.Append("FOREIGN KEY (idto) REFERENCES users(Id)");
-                sb.Append(");");
+                ub.Append("CREATE TABLE Messages (");
+                ub.Append("Mid       INT PRIMARY KEY NOT NULL,");
+                ub.Append("description VARCHAR(255) NOT NULL,");
+                ub.Append("idfrom    INT NOT NULL,");
+                ub.Append("idto      INT NOT NULL,");
+                ub.Append("date      DATETIME,");
+                ub.Append("FOREIGN KEY (idfrom) REFERENCES users(Id),");
+                ub.Append("FOREIGN KEY (idto) REFERENCES users(Id)");
+                ub.Append(");");
                 SQLiteCommand command2 = new SQLiteCommand(ub.ToString(), connection);
                 command2.ExecuteNonQuery();
 

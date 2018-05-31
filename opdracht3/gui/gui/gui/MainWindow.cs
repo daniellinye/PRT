@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using gui;
 using System.Collections.Generic;
+using System.Net.Sockets;
 
 public partial class MainWindow : Gtk.Window
 {
@@ -22,11 +23,14 @@ public partial class MainWindow : Gtk.Window
 
     public MainWindow(TcpClient client, string username, string password, int id) : base(Gtk.WindowType.Toplevel)
     {
+
+
         this.client = client;
         this.username = username;
         this.password = password;
         this.id = id;
-        nf = new NetFunctions();
+        
+
 
 
         Build();
@@ -72,6 +76,8 @@ public partial class MainWindow : Gtk.Window
 
     protected async Task ListenerAsync()
     {
+        nf = new NetFunctions();
+
         NetworkStream stream = client.GetStream();
         string input = await Task.Run(()=> nf.Read(stream));
 
