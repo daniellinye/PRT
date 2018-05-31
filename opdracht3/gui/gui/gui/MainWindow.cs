@@ -14,6 +14,8 @@ public partial class MainWindow : Gtk.Window
     private string username, password;
     private int id;
     private NetFunctions nf;
+    List<Button> buttons;
+    List<Label> labels;
 
     static void Receive()
     {
@@ -30,7 +32,7 @@ public partial class MainWindow : Gtk.Window
         this.id = id;
 
         Build();
-        List<Label> labels = new List<Label>();
+        labels = new List<Label>();
 
         labels.Add(label1);
         labels.Add(label2);
@@ -50,7 +52,7 @@ public partial class MainWindow : Gtk.Window
         labels.Add(label16);
         labels.Add(label17);
 
-        List<Button> buttons = new List<Button>();
+        buttons = new List<Button>();
 
         buttons.Add(button1);
         buttons.Add(button2);
@@ -62,6 +64,9 @@ public partial class MainWindow : Gtk.Window
         buttons.Add(button8);
         buttons.Add(button9);
         buttons.Add(button10);
+
+        Thread t = new Thread(() => getUsers());
+        t.Start();
     }
 
     public void InitConnection()
@@ -83,6 +88,7 @@ public partial class MainWindow : Gtk.Window
             stream = client.GetStream();
 
             //read returning message
+            //TODO: make listen function
             message = nf.Login(stream, username, password);
         }
         catch
@@ -102,20 +108,128 @@ public partial class MainWindow : Gtk.Window
 
     public async Task ListenerAsync()
     {
-        //standard values
-        const Int32 port = 8080;
-        const string ip = "127.0.0.1";
-
-        //new clients
-        TcpClient client = new TcpClient(ip, port);
-
-        nf = new NetFunctions();
-
-        NetworkStream stream = client.GetStream();
-        string input = await Task.Run(()=> nf.Read(stream));
-
-        if (input != String.Empty)
+        while(true)
         {
+            Thread.Sleep(200);
+            //standard values
+            const Int32 port = 8080;
+            const string ip = "127.0.0.1";
+
+            //new clients
+            TcpClient client = new TcpClient(ip, port);
+
+            nf = new NetFunctions();
+
+            NetworkStream stream = client.GetStream();
+            string input = nf.GetMessages(stream);
+
+            if (input != String.Empty)
+            {
+                label1.Text = label2.Text;
+                label2.Text = label3.Text;
+                label3.Text = label4.Text;
+                label4.Text = label5.Text;
+                label5.Text = label6.Text;
+                label6.Text = label7.Text;
+                label7.Text = label8.Text;
+                label8.Text = label9.Text;
+                label9.Text = label10.Text;
+                label10.Text = label11.Text;
+                label11.Text = label12.Text;
+                label12.Text = label13.Text;
+                label13.Text = label14.Text;
+                label14.Text = label15.Text;
+                label15.Text = label16.Text;
+                label16.Text = label17.Text;
+                label17.Text = input;
+            }
+        }
+
+
+
+    }
+
+    protected void Sender(string input)
+    {
+        NetFunctions nf = new NetFunctions();
+        TcpClient client = new TcpClient();
+        NetworkStream stream = null;
+        string message;
+        try
+        {
+
+            //standard values
+            const Int32 port = 8080;
+            const string ip = "127.0.0.1";
+
+            //new clients
+            client = new TcpClient(ip, port);
+
+            stream = client.GetStream();
+
+            //sendmessage
+            nf.Message(stream, username, "Piet", input);
+        }
+        catch
+        {
+            message = "Could not connect to databse";
+            username = String.Empty;
+        }
+
+
+    }
+
+    protected void getUsers()
+    {
+        while(true)
+        {
+            NetFunctions nf = new NetFunctions();
+            TcpClient client = new TcpClient();
+            NetworkStream stream = null;
+            string message;
+            try
+            {
+
+                //standard values
+                const Int32 port = 8080;
+                const string ip = "127.0.0.1";
+
+                //new clients
+                client = new TcpClient(ip, port);
+
+                stream = client.GetStream();
+
+                //sendmessage
+                var users = nf.GetUsers(stream);
+                int i = 0;
+                foreach(string user in users)
+                {
+                    buttons[i].Label = user;
+                    labels[i].Text = user;
+                    i++;
+                }
+            }
+            catch
+            {
+                message = "Could not connect to databse";
+                username = String.Empty;
+            }
+            Thread.Sleep(50);
+        }
+    }
+
+    //is bound to texbox
+    protected void sendmessages(object sender, EventArgs e)
+    {
+
+        label17.Text = entry1.Text;
+
+        if(entry1.Text != "")
+        {
+            //thread sender
+            Thread send = new Thread(()=> Sender(entry1.Text));
+            send.Start();
+
             label1.Text = label2.Text;
             label2.Text = label3.Text;
             label3.Text = label4.Text;
@@ -132,33 +246,8 @@ public partial class MainWindow : Gtk.Window
             label14.Text = label15.Text;
             label15.Text = label16.Text;
             label16.Text = label17.Text;
-            label17.Text = input;
+            label17.Text = entry1.Text;
         }
-
-
-    }
-
-    protected void Sender(string input)
-    {
-        InitConnection();
-        NetFunctions nf = new NetFunctions();
-
-        nf.Message(stream, username, "Piet", input);
-    }
-
-    //is bound to texbox
-    protected void sendmessages(object sender, EventArgs e)
-    {
-
-        label17.Text = entry1.Text;
-
-        if(entry1.Text != "")
-        {
-            //thread sender
-            Thread send = new Thread(()=> Sender(entry1.Text));
-            send.Start();
-        }
-
 
         entry1.Text = "";
         //        MessageDialog dlog = new MessageDialog

@@ -160,14 +160,13 @@ namespace ChatServer
                 case "GetMessage":
                     //TODO: make this do between two users such that
                     string[] gmparser = command[1].Split(',');
-                    var totallist = df.GetMessages(gmparser[0], gmparser[1]);
+                    var totallist = df.GetMessages(0, gmparser[0], gmparser[1]);
                     StreamWrite("starting", stream);
                     foreach(string element in totallist)
                     {
                         StreamWrite(element, stream);
                     }
                     StreamWrite("", stream);
-
                     break;
                 case "GetUsers":
                     var users = df.GetUsers();
