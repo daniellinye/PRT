@@ -56,8 +56,7 @@ namespace gui
             //close client
             //TODO: replace this here when message is 
             //actually that someone has logged in
-            MainWindow win = new MainWindow();
-            win.Show();
+
             stream.Close();
             client.Close();
         }
