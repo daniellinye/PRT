@@ -113,12 +113,15 @@ namespace ChatServer
     {
         ConnectionFunctions cf;
         DatabaseFunctions df;
+
+        //constructor
         public ParseFunctions()
         {
             cf = new ConnectionFunctions();
             df = new DatabaseFunctions();
         }
 
+        //parses commands from the client
         public bool Parser(String input, TcpClient client)
         {
             NetworkStream stream = client.GetStream();
@@ -130,9 +133,11 @@ namespace ChatServer
 
             switch (command[0])
             {
+                //pingpong
                 case "Ping":
                     StreamWrite(DateTime.Now.ToString("[HH:mm:ss] ") + "Pong", stream);
                     break;
+                //format has to be username.password
                 case "Login":
                     string[] lparser = command[1].Split('.');
                     string username = lparser[0];
@@ -146,10 +151,8 @@ namespace ChatServer
                         return true;
                     }
                     break;
-                //standardthing
+                //format has to be username,recipient.message
                 case "Message":
-
-                    //TODO: give id a proper way to identify between clients
                     string[] uparser = command[1].Split(',');
                     string[] mparser = uparser[1].Split('.');
                     string user = uparser[0];
@@ -158,7 +161,7 @@ namespace ChatServer
                     Message(user, recipient, message, client);
                     break;
                 case "GetMessage":
-                    //TODO: make this do between two users such that
+                    //format has to be username,recipient
                     string[] gmparser = command[1].Split(',');
                     var totallist = df.GetMessages(0, gmparser[0], gmparser[1]);
                     StreamWrite("starting", stream);
@@ -168,6 +171,7 @@ namespace ChatServer
                     }
                     StreamWrite("", stream);
                     break;
+                    //no format needed, just gets the list of users
                 case "GetUsers":
                     var users = df.GetUsers();
                     StreamWrite("starting", stream);
@@ -205,9 +209,9 @@ namespace ChatServer
         }
 
         //format has to be: "username.password"
+        //Checks login from users
         public bool Login(string username, string password, TcpClient client)
         {
-            //TODO: throw check to database
             //that returns null if not found
             if (df.ExecuteFunction("Login", username + "." + password))
             {
@@ -218,12 +222,14 @@ namespace ChatServer
             return false;
         }
 
+        //logs users out from the list
         public bool Logout(string username, int sessionid, TcpClient client)
         {
             cf.LogoutUser(username, sessionid);
             return false;
         }
 
+        //handles messages from the client and pings them to other clients
         public void Message(string username, string recieving, string message, TcpClient client)
         { 
             //PING OTHER USERS
@@ -232,23 +238,14 @@ namespace ChatServer
             {
                 StreamWrite(message, recieve.GetStream());
                 StreamWrite("Message Send", client.GetStream());
-                //TODO
                 //ADD TO DATABASE
+                df.SendMessage(username, message, recieving);
             }
             else
             {
                 StreamWrite("Could not send message", client.GetStream());
             }
 
-        }
-
-        public string LoadMessages(string username, string password, string otheruser)
-        {
-            //TODO
-            //PING TO DATABASE TO RETRIEVE
-            //MESSAGES
-
-            return null;
         }
 
 

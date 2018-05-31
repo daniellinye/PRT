@@ -15,10 +15,9 @@ namespace ChatServer
     {
         //parseclass
         ParseFunctions pf = new ParseFunctions();
-        //TODO: migrathe the database to linux and try testrunning on monodevelop
-        //https://docs.microsoft.com/en-us/sql/linux/sql-server-linux-migrate-restore-database?view=sql-server-linux-2017
+
         /*
-         explanation login and pingpong:
+         explanation table of between server and client:
          if ping
          write pong
          if login
@@ -27,6 +26,10 @@ namespace ChatServer
          remove from userlist
          if message
          add to messagelist
+         if getuser
+         returns userlist
+         if getmessage
+         returns messagelist
              */
 
         private bool newuser;
