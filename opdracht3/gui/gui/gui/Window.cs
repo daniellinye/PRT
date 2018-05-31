@@ -87,6 +87,20 @@ namespace gui
             //make username and password
             string username = username1.Text;
             string password = Password.Text;
+
+            // if error
+
+
+            MessageDialog dlog = new MessageDialog
+            (
+                this, DialogFlags.Modal,
+                MessageType.Info,
+                ButtonsType.Ok,
+                "try a different user combination/password"
+            );
+            dlog.Run();
+            dlog.Destroy();
+
         }
     }
 

@@ -58,13 +58,13 @@ namespace ChatServer
                 }
                 try
                 {
-                    StringBuilder ub = new StringBuilder();
+                    StringBuilder ub = new StringBuilder();         //creates table Messages, if it does not exist already
                     ub.Append("CREATE TABLE Messages (");
                     ub.Append("Mid       INT PRIMARY KEY NOT NULL,");
                     ub.Append("description VARCHAR(255) NOT NULL,");
                     ub.Append("idfrom    INT NOT NULL,");
                     ub.Append("idto      INT NOT NULL,");
-                    ub.Append("date      DATETIME,");
+                    ub.Append("datetime      DATETIME,");
                     ub.Append("FOREIGN KEY (idfrom) REFERENCES users(Id),");
                     ub.Append("FOREIGN KEY (idto) REFERENCES users(Id)");
                     ub.Append(");");
@@ -76,9 +76,8 @@ namespace ChatServer
 
                 }
 
-                LogIn("Frank","wachtwoord");
-
                 Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Connection Successful.");
+
             }
             catch(Exception e)
             {
@@ -91,18 +90,18 @@ namespace ChatServer
         //executes a function on the database and returns values
         public bool ExecuteFunction(string function, string args)
         {
-            //TODO:
-            //add basic functionalities to login, getmessages
-            //sendmessages, getuser, sendmessages and login
-            string[] parser;
-            switch (function)
-            {
+            string[] parser;        //This function is used for no-return functions, the arguments are split by dots.
+            switch (function)       //This makes the amount of arguments is modular, the return is whether the function 
+            {                       //was executed properly
                 case "Login":
                     parser = args.Split('.');
                     return LogIn(parser[0], parser[1]);
                 case "Sendmessage":
                     parser = args.Split('.');
                     return SendMessage(parser[0], parser[1], parser[2]);
+                case "Register":
+                    parser = args.Split('.');
+                    return CreateNewUser(parser[0],parser[1]);
                 default:
                     Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "DatabaseFunction: " + function + " not recognized or implemented.");
                     break;
@@ -123,9 +122,9 @@ namespace ChatServer
                     exists = true;
                     if ((string)reader["password"] == password)
                     {                        
-                        Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "User: " + username + ", is logged in.");
                         reader.Close();
                         Executecommand("UPDATE users SET online=1 WHERE username='" + username + "'");
+                        Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "User: " + username + ", is logged in.");
                         return true;
                     }
                     else
@@ -136,7 +135,7 @@ namespace ChatServer
                 reader.Close();
                 if (!exists)
                 {
-                    CreateNewUser(username, password);
+                    Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Username: " + username + " does not exist.");
                 }
                 return false;
             }
@@ -147,13 +146,40 @@ namespace ChatServer
             }
         }
 
-        //creates new user
-        private bool CreateNewUser(string username, string password)
+        //logs user out
+        private bool LogOut(string username)
         {
             try
             {
-                Executecommand("INSERT INTO users(Id,username,password,online) VALUES(" + NewUserId() + ",'" + username + "','" + password + "',1)");
+                Executecommand("UPDATE users SET online=0 WHERE username='" + username + "'");
+                Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "User: " + username + ", is logged out.");
                 return true;
+            }
+            catch
+            {
+                Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "User: " + username + ", could not be logged out.");
+                return false;
+            }
+        }
+
+        //creates new user
+        private bool CreateNewUser(string username, string password)
+        {
+            const int minlength = 8;
+            Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Creating new user");
+            try
+            {
+                if (password.Length >= minlength)
+                {
+                    Executecommand("INSERT INTO users(Id,username,password,online) VALUES(" + NewUserId() + ",'" + username + "','" + password + "',1)");
+                    Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "User: " + username + " created.");
+                    return true;
+                }
+                else
+                {
+                    Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "User was not created since the password was not long enough.");
+                    return false;
+                }
             }
             catch
             {
@@ -166,6 +192,7 @@ namespace ChatServer
         public bool SendMessage(string username, string description, string to)
         {
             string format = "yyyy-MM-dd HH:mm:ss";
+            Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Sending message from " + username + " to " + to);
             return Executecommand("INSERT INTO Messages(Mid,description,idfrom,idto,datetime) VALUES(" + NewMessageId() + ",'" + description + "'," + GetId(username) + "," + GetId(to) + ",'" + DateTime.Now.ToString(format) + "')");
         }
 
@@ -174,31 +201,41 @@ namespace ChatServer
         {
             if (Ingelogd(username))
             {
-                string description;
-                int id;
-                DateTime datetime;
-                List<Message> messages = new List<Message>();
-                List<string> returnmessages = new List<string>();
-
-                SQLiteDataReader reader = FetchData("SELECT * FROM Messages WHERE (idfrom=" + GetId(username) +
-                    " AND idto=" + GetId(recieving) + ")" + "OR idto=" + GetId(username) + " AND idfrom=" + GetId(recieving) + " ORDER BY datetime");
-
-                while (reader.Read())
+                try
                 {
-                    description = (string)reader["description"];
-                    datetime = (DateTime)reader["datetime"];
-                    id = (int)reader["idfrom"];
-                    messages.Add(new Message(description,datetime,id));
+                    string description;
+                    int id;
+                    DateTime datetime;
+                    List<Message> messages = new List<Message>();
+                    List<string> returnmessages = new List<string>();
+
+                    Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Getting messages from database between " + username + " and " + recieving);
+
+                    SQLiteDataReader reader = FetchData("SELECT * FROM Messages WHERE (idfrom=" + GetId(username) +
+                        " AND idto=" + GetId(recieving) + ") " + "OR (idto=" + GetId(username) + " AND idfrom=" + GetId(recieving) + ") ORDER BY datetime");
+
+                    while (reader.Read())
+                    {
+                        description = (string)reader["description"];        //Because you can't have multiple readers active at the same time,
+                        datetime = (DateTime)reader["datetime"];            //the messages are first stored in a list of "Messages" with the 
+                        id = (int)reader["idfrom"];                         //data in seperated parts
+                        messages.Add(new Message(description, datetime, id));
+                    }
+
+                    reader.Close();
+
+                    foreach (Message message in messages)                   //Here the data is converted to a list of strings, so it can be sent to the client
+                    {
+                        returnmessages.Add(GetUserName(message.senderId) + "`" + message.description + "`" + message.datetime.ToString("HH:mm"));
+                    }
+
+                    return returnmessages;
                 }
-
-                reader.Close();
-
-                foreach (Message message in messages)
+                catch
                 {
-                    returnmessages.Add(GetUserName(message.senderId) + "`" + message.description + "`" + message.datetime);
+                    Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Could not get messages from database");
+                    return null;
                 }
-
-                return returnmessages;
             }
             return null;
         }
@@ -206,31 +243,33 @@ namespace ChatServer
         //fetches all online users and returns list
         public List<string> GetUsers()
         {
+            Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Fetching users from database.");
             List<string> users = new List<string>();
 
-            SQLiteDataReader reader = FetchData("SELECT username FROM users WHERE online=1");
-            try
+            SQLiteDataReader reader = FetchData("SELECT username FROM users WHERE online=1");   //Typical use of the SQLiteDataReader, it first uses the function: FetchData,
+            try                                                                                 //which returns the reader
             {
-                while (reader.Read())
+                while (reader.Read())                                                           //Then, in this while-loop, all data is put into a list of usernames
                 {
                     users.Add((string)reader["username"]);
                     Console.WriteLine(reader["username"]);
                 }
 
-                reader.Close();
+                reader.Close();                                                                 //The reader needs to be closed, otherwise the whole program collapses
             }
             catch
             {
-
-            }
+                Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Could not find users.");
+                return null;                                                                    //Finally, if the read was executed succesfully, the userlist gets returned
+            }                                                                                   //otherwise, it gets addressed in the server console and it returns a null-value
 
             return users;
         }
 
         //returns id from username
-        private int GetId(string username)
-        {
-            try
+        private int GetId(string username)                   //All functions are username dependent, but the table "Messages"
+        {                                                    //does not hold the information of the usernames, only the id's,
+            try                                              //so this function returns the username from the given id
             {
                 int id;
 
@@ -277,8 +316,8 @@ namespace ChatServer
         }
 
         //returns id for a new message
-        private int NewMessageId ()
-        {
+        private int NewMessageId ()                                                 //Message and user ID's are just the amount of messages already in the table
+        {                                                                           //for example the first message gets id=0, and and the twelfth message gets id=11
             List<string> messages = new List<string>();
             SQLiteDataReader reader = FetchData("SELECT * FROM Messages");
 
@@ -315,8 +354,9 @@ namespace ChatServer
                 sqlcommand.ExecuteNonQuery();
                 return true;
             }
-            catch
+            catch(Exception e)   //all failed queries get addressed in the console, so we can see when and where things go wrong
             {
+                Console.WriteLine(e);
                 Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "The query: \"" + query + "\" failed to be executed.");
                 return false;
             }
