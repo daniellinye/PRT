@@ -134,7 +134,7 @@ namespace ChatServer
         }
 
         //multithread to listen to the current users
-        public void ListenToNewUser(TcpClient client, TcpListener listen, ConnectionFunctions cf, int id)
+        public async void ListenToNewUser(TcpClient client, TcpListener listen, ConnectionFunctions cf, int id)
         {
             //parseclass
             ParseFunctions pf = new ParseFunctions();
@@ -142,7 +142,7 @@ namespace ChatServer
             {
                 while (true)
                 {
-                    string input = pf.Read(client.GetStream());
+                    string input = await Task.Run(() => pf.Read(client.GetStream()));
                     Console.WriteLine(input);
 
                     if (input != String.Empty)

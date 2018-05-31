@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Net;
+using System.Net.Sockets;
 using Gtk;
+using System.Text;
 
 namespace gui
 {
@@ -11,8 +14,7 @@ namespace gui
 			Application.Init ();
             Window login = new Window();
             login.Show();
-            MainWindow win = new MainWindow();
-            win.Show();
+
 
 			Application.Run ();
 		}
