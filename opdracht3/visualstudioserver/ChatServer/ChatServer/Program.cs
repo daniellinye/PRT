@@ -49,6 +49,9 @@ namespace ChatServer
 
             df.ExecuteFunction("Login", "Robert.wachtwoord");
             df.ExecuteFunction("Sendmessage", "Robert.Hallo Piet.Piet");
+            df.ExecuteFunction("Sendmessage", "Piet.Hallo Robert.Robert");
+            df.ExecuteFunction("Sendmessage", "Robert.Hoe gaat het met jou.Piet");
+            df.ExecuteFunction("Sendmessage", "Piet.Wel lekker.Robert");
             df.GetMessages("Robert","Piet");
 
             Thread looper = new Thread(() => Looper());

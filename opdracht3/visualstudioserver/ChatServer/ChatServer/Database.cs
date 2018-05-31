@@ -15,6 +15,19 @@ namespace ChatServer
 
     }
 
+    class Message
+    {
+        public string description;
+        public DateTime datetime;
+        public int senderId;
+        public Message(string desc, DateTime date, int id)
+        {
+            description = desc;
+            datetime = date;
+            senderId = id;
+        }
+    }
+
     class DatabaseFunctions
     {
         public DatabaseFunctions()
@@ -92,9 +105,10 @@ namespace ChatServer
                 {
                     exists = true;
                     if ((string)reader["password"] == password)
-                    {
+                    {                        
                         Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "User: " + username + ", is logged in.");
                         reader.Close();
+                        Executecommand("UPDATE users SET online=1 WHERE username='" + username + "'");
                         return true;
                     }
                     else
@@ -120,7 +134,6 @@ namespace ChatServer
         //sends message to database
         public bool SendMessage(string username, string description, string to)
         {
-            Console.WriteLine(username + " has sent this message: " + description);
             string format = "yyyy-MM-dd HH:mm:ss";
             return Executecommand("INSERT INTO Messages(Mid,description,idfrom,idto,datetime) VALUES(" + NewMessageId() + ",'" + description + "'," + GetId(username) + "," + GetId(to) + ",'" + DateTime.Now.ToString(format) + "')");
         }
@@ -133,7 +146,8 @@ namespace ChatServer
                 string description;
                 int id;
                 DateTime datetime;
-                List<string> messages = new List<string>();
+                List<Message> messages = new List<Message>();
+                List<string> returnmessages = new List<string>();
 
                 SqlDataReader reader = FetchData("SELECT * FROM Messages WHERE (idfrom=" + GetId(username) +
                     " AND idto=" + GetId(recieving) + ")" + "OR idto=" + GetId(username) + " AND idfrom=" + GetId(recieving) + " ORDER BY datetime");
@@ -143,15 +157,22 @@ namespace ChatServer
                     description = (string)reader["description"];
                     datetime = (DateTime)reader["datetime"];
                     id = (int)reader["idfrom"];
-                    messages.Add(description + "." + datetime + "." + id);
+                    messages.Add(new Message(description,datetime,id));
                 }
 
-                foreach (string message in messages)
+                reader.Close();
+
+                foreach (Message message in messages)
+                {
+                    returnmessages.Add(GetUserName(message.senderId) + "`" + message.description + "`" + message.datetime);
+                }
+
+                foreach (string message in returnmessages)
                 {
                     Console.WriteLine(message);
                 }
 
-                return messages;
+                return returnmessages;
             }
             return null;
         }
@@ -185,6 +206,18 @@ namespace ChatServer
             return id;
         }
 
+        private string GetUserName(int id)
+        {
+            string username;
+
+            SqlDataReader reader = FetchData("SELECT username FROM users WHERE id='" + id + "'");
+            reader.Read();
+            username = (string)reader["username"];
+            reader.Close();
+
+            return username;
+        }
+
         private bool Ingelogd(string username)
         {
             bool ingelogd = false;
@@ -207,7 +240,7 @@ namespace ChatServer
 
             while (reader.Read())
             {
-                messages.Add(" ");
+                messages.Add("");
             }
             reader.Close();
 
