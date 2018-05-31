@@ -96,6 +96,7 @@ namespace ChatServer
             {
                 Console.WriteLine(e);
                 Console.WriteLine("Tried new socket, but crashed");
+                Console.ReadLine();
             }
         }
 
