@@ -14,6 +14,8 @@ namespace gui
 
 		private global::Gtk.Label label3;
 
+		private global::Gtk.Button register;
+
 		private global::Gtk.Button button9;
 
 		protected virtual void Build()
@@ -42,6 +44,7 @@ namespace gui
 			this.Password.CanFocus = true;
 			this.Password.Name = "Password";
 			this.Password.IsEditable = true;
+			this.Password.Visibility = false;
 			this.Password.InvisibleChar = '•';
 			this.fixed2.Add(this.Password);
 			global::Gtk.Fixed.FixedChild w2 = ((global::Gtk.Fixed.FixedChild)(this.fixed2[this.Password]));
@@ -64,15 +67,25 @@ namespace gui
 			w4.X = 75;
 			w4.Y = 130;
 			// Container child fixed2.Gtk.Fixed+FixedChild
+			this.register = new global::Gtk.Button();
+			this.register.CanFocus = true;
+			this.register.Name = "register";
+			this.register.UseUnderline = true;
+			this.register.Label = global::Mono.Unix.Catalog.GetString("regristreren");
+			this.fixed2.Add(this.register);
+			global::Gtk.Fixed.FixedChild w5 = ((global::Gtk.Fixed.FixedChild)(this.fixed2[this.register]));
+			w5.X = 224;
+			w5.Y = 194;
+			// Container child fixed2.Gtk.Fixed+FixedChild
 			this.button9 = new global::Gtk.Button();
 			this.button9.CanFocus = true;
 			this.button9.Name = "button9";
 			this.button9.UseUnderline = true;
 			this.button9.Label = global::Mono.Unix.Catalog.GetString("Login");
 			this.fixed2.Add(this.button9);
-			global::Gtk.Fixed.FixedChild w5 = ((global::Gtk.Fixed.FixedChild)(this.fixed2[this.button9]));
-			w5.X = 170;
-			w5.Y = 193;
+			global::Gtk.Fixed.FixedChild w6 = ((global::Gtk.Fixed.FixedChild)(this.fixed2[this.button9]));
+			w6.X = 157;
+			w6.Y = 192;
 			this.Add(this.fixed2);
 			if ((this.Child != null))
 			{
@@ -81,6 +94,7 @@ namespace gui
 			this.DefaultWidth = 400;
 			this.DefaultHeight = 300;
 			this.Show();
+			this.register.Clicked += new global::System.EventHandler(this.regristreren);
 			this.button9.Clicked += new global::System.EventHandler(this.click);
 		}
 	}

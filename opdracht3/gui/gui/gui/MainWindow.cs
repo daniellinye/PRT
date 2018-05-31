@@ -10,6 +10,7 @@ using System.Net.Sockets;
 public partial class MainWindow : Gtk.Window
 {
     private TcpClient client;
+    private NetworkStream stream;
     private string username, password;
     private int id;
     private NetFunctions nf;
@@ -21,17 +22,12 @@ public partial class MainWindow : Gtk.Window
 
     public static string passingtext;
 
-    public MainWindow(TcpClient client, string username, string password, int id) : base(Gtk.WindowType.Toplevel)
+    public MainWindow(string username, string password, int id) : base(Gtk.WindowType.Toplevel)
     {
 
-
-        this.client = client;
         this.username = username;
         this.password = password;
         this.id = id;
-        
-
-
 
         Build();
         List<Label> labels = new List<Label>();
@@ -68,6 +64,36 @@ public partial class MainWindow : Gtk.Window
         buttons.Add(button10);
     }
 
+    public void InitConnection()
+    {
+        NetFunctions nf = new NetFunctions();
+        this.client = new TcpClient();
+        NetworkStream stream = null;
+        string message;
+        try
+        {
+
+            //standard values
+            const Int32 port = 8080;
+            const string ip = "127.0.0.1";
+
+            //new clients
+            client = new TcpClient(ip, port);
+
+            stream = client.GetStream();
+
+            //read returning message
+            message = nf.Login(stream, username, password);
+        }
+        catch
+        {
+            message = "Could not connect to databse";
+            username = String.Empty;
+        }
+
+
+    }
+
     protected void OnDeleteEvent(object sender, DeleteEventArgs a)
     {
         Application.Quit();
@@ -76,6 +102,13 @@ public partial class MainWindow : Gtk.Window
 
     public async Task ListenerAsync()
     {
+        //standard values
+        const Int32 port = 8080;
+        const string ip = "127.0.0.1";
+
+        //new clients
+        TcpClient client = new TcpClient(ip, port);
+
         nf = new NetFunctions();
 
         NetworkStream stream = client.GetStream();
@@ -107,17 +140,7 @@ public partial class MainWindow : Gtk.Window
 
     protected void Sender(string input)
     {
-
-        //standard values
-        const Int32 port = 8080;
-        const string ip = "127.0.0.1";
-
-        //new clients
-        TcpClient client = new TcpClient(ip, port);
-
-        //new stream
-        NetworkStream stream = client.GetStream();
-
+        InitConnection();
         NetFunctions nf = new NetFunctions();
 
         nf.Message(stream, username, "Piet", input);
@@ -126,15 +149,6 @@ public partial class MainWindow : Gtk.Window
     //is bound to texbox
     protected void sendmessages(object sender, EventArgs e)
     {
-        entry1.Text = "";
-
-        MessageDialog dlog = new MessageDialog
-    (
-        this, DialogFlags.Modal,
-        MessageType.Info,
-        ButtonsType.Ok,
-        "Hoi"
-    );
 
         label17.Text = entry1.Text;
 
@@ -144,9 +158,9 @@ public partial class MainWindow : Gtk.Window
             Thread send = new Thread(()=> Sender(entry1.Text));
             send.Start();
         }
-        
 
 
+        entry1.Text = "";
         //        MessageDialog dlog = new MessageDialog
         //            (
         //                this, DialogFlags.Modal,
