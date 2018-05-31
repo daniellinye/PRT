@@ -8,7 +8,6 @@ using System.Data.SqlClient;
 using System.Data.SqlTypes;
 using System.Data.Sql;
 using System.IO;
-using Mono.Data.Sqlite;
 
 namespace ChatServer
 {
@@ -50,43 +49,6 @@ namespace ChatServer
             }
             catch
             {
-                try
-                {
-                    SqliteConnection.CreateFile("users.sqlite");
-                    sqlitecon = new SqliteConnection("Data Source=users.sqlite;Version=3;");
-                    sqlitecon.Open();
-
-                    StringBuilder sb = new StringBuilder();
-                    sb.Append("CREATE TABLE users (");
-                    sb.Append("Id       INT NOT NULL,");
-                    sb.Append("username VARCHAR(10) NOT NULL,");
-                    sb.Append("password VARCHAR(10) NOT NULL,");
-                    sb.Append("online   BIT NULL,");
-                    sb.Append("PRIMARY KEY (Id, username)");
-                    sb.Append(");");
-                    SqliteCommand command = new SqliteCommand(sb.ToString(), sqlitecon);
-                    command.ExecuteNonQuery();
-
-                    StringBuilder ub = new StringBuilder();
-                    sb.Append("CREATE TABLE Messages (");
-                    sb.Append("Mid       INT NOT NULL,");
-                    sb.Append("description VARCHAR(255) NOT NULL,");
-                    sb.Append("idfrom    INT NOT NULL,");
-                    sb.Append("idto      INT NOT NULL,");
-                    sb.Append("date      DATETIME");
-                    sb.Append("PRIMARY KEY CLUSTERED(Mid ASC),");
-                    sb.Append("FOREIGN KEY (idfrom) REFERENCES users(Id),");
-                    sb.Append("FOREIGN KEY (idto) REFERENCES users(Id)");
-                    sb.Append(");");
-                    SqliteCommand command2 = new SqliteCommand(ub.ToString(), sqlitecon);
-                    command2.ExecuteNonQuery();
-
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                }
-
                 Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "Connection Unsuccesfull");
             }
         }
@@ -203,16 +165,6 @@ namespace ChatServer
             }
             catch
             {
-                try
-                {
-                    SqliteCommand sqliteCommand = new SqliteCommand(query, sqlitecon);
-                    sqliteCommand.ExecuteNonQuery();
-                    return true;
-                }
-                catch
-                {
-                    Console.WriteLine("Sqliteconnection also failed");
-                }
                 Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "The query: \"" + query + "\" failed to be executed.");
                 return false;
             }
@@ -231,26 +183,13 @@ namespace ChatServer
             }
             catch
             {
-                try
-                {
-                    SqliteCommand sqliteCommand = new SqliteCommand(query, sqlitecon);
-                    sqliteCommand.ExecuteScalar();
-                    SqliteDataAdapter sqla = new SqliteDataAdapter(sqliteCommand);
-                    DataSet ds = new DataSet();
-                    sqla.Fill(ds);
-                    
-                }
-                catch
-                {
 
-                }
                 Console.WriteLine(DateTime.Now.ToString("[hh:mm:ss] ") + "The query: \"" + query + "\" failed to be executed.");
                 return null;
             }
         }
 
         private SqlConnection connection;
-        private SqliteConnection sqlitecon;
         private int userId;
         private bool ingelogd;
     }
