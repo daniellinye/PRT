@@ -63,9 +63,6 @@ public partial class MainWindow : Gtk.Window
         buttons.Add(button8);
         buttons.Add(button9);
         buttons.Add(button10);
-
-        Thread t = new Thread(() => getUsers());
-        t.Start();
     }
 
     public void InitConnection()
@@ -140,6 +137,7 @@ public partial class MainWindow : Gtk.Window
                 label16.Text = label17.Text;
                 label17.Text = input;
             }
+            getUsers();
         }
 
 
