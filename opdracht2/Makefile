@@ -1,28 +1,29 @@
 #!/bin/sh
 
 CC = gcc
-CFLAGS = -fPIC -g -c -Wall -std=c++11 -l
-LDFLAGS =  -shared -lncurses -Wl,-soname,Sheet.so
-OBJS =  Range.o  SheetView.o main.o Sheet.o
+CFLAGS = -fPIC -g -Wall -std=c++11
+LDFLAGS =  -shared -lncurses
+OBJS = Sheet.o Range.o SheetView.o main.o 
 
-all: clean $(OBJS) Sheet.so
+final: all
+	$(CC) -std=c++11 -Wall  -I.\  -L.\ -lSheet -lncurses -o Sheet main.cpp 
+
+all: clean $(OBJS)
 	$(CC) $(CFLAGS) $(OBJS) Sheet.so $(LDFLAGS)
 
 clean:
 	rm -f $(OBJS) *.o
 
-Range.o: Range.cpp Range.h
-	$(CC) $(CFLAGS) Range.cpp $(LDFLAGS)
+Range.o: Range.cpp
+	$(CC) $(CFLAGS) -c Range.cpp -lncurses
 
-Sheet.o:  Sheet.cpp Sheet.h
-	$(CC) $(CFLAGS) Sheet.cpp $(LDFLAGS)
+Sheet.o:  Sheet.cpp
+	$(CC) $(CFLAGS) -c Sheet.cpp -lncurses
 
-SheetView.o:  SheetView.cpp SheetView.h
-	$(CC) $(CFLAGS) SheetView.cpp $(LDFLAGS)
+SheetView.o:  SheetView.cpp
+	$(CC) $(CFLAGS) -c SheetView.cpp -lncurses
 
 main.o: main.cpp
-	$(CC) $(CFLAGS) main.cpp $(LDFLAGS)
+	$(CC) $(CFLAGS) -c main.cpp -lncurses
 
-Sheet.so: $(OBJS)
-	$(CC) $(LDFLAGS) -o Sheet.so $(OBJS) -lc
 
