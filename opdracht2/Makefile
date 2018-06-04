@@ -20,3 +20,5 @@ Compile:
 clean:
 	rm -f $(OBJS) *.o
 	rm -f *.so
+	rm -f *.0
+	rm -f *.1
