@@ -50,11 +50,11 @@ namespace ChatServer
             {
                 if (c.Equals(client))
                 {
-                    Console.WriteLine("User " + name + " is already logged in");
+                    Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "User: " + name + " is already logged in");
                     id = c.ReturnId();
                 }
             }
-            Console.WriteLine("User: " + name + " Logged in");
+            Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "User: " + name + " Logged in");
             clients.Add(new TcpUsers(client, name, id));
         }
 
@@ -69,7 +69,7 @@ namespace ChatServer
                     return;
                 }
             }
-            Console.WriteLine("Error 404:Element was not found in list");
+            Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Error 404:Element was not found in list");
         }
 
         //pings other clients depended on the messagesender
@@ -113,31 +113,37 @@ namespace ChatServer
     {
         ConnectionFunctions cf;
         DatabaseFunctions df;
+
+        //constructor
         public ParseFunctions()
         {
             cf = new ConnectionFunctions();
             df = new DatabaseFunctions();
         }
 
+        //parses commands from the client
         public bool Parser(String input, TcpClient client)
         {
             NetworkStream stream = client.GetStream();
-            //TODO: REMINDER
+
             //whenever a user is logged in, add the current connection to the clients of ConnectionFunctions
 
+            //format is command:args,args2.args3
             String[] command = input.Split(':');
-            Console.WriteLine(input);
+            Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + input);
 
             switch (command[0])
             {
+                //pingpong
                 case "Ping":
-                    StreamWrite("Pong", stream);
+                    StreamWrite(DateTime.Now.ToString("[HH:mm:ss] ") + "Pong", stream);
                     break;
+                //format has to be username.password
                 case "Login":
                     string[] lparser = command[1].Split('.');
                     string username = lparser[0];
                     string password = lparser[1];
-                    Console.WriteLine(username + "login attempt.");
+                    Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + username + "login attempt.");
                     if(Login(username, password, client))
                     {
                         cf.LoginUser(client, username);
@@ -146,10 +152,8 @@ namespace ChatServer
                         return true;
                     }
                     break;
-                //standardthing
+                //format has to be username,recipient.message
                 case "Message":
-
-                    //TODO: give id a proper way to identify between clients
                     string[] uparser = command[1].Split(',');
                     string[] mparser = uparser[1].Split('.');
                     string user = uparser[0];
@@ -158,13 +162,29 @@ namespace ChatServer
                     Message(user, recipient, message, client);
                     break;
                 case "GetMessage":
-                    //TODO: make this do between two users such that
+                    //format has to be username,recipient
                     string[] gmparser = command[1].Split(',');
-                    StreamWrite(df.GetMessages(gmparser[0], gmparser[1]).ToString(), stream);
+                    var totallist = df.GetMessages(0, gmparser[0], gmparser[1]);
+                    StreamWrite("starting", stream);
+                    foreach(string element in totallist)
+                    {
+                        StreamWrite(element, stream);
+                    }
+                    StreamWrite("", stream);
+                    break;
+                    //no format needed, just gets the list of users
+                case "GetUsers":
+                    var users = df.GetUsers();
+                    StreamWrite("starting", stream);
+                    foreach (string element in users)
+                    {
+                        StreamWrite(element, stream);
+                    }
+                    StreamWrite("", stream);
                     break;
                 default:
-                    Console.WriteLine("Command " + command[0] + " was not implemented");
-                    StreamWrite("Error:001, command not found", stream);
+                    Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Command " + command[0] + " was not implemented");
+                    StreamWrite(DateTime.Now.ToString("[HH:mm:ss] ") + "Error:001, command not found", stream);
                     break;
             }
             return false;
@@ -190,9 +210,9 @@ namespace ChatServer
         }
 
         //format has to be: "username.password"
+        //Checks login from users
         public bool Login(string username, string password, TcpClient client)
         {
-            //TODO: throw check to database
             //that returns null if not found
             if (df.ExecuteFunction("Login", username + "." + password))
             {
@@ -203,12 +223,14 @@ namespace ChatServer
             return false;
         }
 
+        //logs users out from the list
         public bool Logout(string username, int sessionid, TcpClient client)
         {
             cf.LogoutUser(username, sessionid);
             return false;
         }
 
+        //handles messages from the client and pings them to other clients
         public void Message(string username, string recieving, string message, TcpClient client)
         { 
             //PING OTHER USERS
@@ -217,23 +239,14 @@ namespace ChatServer
             {
                 StreamWrite(message, recieve.GetStream());
                 StreamWrite("Message Send", client.GetStream());
-                //TODO
                 //ADD TO DATABASE
+                df.SendMessage(username, message, recieving);
             }
             else
             {
                 StreamWrite("Could not send message", client.GetStream());
             }
 
-        }
-
-        public string LoadMessages(string username, string password, string otheruser)
-        {
-            //TODO
-            //PING TO DATABASE TO RETRIEVE
-            //MESSAGES
-
-            return null;
         }
 
 

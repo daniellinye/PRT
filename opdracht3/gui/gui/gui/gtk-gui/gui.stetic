@@ -411,7 +411,7 @@
       </widget>
     </child>
   </widget>
-  <widget class="Gtk.Window" id="gui.Window" design-size="400 300">
+  <widget class="Gtk.Window" id="gui.Window" design-size="414 300">
     <property name="MemberName" />
     <property name="Title" translatable="yes">Window</property>
     <property name="WindowPosition">CenterOnParent</property>
@@ -436,6 +436,7 @@
             <property name="MemberName" />
             <property name="CanFocus">True</property>
             <property name="IsEditable">True</property>
+            <property name="Visibility">False</property>
             <property name="InvisibleChar">•</property>
           </widget>
           <packing>
@@ -473,8 +474,32 @@
             <signal name="Clicked" handler="click" />
           </widget>
           <packing>
-            <property name="X">170</property>
-            <property name="Y">193</property>
+            <property name="X">157</property>
+            <property name="Y">183</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Label" id="label1">
+            <property name="MemberName" />
+            <property name="LabelProp" translatable="yes">*must contain 8 characters</property>
+          </widget>
+          <packing>
+            <property name="X">160</property>
+            <property name="Y">159</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="Gtk.Button" id="register">
+            <property name="MemberName" />
+            <property name="CanFocus">True</property>
+            <property name="Type">TextOnly</property>
+            <property name="Label" translatable="yes">regristreren</property>
+            <property name="UseUnderline">True</property>
+            <signal name="Clicked" handler="regristreren" />
+          </widget>
+          <packing>
+            <property name="X">154</property>
+            <property name="Y">222</property>
           </packing>
         </child>
       </widget>

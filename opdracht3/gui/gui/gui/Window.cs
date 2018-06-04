@@ -4,11 +4,15 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace gui
 {
     public partial class Window : Gtk.Window
     {
+        string selecteduser = "Piet";
         public Window() :
                 base(Gtk.WindowType.Toplevel)
         {
@@ -19,24 +23,36 @@ namespace gui
 
         protected void click(object sender, EventArgs e)
         {
-            //make username and password
-            string username = username1.Text;
-            string password = Password.Text;
-
-            //standard values
-            const Int32 port = 8080;
-            const string ip = "127.0.0.1";
-
-            //new clients
-            TcpClient client = new TcpClient(ip, port);
-
-            //new stream
-            NetworkStream stream = client.GetStream();
-
+            string message = "", username = "", password = "";
             NetFunctions nf = new NetFunctions();
+            TcpClient client = new TcpClient();
+            NetworkStream stream = null;
+            try
+            {
+                //make username and password
+                username = username1.Text;
+                password = Password.Text;
 
-            //read returning message
-            string message = nf.Login(stream, username, password);
+                //standard values
+                const Int32 port = 8080;
+                const string ip = "127.0.0.1";
+
+                //new clients
+                client = new TcpClient(ip, port);
+
+                //new stream
+                stream = client.GetStream();
+
+
+
+                //read returning message
+                message = nf.Login(stream, username, password);
+            }
+            catch
+            {
+                message = "Could not connect to databse";
+                username = "lol";
+            }
 
 
             //give popup if the username wasn't empty
@@ -56,8 +72,38 @@ namespace gui
             //close client
             //TODO: replace this here when message is 
             //actually that someone has logged in
-            MainWindow win = new MainWindow(client, username, password, 0);
-            win.Show();
+        //    if(nf.id != 0)
+            {
+                MainWindow win = new MainWindow(username, password, 0);
+                Thread connect = new Thread(() => win.InitConnection());
+                connect.Start();
+                Thread listen = new Thread(() => win.ListenerAsync());
+                //listen.Start();
+                win.Show();
+            }
+        }
+
+        protected void regristreren(object sender, EventArgs e) 
+        {
+            //TODO: tell server to make a new useraccount
+
+            //make username and password
+            string username = username1.Text;
+            string password = Password.Text;
+
+            // if error
+
+
+            MessageDialog dlog = new MessageDialog
+            (
+                this, DialogFlags.Modal,
+                MessageType.Info,
+                ButtonsType.Ok,
+                "try a different user combination/password"
+            );
+            dlog.Run();
+            dlog.Destroy();
+
         }
     }
 
@@ -66,7 +112,7 @@ namespace gui
     public class NetFunctions
     {
         //To be setuped when pinging server
-        int id;
+        public int id;
 
         public NetFunctions()
         {
@@ -88,6 +134,7 @@ namespace gui
 
                 //send actual command
                 string total = SendCommand(stream, "Login", sb.ToString());
+
                 string[] idmessage = total.Split(':');
                 id = Int32.Parse(idmessage[1]);
                 return idmessage[0];
@@ -117,6 +164,20 @@ namespace gui
             return StreamWrite(sb.ToString(), stream);
         }
 
+        public List<string> GetUsers(NetworkStream stream)
+        {
+            List<string> users = new List<string>();
+            StreamWrite("GetUsers", stream);
+            string reading = Read(stream);
+
+            while(reading != "")
+            {
+                users.Add(reading);
+            }
+
+            return users;
+        }
+
         //ALWAYS USE THIS COMMAND IN ORDER TO PREVENT DEADLOCK
         //except pingpong, pingpong is always fine
         public string SendCommand(NetworkStream stream, string commandtype, string args)
@@ -140,6 +201,13 @@ namespace gui
             //Make it so I can actually
             //Console.WriteLine(responseData);
             return responseData;
+        }
+
+        public string GetMessages(NetworkStream stream)
+        {
+            StreamWrite("GetMessages", stream);
+            return Read(stream);
+
         }
 
         public string StreamWrite(String input, NetworkStream stream)
