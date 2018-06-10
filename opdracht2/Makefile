@@ -8,7 +8,9 @@ OBJS =  Range.o  SheetView.o main.o Sheet.o
 
 final: all
 	$(CC) -std=c++11 -lcurses -Wall -I. -L. main.cpp -lsheet -lcurses -o Sheet
-	 
+	#after this do: LD_LIBRARY_PATH=.
+	#then ./Sheet
+
 all: clean Compile
 	$(CC) $(LDFLAGS) $(CFLAGS) -o libsheet.so.1.0 *.o
 	ln -sf libsheet.so.1.0 libsheet.so.1
