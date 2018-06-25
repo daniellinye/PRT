@@ -174,6 +174,8 @@ Column::Column(int size)
 	}
 }
 
+//nested resize function in column
+//saves complexity if written here
 void Column::resize(int newsize)
 {
 	if(newsize > size)
@@ -244,8 +246,10 @@ Sheet::Sheet(int h, int b)
 	}
 }
 
+//resizes the matrix
 void Sheet::resize(int newh, int newb)
 {
+	//in case the matrix has to become larger, make new vector elements
 	if(newb > b)
 	{
 		for(int i = 0; i < b; i++)
@@ -259,6 +263,8 @@ void Sheet::resize(int newh, int newb)
 	}
 	else
 	{
+		//otherwise only remove vector elements and handle the rest with
+		//mested function in column
 		for(int i = b; i > newb; i--)
 		{
 			matrix.pop_back();
