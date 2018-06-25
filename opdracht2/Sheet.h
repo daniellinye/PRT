@@ -108,6 +108,9 @@ private:
 public:
 	Column(int size);
 
+	//resize vectorcolumns to proper size
+	void resize(int newsize);
+
 	//replaces a cell with value int
 	void replaceCell(int index, int value);
 
@@ -125,6 +128,7 @@ public:
 
 	//returns the end of the col cell
 	Cell* end();
+
 };
 
 
@@ -139,6 +143,9 @@ public:
 	//initializes the sheet with
 	//height h and width b
 	Sheet(int h, int b);
+
+	//resize matrix to new size h and b
+	void resize(int newh, int newb);
 
 	//replaces cell at virtual coords x and y with value int
 	void replaceCell(int x, int y, int value);

@@ -7,6 +7,8 @@
         "iosfwd": "cpp",
         "sstream": "cpp",
         "system_error": "cpp",
-        "xtr1common": "cpp"
+        "xtr1common": "cpp",
+        "xiosbase": "cpp",
+        "vector": "cpp"
     }
 }

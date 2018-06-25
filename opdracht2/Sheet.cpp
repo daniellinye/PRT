@@ -174,6 +174,24 @@ Column::Column(int size)
 	}
 }
 
+void Column::resize(int newsize)
+{
+	if(newsize > size)
+	{
+		for(int i = size; i < newsize; i++)
+		{
+			col.push_back(new Cell());
+		}
+	}
+	else
+	{
+		for(int i = size; i > newsize; i--)
+		{
+			col.pop_back();
+		}
+	}
+}
+
 void Column::replaceCell(int index, int newvalue)
 {
 	col[index]->initCelli(newvalue);
@@ -226,25 +244,77 @@ Sheet::Sheet(int h, int b)
 	}
 }
 
+void Sheet::resize(int newh, int newb)
+{
+	if(newb > b)
+	{
+		for(int i = 0; i < b; i++)
+		{
+			matrix[i].resize(newh);
+		}
+		for(int i = b; i < newb; i++)
+		{
+			matrix.push_back(Column(newh));
+		}
+	}
+	else
+	{
+		for(int i = b; i > newb; i--)
+		{
+			matrix.pop_back();
+		}
+		for(int i = 0; i < newb; i++)
+		{
+			matrix[i].resize(newh);
+		}
+	}
+	this->h = newh;
+	this->b = newb;
+}
+
 //replaces cell with new value
 void Sheet::replaceCell(int x, int y, string value)
 {
-	matrix[x].replaceCell(y, value);
+	if(x < b && y < h)
+	{
+		matrix[x].replaceCell(y, value);
+	}
+	else
+	{
+		cout << "Cell was not in scope of matrix" << endl;
+	}
 }
 
 void Sheet::replaceCell(int x, int y, int value)
 {
-	matrix[x].replaceCell(y, value);
+	if(x < b && y < h)
+	{
+		matrix[x].replaceCell(y, value);
+	}
+	else
+	{
+		cout << "Cell was not in scope of matrix" << endl;
+	}
 }
 
 void Sheet::replaceCell(int x, int y, float value)
 {
-	matrix[x].replaceCell(y, value);
+	if(x < b && y < h)
+	{
+		matrix[x].replaceCell(y, value);
+	}
+	else
+	{
+		cout << "Cell was not in scope of matrix" << endl;
+	}
 }
 
 Cell* Sheet::getCell(int x, int y)
 {
+	if(x < b && y < h)
 	return matrix[x].getCell(y);
+	else
+	return NULL;
 }
 
 Cell* Sheet::getCell(char a, int y)
