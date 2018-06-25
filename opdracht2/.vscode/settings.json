@@ -5,6 +5,8 @@
         "xutility": "cpp",
         "ios": "cpp",
         "iosfwd": "cpp",
-        "sstream": "cpp"
+        "sstream": "cpp",
+        "system_error": "cpp",
+        "xtr1common": "cpp"
     }
 }

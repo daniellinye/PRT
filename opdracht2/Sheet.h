@@ -51,6 +51,32 @@ public:
 
 };
 
+class CellFormula : public CellValue<float>
+{
+private:
+	float value;
+	string originval;
+public:
+	//constructor
+	CellFormula(string originval);
+	
+	//returns value
+	float formvalue();
+
+	//prints value into stringstream
+	//important that this is value
+	std::stringstream print(void);
+
+	//gives typeid
+	std::string givetid();
+
+	//gives originval
+	string giveorigin();
+
+	//converts the value into a float
+	virtual float convertfloat();
+};
+
 class Cell
 {
 private:
@@ -119,6 +145,9 @@ public:
 
 	//replaces a cell at virtual coords x and y with value string
 	void replaceCell(int x, int y, string value);
+
+	//replaces a cell at virtual coords x and y with value float
+	void replaceCell(int x, int y, float value);
 
 	//gets a cell at coords x and y
 	Cell* getCell(int x, int y);

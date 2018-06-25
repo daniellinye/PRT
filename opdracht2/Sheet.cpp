@@ -232,6 +232,16 @@ void Sheet::replaceCell(int x, int y, string value)
 	matrix[x].replaceCell(y, value);
 }
 
+void Sheet::replaceCell(int x, int y, int value)
+{
+	matrix[x].replaceCell(y, value);
+}
+
+void Sheet::replaceCell(int x, int y, float value)
+{
+	matrix[x].replaceCell(y, value);
+}
+
 Cell* Sheet::getCell(int x, int y)
 {
 	return matrix[x].getCell(y);
