@@ -60,6 +60,8 @@ public:
 
 	void initCell(int x, int y, string value);
 
+	void resize(int newx, int newy);
+
 	//sets beginning celladress to corresponding coords
 	void setbegin(string input);
 
