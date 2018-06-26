@@ -147,6 +147,11 @@ public:
 	//resize matrix to new size h and b
 	void resize(int newh, int newb);
 
+	//try to make the string into float first, then int
+	//if that doesn't work, then check if the cell is a formula
+	//otherwise just make a stringcell
+	void parseCell(int x, int y, string value);
+
 	//replaces cell at virtual coords x and y with value int
 	void replaceCell(int x, int y, int value);
 

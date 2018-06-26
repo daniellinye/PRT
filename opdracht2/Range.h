@@ -58,6 +58,8 @@ public:
 	//initialized first
 	void initm(Sheet* matrix);
 
+	void initCell(int x, int y, string value);
+
 	//sets beginning celladress to corresponding coords
 	void setbegin(string input);
 

@@ -9,6 +9,8 @@
         "system_error": "cpp",
         "xtr1common": "cpp",
         "xiosbase": "cpp",
-        "vector": "cpp"
+        "vector": "cpp",
+        "exception": "cpp",
+        "string": "cpp"
     }
 }

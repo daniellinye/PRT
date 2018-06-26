@@ -249,39 +249,43 @@ Sheet::Sheet(int h, int b)
 //resizes the matrix
 void Sheet::resize(int newh, int newb)
 {
-	//in case the matrix has to become larger, make new vector elements
-	if(newb > b)
+	//check wether the sizes are valid
+	if(newh > 0 && newb > 0)
 	{
-		for(int i = 0; i < b; i++)
+		//in case the matrix has to become larger, make new vector elements
+		if(newb > b)
 		{
-			matrix[i].resize(newh);
+			for(int i = 0; i < b; i++)
+			{
+				matrix[i].resize(newh);
+			}
+			for(int i = b; i < newb; i++)
+			{
+				matrix.push_back(Column(newh));
+			}
 		}
-		for(int i = b; i < newb; i++)
+		else
 		{
-			matrix.push_back(Column(newh));
+			//otherwise only remove vector elements and handle the rest with
+			//mested function in column
+			for(int i = b; i > newb; i--)
+			{
+				matrix.pop_back();
+			}
+			for(int i = 0; i < newb; i++)
+			{
+				matrix[i].resize(newh);
+			}
 		}
+		this->h = newh;
+		this->b = newb;
 	}
-	else
-	{
-		//otherwise only remove vector elements and handle the rest with
-		//mested function in column
-		for(int i = b; i > newb; i--)
-		{
-			matrix.pop_back();
-		}
-		for(int i = 0; i < newb; i++)
-		{
-			matrix[i].resize(newh);
-		}
-	}
-	this->h = newh;
-	this->b = newb;
 }
 
 //replaces cell with new value
 void Sheet::replaceCell(int x, int y, string value)
 {
-	if(x < b && y < h)
+	if(x < b && y < h && x > -1 && y > -1)
 	{
 		matrix[x].replaceCell(y, value);
 	}
@@ -293,7 +297,7 @@ void Sheet::replaceCell(int x, int y, string value)
 
 void Sheet::replaceCell(int x, int y, int value)
 {
-	if(x < b && y < h)
+	if(x < b && y < h && x > -1 && y > -1)
 	{
 		matrix[x].replaceCell(y, value);
 	}
@@ -305,7 +309,7 @@ void Sheet::replaceCell(int x, int y, int value)
 
 void Sheet::replaceCell(int x, int y, float value)
 {
-	if(x < b && y < h)
+	if(x < b && y < h && x > -1 && y > -1)
 	{
 		matrix[x].replaceCell(y, value);
 	}
@@ -317,7 +321,7 @@ void Sheet::replaceCell(int x, int y, float value)
 
 Cell* Sheet::getCell(int x, int y)
 {
-	if(x < b && y < h)
+	if(x < b && y < h && x > -1 && y > -1)
 	return matrix[x].getCell(y);
 	else
 	return NULL;
@@ -325,7 +329,7 @@ Cell* Sheet::getCell(int x, int y)
 
 Cell* Sheet::getCell(char a, int y)
 {
-	if (a >= 'A' && a <= 'Z')
+	if (a >= 'A' && a <= 'Z' && y < h + 1 && y > -1)
 		return matrix[a - 'A'].getCell(y - 1);
 	else
 		return NULL;

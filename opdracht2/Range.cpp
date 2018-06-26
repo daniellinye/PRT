@@ -88,6 +88,34 @@ void Range::initm(Sheet* matrix)
 	end = CellAddress();
 }
 
+void Range::initCell(int x, int y, string value)
+{
+		//try int conversion
+	try
+	{
+		int temp = atoi(value.c_str());
+		matrix->replaceCell(x, y, temp);
+
+	} 
+	catch(exception)
+	{
+		//try float conversion
+		try
+		{
+			float temp = atoi(value.c_str());
+			matrix->replaceCell(x, y, temp);
+		} 
+		catch(exception)
+		{
+			//try formula
+			//TODO: implement formula (in other words a parser)
+			//such that the string is automatically tried to be parsed
+			//into a formula
+			matrix->replaceCell(x, y, value);
+		}
+	}
+}
+
 //sets startingcell of the range
 void Range::setbegin(string input)
 {
@@ -112,7 +140,9 @@ Cell* Range::getCell(char a, int col)
 	return matrix->getCell(a, col);
 }
 
-//returns rows with inputstring
+//gives both celladdresses in the function
+//the proper coordinates before using the 
+//looping the rows
 void Range::giveRows(string input)
 {
 	string leftn = "", rightn = "";
@@ -166,7 +196,10 @@ string Range::iterRows(string input, Sheet* matrix)
     return to_string(temp);
 }
 
-//gives count from inputstring formula
+//takes input
+//<location a>:<location b> as string
+//and converts it into a stringstream
+//does COUNT
 string Range::countcells(string input, Sheet* matrix)
 {
 	unsigned int h, temp = 0;
@@ -196,7 +229,10 @@ string Range::countcells(string input, Sheet* matrix)
 	return to_string(temp);
 }
 
-//gives average from inputstring formula
+//takes input
+//<location a>:<location b> as string
+//and converts it into a stringstream
+//does AVG
 string Range::averageCells(string input, Sheet* matrix)
 {
 	float temp = 0, temp2 = 0;
