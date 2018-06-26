@@ -36,11 +36,17 @@ public:
   //call PrintCell from every cell in the view
   void FillSheet(WINDOW *win);
 
+  //fetch userinput to char*
+  void GetUserInput(WINDOW *edit, char* input);
+
   //add a border around the editing subwindow
   void CreateBorder (WINDOW* win, int height, int width);
 
   //empty and refill the view with updated data
   void RefreshSheet(WINDOW* win, int x, int y);
+
+  //resize the window to user input
+  void ResizeSheet(WINDOW* win);
 
   //create an edit subwindow and change a cell's value
   void StartEdit(WINDOW* win, int x, int y);
