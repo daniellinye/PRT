@@ -193,7 +193,7 @@ void Range::setend(string input)
 //returns cellpointer at coords (x, y)
 Cell* Range::getCell(int x, int y)
 {
-	if(x > 0 && y > 0)
+	if(x >= 0 && y >= 0)
 	{
 		return matrix->getCell(x, y);
 	}
