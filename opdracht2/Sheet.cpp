@@ -322,9 +322,9 @@ void Sheet::replaceCell(int x, int y, float value)
 Cell* Sheet::getCell(int x, int y)
 {
 	if(x < b && y < h && x > -1 && y > -1)
-	return matrix[x].getCell(y);
+		return matrix[x].getCell(y);
 	else
-	return NULL;
+		return new Cell();
 }
 
 Cell* Sheet::getCell(char a, int y)
@@ -332,5 +332,5 @@ Cell* Sheet::getCell(char a, int y)
 	if (a >= 'A' && a <= 'Z' && y < h + 1 && y > -1)
 		return matrix[a - 'A'].getCell(y - 1);
 	else
-		return NULL;
+		return new Cell();
 }

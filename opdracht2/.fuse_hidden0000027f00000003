@@ -11,11 +11,11 @@ static const int editwidth(16); //width of two cells, for editing window
 
 class SheetView
 {
-public:
+private:
+  Range r;                //create a range
   Sheet* matrix;          //create a pointer to a Sheet
   CellAddress* address;   //create a pointer to a CellAddress
   int lines, cols;        //height and with of view
-  Range r; //create a range
 public:
   //constructor
   SheetView();

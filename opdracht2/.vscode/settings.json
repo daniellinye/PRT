@@ -11,6 +11,7 @@
         "xiosbase": "cpp",
         "vector": "cpp",
         "exception": "cpp",
-        "string": "cpp"
+        "string": "cpp",
+        "iostream": "cpp"
     }
 }
