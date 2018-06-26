@@ -7,7 +7,7 @@ using namespace std;
 
 static const int cellheigth(1); //height of a single cell
 static const int cellwidth(8);  //width of a single cell
-static const int maxwidth(16);  //width of two cells, for editing window
+static const int editwidth(16); //width of two cells, for editing window
 
 class SheetView
 {
