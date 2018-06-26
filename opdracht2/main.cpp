@@ -27,6 +27,7 @@ public:
 	{
 		assert(test1());
 		assert(test2());
+		assert(test3());
 	}
 
 	bool test1()
@@ -98,6 +99,9 @@ public:
 
 int main()
 {
+	MainTests mt = MainTests();
+	mt.dotests();
+
 	//execute actual program
 	SheetView view = SheetView();
 	view.Display();
