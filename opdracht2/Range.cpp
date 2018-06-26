@@ -147,6 +147,11 @@ void Range::initCell(int x, int y, string value)
 	}
 }
 
+void Range::resize(int newx, int newy)
+{
+	matrix->resize(newx, newy);
+}
+
 //sets startingcell of the range
 void Range::setbegin(string input)
 {
