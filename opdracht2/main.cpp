@@ -6,6 +6,8 @@
 
 using namespace std;
 
+//*******************************************
+//Maintests
 
 class MainTests
 {
@@ -20,14 +22,14 @@ public:
 		matrix = new Sheet(12, 12);
 		r.initm(matrix);
 	}
-	//*******************************************
-	//tests
+
 
 	void dotests()
 	{
 		assert(test1());
 		assert(test2());
 		assert(test3());
+		cout << "Tests complete" << endl;
 	}
 
 	bool test1()
@@ -73,7 +75,7 @@ public:
 	{
 		try
 		{
-			r.initCell(0, 0, "0");
+			//test ranges and correct value with range
 			r.initCell(0, 1, "1");
 			r.initCell(0, 2, "2");
 			r.initCell(1, 0, "3");
@@ -86,16 +88,19 @@ public:
 			int temp2 = atoi(temp.c_str());
 			if(temp2 == 36)
 			{
-				cout << "Tests complete" << endl;
+				return true;
 			}
 		}
 		catch(exception)
 		{
 			return false;
 		}
-		return true;
+		return false;
 	}
 };
+
+//*************************************************
+//main
 
 int main()
 {
