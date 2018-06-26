@@ -90,20 +90,46 @@ void Range::initm(Sheet* matrix)
 
 void Range::initCell(int x, int y, string value)
 {
-		//try int conversion
+	bool isfloat = false;
+	float total = 0, decimals = 0;
+	int stringsize = value.size();
+
 	try
 	{
-		int temp = atoi(value.c_str());
-		matrix->replaceCell(x, y, temp);
+		for(int i = 0; i < stringsize; i++)
+		{
+			if(isfloat)
+			{
+				total *= 10;
+				total += value[i] - '0';
+				cout << "v: " << value[i] << " t:" << total << endl;
+				decimals ++;
+			}
+			if(value[i] == '.')
+			{
+				isfloat = true;
+			}
+		}
+		total /= (10*decimals);
+		//try int conversion
+		if(!isfloat)
+		{
+			int temp = atoi(value.c_str());
+			matrix->replaceCell(x, y, temp);
+		}
+		else
+		{
+			throw 10;
+		}
 
 	} 
-	catch(exception)
+	catch(int i)
 	{
 		//try float conversion
 		try
 		{
 			float temp = atoi(value.c_str());
-			matrix->replaceCell(x, y, temp);
+			matrix->replaceCell(x, y, temp + total);
 		} 
 		catch(exception)
 		{
@@ -136,13 +162,21 @@ void Range::setend(string input)
 //returns cellpointer at coords (x, y)
 Cell* Range::getCell(int x, int y)
 {
-	return matrix->getCell(x, y);
+	if(x > 0 && y > 0)
+	{
+		return matrix->getCell(x, y);
+	}
+	return new Cell();
 }
 
 //returns cellpointer at coords (a, col)
 Cell* Range::getCell(char a, int col)
 {
-	return matrix->getCell(a, col);
+	if(a >= 'A' && a <= 'Z' && col > 0)
+	{
+		return matrix->getCell(a, col);
+	}
+	return new Cell();
 }
 
 //gives both celladdresses in the function

@@ -12,11 +12,11 @@ static const int maxwidth(16);  //width of a double cell
 
 class SheetView
 {
-private:
-  Range r;                //create a range
+public:
   Sheet* matrix;          //create a pointer to a Sheet
   CellAddress* address;   //create a pointer to a CellAddress
-public:
+  Range r; //create a range
+
   //constructor
   SheetView();
 
