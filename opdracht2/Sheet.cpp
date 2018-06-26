@@ -142,6 +142,7 @@ void Cell::initCelli(string init)
 {
 	auto cvar = new CellValue<string>(init);
 	value = unique_ptr<CellValueBase>(cvar);
+	cout << giveref()->print().str() << endl;
 }
 
 //inits the cell with a float

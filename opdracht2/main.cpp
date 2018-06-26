@@ -84,9 +84,8 @@ public:
 			r.initCell(2, 1, "6");
 			r.initCell(1, 2, "7");
 			r.initCell(2, 2, "8");
-			string temp = r.iterRows("A0:C3", matrix);
-			int temp2 = atoi(temp.c_str());
-			if(temp2 == 36)
+			float temp = r.iterRows("A0:C3", matrix);
+			if(temp == 36)
 			{
 				return true;
 			}
@@ -104,8 +103,8 @@ public:
 
 int main()
 {
-	MainTests mt = MainTests();
-	mt.dotests();
+	//MainTests mt = MainTests();
+	//mt.dotests();
 
 	//execute actual program
 	SheetView view = SheetView();

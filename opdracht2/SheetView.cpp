@@ -1,5 +1,6 @@
 #include "SheetView.h"
 #include <ncurses.h>
+#include <cstring>
 
 //*****************************************************
 //Sheetview
@@ -99,7 +100,7 @@ void SheetView::FillSheet(WINDOW *win)
 }//FillSheet
 
 //Creates a border for editing
-void SheetView::CreateBorder (WINDOW* win)
+void SheetView::CreateBorder (WINDOW* win, int height, int width)
 {
   int x = cellwidth*(address->givex() + 1);
   int y = cellheigth*(address->givey() + 1);
@@ -109,25 +110,25 @@ void SheetView::CreateBorder (WINDOW* win)
     mvwaddch(win, y + 1, x - 1, corner);    //to be placed is/are in the view and
   }                                         //then adds that/those character(s)
   if(isinview(x+1,y+1)){
-    mvwaddch(win, y + 1, x + editwidth, corner);
+    mvwaddch(win, y + 1, x + width, corner);
   }
   if(isinview(x-1,y-1)){
-    mvwaddch(win, y - cellheigth, x - 1, corner);
+    mvwaddch(win, y - height, x - 1, corner);
   }
   if(isinview(x+1,y-1)){
-    mvwaddch(win, y - cellheigth, x + editwidth, corner);
+    mvwaddch(win, y - height, x + width, corner);
   }
   if(isinview(x,y+1)){
-    mvwhline(win, y + 1, x, horizontal, editwidth);
+    mvwhline(win, y + 1, x, horizontal, width);
   }
   if(isinview(x,y-1)){
-    mvwhline(win, y - cellheigth, x, horizontal, editwidth);
+    mvwhline(win, y - height, x, horizontal, width);
   }
   if(isinview(x-1,y)){
-    mvwvline(win, y, x - 1, vertical, cellheigth);
+    mvwvline(win, y, x - 1, vertical, height);
   }
   if(isinview(x+1,y)){
-    mvwvline(win, y, x + editwidth, vertical, cellheigth);
+    mvwvline(win, y, x + width, vertical, height);
   }
   wmove(win,y,x);
   wrefresh(win);
@@ -154,41 +155,54 @@ void SheetView::RefreshSheet(WINDOW* win, int x, int y)
 
 void SheetView::StartEdit(WINDOW* win, int x, int y)
 {
-  int ch, n, i = 0;
+  int ch;
+  unsigned int n, i;
   char* cell = new char;
-
+  r.getCell(x,y)->giveref()->print() >> cell;
+  i = r.getCell(x,y)->giveref()->print().str().size();
   curs_set(1);
 
   //subwindow
   WINDOW* edit = subwin(win,cellheigth,editwidth,(y+1)*cellheigth,(x+1)*cellwidth);
   keypad(edit, TRUE); //enable keyboard inputs for the subwindow
   werase(edit);       //clear window
-  CreateBorder(win);  //add border around edit window
+  CreateBorder(win, cellheigth, editwidth); //add border around edit window
 
-  noecho();                               //the character to be typed will first
-  while((ch = wgetch(edit)) != '\n') {    //be placed in an array, then that array
-    noecho();                             //is printed with every new character
+  if (i >= editwidth) {
+    for (n = strlen(cell) - editwidth; n < i; n++) {
+      mvwaddch(edit,0,n - i + editwidth,cell[n]);       //displays the just typed array
+    }
+  }
+  else {
+    mvwaddnstr(edit,0,0,cell,editwidth);
+  }
+
+  noecho();                                 //the character to be typed will first
+  while((ch = wgetch(edit)) != '\n') {      //be placed in an array, then that array
+    noecho();                               //is printed with every new character
     switch (ch) {
       case KEY_BACKSPACE:   //backspace
         if (i > 0) {
           i--;
-          for (n = i; n < editwidth - 1; n++) {
+          for (n = i; n < strlen(cell) - 1; n++) {
             cell[n] = cell[n+1];
           }
-          cell[editwidth-1] = ' ';
+          cell[strlen(cell)-1] = '\0';
         }
       break;
       case KEY_DC:          //delete
-        for (n = i; n < editwidth - 1; n++) {
+        for (n = i; n < strlen(cell) - 1; n++) {
           cell[n] = cell[n+1];
         }
-        cell[editwidth-1] = ' ';
+        cell[strlen(cell)-1] = '\0';
       break;
       case KEY_LEFT:        //left
         i--;
       break;
       case KEY_RIGHT:       //right
+      if (i < strlen(cell)) {
         i++;
+      }
       break;
       default:              //normal typing keys
         if (!(has_key(ch))) {
@@ -201,8 +215,9 @@ void SheetView::StartEdit(WINDOW* win, int x, int y)
     if (i < 0) {
       i++;                    //helps to stay within the range of the edit window
     }
+    mvwhline(edit,0,0,' ',editwidth);
     if (i >= editwidth) {
-      for (n = i - editwidth; n < i; n++) {
+      for (n = strlen(cell) - editwidth; n < i; n++) {
         mvwaddch(edit,0,n - i + editwidth,cell[n]);       //displays the just typed array
       }
     }
@@ -215,9 +230,14 @@ void SheetView::StartEdit(WINDOW* win, int x, int y)
 
   cell[i] = '\0';
 
+  cout << "trying to change (" << x << "," << y << ") to: ";
+
+
   matrix->replaceCell(x,y,cell); //replaces the cellvalue
 
+  delwin(edit);
   RefreshSheet(win,x,y);
+  cout << r.getCell(x,y)->giveref()->print().str();
 }
 
 //Initialize window
@@ -251,6 +271,13 @@ void SheetView::Display()
       break;
       case KEY_LEFT:
         RefreshSheet(win, x-1, y);
+      break;
+      case KEY_BACKSPACE: case KEY_DC:
+        matrix->replaceCell(x,y,""); //replaces the cellvalue
+        RefreshSheet(win, x, y);
+      break;
+      case 'R': case 'r':
+        //ResizeSheet();
       break;
       case '\n':
         StartEdit(win,x,y);

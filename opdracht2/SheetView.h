@@ -37,7 +37,7 @@ public:
   void FillSheet(WINDOW *win);
 
   //add a border around the editing subwindow
-  void CreateBorder (WINDOW* win);
+  void CreateBorder (WINDOW* win, int height, int width);
 
   //empty and refill the view with updated data
   void RefreshSheet(WINDOW* win, int x, int y);
