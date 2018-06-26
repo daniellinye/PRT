@@ -4,11 +4,12 @@ CC = g++
 CFLAGS = -fPIC -g -Wall -std=c++11 -lcurses
 LDFLAGS = -shared -Wl,-soname,libsheet.so.1
 OBJS =  Range.o  SheetView.o main.o Sheet.o
-
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:.
 
 final: all
 	$(CC) -std=c++11 -lcurses -Wall -I. -L. main.cpp -lsheet -lcurses -o Sheet
-	#after this do: export LD_LIBRARY_PATH
+
+	#after this do: export LD_LIBRARY_PATH=.
 	#then ./Sheet
 
 all: clean Compile
