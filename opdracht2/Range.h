@@ -80,15 +80,15 @@ public:
 
 	//sum method of =METHOD(<coords1>:<coords2>)
 	//used in the cells themselves to call a formula
-	string iterRows(string input, Sheet* matrix);
+	float iterRows(string input, Sheet* matrix);
 
 	//count method of =METHOD(<coords1>:<coords2>)
 	//used in the cells themselves to call a formula
-	string countcells(string input, Sheet* matrix);
+	unsigned int countcells(string input, Sheet* matrix);
 
 	//avg method of =METHOD(<coords1>:<coords2>)
 	//used in the cells themselves to call a formula
-	string averageCells(string input, Sheet* matrix);
+	float averageCells(string input, Sheet* matrix);
 };
 
 

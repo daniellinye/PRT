@@ -96,7 +96,7 @@ void Range::initCell(int x, int y, string value)
 		int temp = atoi(value.c_str());
 		matrix->replaceCell(x, y, temp);
 
-	} 
+	}
 	catch(exception)
 	{
 		//try float conversion
@@ -104,14 +104,45 @@ void Range::initCell(int x, int y, string value)
 		{
 			float temp = atoi(value.c_str());
 			matrix->replaceCell(x, y, temp);
-		} 
+		}
 		catch(exception)
 		{
 			//try formula
-			//TODO: implement formula (in other words a parser)
-			//such that the string is automatically tried to be parsed
-			//into a formula
-			matrix->replaceCell(x, y, value);
+			try
+			{
+				string sum("SUM(");      //in every if-statement
+				string count("COUNT(");  // - gets checked whether it begins -and ends with the propper syntax
+				string avg("AVG(");      // - a substring of the coordinates gets extracted
+				string substring;        // - the corresponding function gets called
+				unsigned begin;
+				unsigned end = value.find(')');
+				if (value[0] == '=')
+				{
+					if ((value.find(sum) != string::npos) && value.back() == ')') {
+						begin = value.find(sum);
+						substring = value.substr(begin + sum.length(),end - begin - sum.length());
+						value = iterRows(substring, matrix);
+					}
+					else if ((value.find(count) != string::npos) && value.back() == ')') {
+						begin = value.find(count);
+						substring = value.substr(begin + count.length(),end - begin - count.length());
+						value = countcells(substring, matrix);
+					}
+					else if ((value.find(avg) != string::npos) && value.back() == ')') {
+						begin = value.find(avg);
+						substring = value.substr(begin + avg.length(),end - begin - avg.length());
+						value = averageCells(substring, matrix);
+					}
+				}
+				else
+				{
+					throw 0;
+				}
+			}
+			catch (int e)
+			{
+				matrix->replaceCell(x, y, value);
+			}
 		}
 	}
 }
@@ -141,7 +172,7 @@ Cell* Range::getCell(char a, int col)
 }
 
 //gives both celladdresses in the function
-//the proper coordinates before using the 
+//the proper coordinates before using the
 //looping the rows
 void Range::giveRows(string input)
 {
@@ -175,7 +206,7 @@ void Range::giveRows(string input)
 //<location a>:<location b> as string
 //and converts it into a stringstream
 //does SUM
-string Range::iterRows(string input, Sheet* matrix)
+float Range::iterRows(string input, Sheet* matrix)
 {
 	float temp = 0;
 	string str;
@@ -193,14 +224,14 @@ string Range::iterRows(string input, Sheet* matrix)
 					catch(exception e){return 0;}
         }
     }
-    return to_string(temp);
+    return temp;
 }
 
 //takes input
 //<location a>:<location b> as string
 //and converts it into a stringstream
 //does COUNT
-string Range::countcells(string input, Sheet* matrix)
+unsigned int Range::countcells(string input, Sheet* matrix)
 {
 	unsigned int h, temp = 0;
 	bool containsno;
@@ -226,14 +257,14 @@ string Range::countcells(string input, Sheet* matrix)
 			}
 	  }
 	}
-	return to_string(temp);
+	return temp;
 }
 
 //takes input
 //<location a>:<location b> as string
 //and converts it into a stringstream
 //does AVG
-string Range::averageCells(string input, Sheet* matrix)
+float Range::averageCells(string input, Sheet* matrix)
 {
 	float temp = 0, temp2 = 0;
 	int counter = 0;
@@ -256,6 +287,5 @@ string Range::averageCells(string input, Sheet* matrix)
 			catch(exception e){return 0;}
     }
   }
-  return to_string(temp2/counter);
+  return (temp2/counter);
 }
-

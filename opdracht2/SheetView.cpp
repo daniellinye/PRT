@@ -9,7 +9,7 @@
 SheetView::SheetView()
 {
   r = Range();
-  matrix = new Sheet(lines, cols);
+  matrix = new Sheet(24, 80);   //standard window size
   r.initm(matrix);
   address = new CellAddress();
 }
@@ -108,8 +108,6 @@ void SheetView::PrintCell(WINDOW* win, int x, int y)
 {
   std::stringstream ss = r.getCell(x,y)->giveref()->print();
   std::string str = ss.str();           //convert stringstream to string
-
-  if (str[0] == '=') {CheckFormula(str);}
 
   const char* cell = str.c_str();       //convert string to const char*
 
