@@ -146,37 +146,60 @@ void Range::initCell(int x, int y, string value)
 			//try formula
 			try
 			{
-				string sum("SUM(");      //in every if-statement
-				string count("COUNT(");  // - gets checked whether it begins -and ends with the propper syntax
-				string avg("AVG(");      // - a substring of the coordinates gets extracted
-				string substring;        // - the corresponding function gets called
+				string startparser = "", arg = "";
+				float result = 0;
+				int state = 0;
+
 				unsigned begin;
 				unsigned end = value.find(')');
 				if (value[0] == '=')
 				{
-					if ((value.find(sum) != string::npos) && value.back() == ')') {
-						begin = value.find(sum);
-						substring = value.substr(begin + sum.length(),end - begin - sum.length());
-						value = iterRows(substring, matrix);
+					for(int i = 1; i < stringsize; i++)
+					{
+						if(value[i] == '(' && state == 0)
+						{
+							state = 1;
+						}
+						else if (state == 0)
+						{
+							startparser += value[i];
+						}
+						else if (state == 1 && value[i] == ')')
+						{
+							state = 2;
+						}
+						else if (state == 1)
+						{
+							arg += value[i];
+						}
 					}
-					else if ((value.find(count) != string::npos) && value.back() == ')') {
-						begin = value.find(count);
-						substring = value.substr(begin + count.length(),end - begin - count.length());
-						value = countcells(substring, matrix);
+
+					if(startparser == "SUM")
+					{
+						result = iterRows(arg, matrix);
+					} 
+					else if(startparser == "COUNT")
+					{
+						result = countcells(arg, matrix);
 					}
-					else if ((value.find(avg) != string::npos) && value.back() == ')') {
-						begin = value.find(avg);
-						substring = value.substr(begin + avg.length(),end - begin - avg.length());
-						value = averageCells(substring, matrix);
+					else if (startparser == "AVG")
+					{
+						result = averageCells(arg, matrix);
+					}
+					else
+					{
+						throw 0;
 					}
 				}
 				else
 				{
 					throw 0;
 				}
+				matrix->replaceCell(x, y, result);
 			}
 			catch (int e)
 			{
+				cout << e << endl;
 				matrix->replaceCell(x, y, value);
 			}
 		}
@@ -318,7 +341,7 @@ float Range::averageCells(string input, Sheet* matrix)
 	float temp = 0, temp2 = 0;
 	int counter = 0;
 	string str;
-  giveRows(input);
+  	giveRows(input);
 
   int beginx = begin.givex(), beginy = begin.givey(),
 	endy = end.givey(), endx = end.givex();
