@@ -37,6 +37,13 @@ CellValue<T>::CellValue(T init) : CellValueBase()
 	this->value = init;
 }
 
+//returns value in cell
+template <typename T>
+T CellValue<T>::formvalue()
+{
+	return value;
+}
+
 //returns stringstream with value in cell<float>
 template <>
 std::stringstream CellValue<float>::print(void)

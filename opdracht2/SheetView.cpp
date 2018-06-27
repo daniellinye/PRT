@@ -214,7 +214,8 @@ void SheetView::RefreshSheet(WINDOW* win, int x, int y)
 
 void SheetView::ResizeSheet(WINDOW* win)
 {
-  int nwidth = 0, nheight = 0, i;
+  int nwidth = 0, nheight = 0;
+  unsigned int i;
   char* input = new char;
   int x = address->givex(), y = address->givey();
   CreateBorder(win,4,editwidth*2);
@@ -254,6 +255,8 @@ void SheetView::ResizeSheet(WINDOW* win)
 
 void SheetView::StartEdit(WINDOW* win, int x, int y)
 {
+  bool isafloat = false, isanint = true;
+  int intvalue = 0;
   unsigned int n, i;
   char* cell = new char;
   r.getCell(x,y)->giveref()->print() >> cell;
@@ -275,9 +278,24 @@ void SheetView::StartEdit(WINDOW* win, int x, int y)
     mvwaddnstr(edit,0,0,cell,editwidth);
   }
 
-  GetUserInput(edit, cell);
+  GetUserInput(edit, cell);       //fetches user input as char*
 
-  r.initCell(x,y,cell); //replaces the cellvalue
+  for (n = 0; n < strlen(cell); n++) {
+    if (isanint && isdigit(cell[n])) {
+      intvalue = intvalue*10 + cell[n] - '0';
+      matrix->replaceCell(x,y,intvalue);  //replaces the cellvalue
+    }
+    if ((isafloat == false && (cell[n] == '.' || cell[n] == ',')) || (isafloat && isdigit(cell[n]))) {
+      matrix->replaceCell(x,y,cell);  //replaces the cellvalue
+      matrix->getCell(x,y)->giveref()->convertfloat();
+      isafloat = true;
+      isanint = false;
+    } //converts to a float
+    else if ((!isanint && !isafloat) || !isdigit(cell[n])) {
+      matrix->replaceCell(x,y,cell);  //replaces the cellvalue
+      isanint = false;
+    }
+  }
 
   delwin(edit);
   RefreshSheet(win,x,y);

@@ -40,7 +40,7 @@ public:
 			r.initCell(4, 4, "42365");
 			r.initCell(2, 2, "51.2121");
 			r.initCell(2, 2, "522.2");
-			int temp = r.getCell(4, 4)->giveref()->convertfloat();
+			float temp = r.getCell(4, 4)->giveref()->convertfloat();
 			float temp2 = r.getCell(2, 2)->giveref()->convertfloat();
 			string temp3 = r.getCell(2, 6)->giveref()->givetid();
 			cout << "temp:" << temp << "|temp2:" << temp2 << "|temp3:" << temp3 << endl;
