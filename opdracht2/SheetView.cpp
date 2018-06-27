@@ -277,7 +277,7 @@ void SheetView::StartEdit(WINDOW* win, int x, int y)
 
   GetUserInput(edit, cell);
 
-  matrix->replaceCell(x,y,cell); //replaces the cellvalue
+  r.initCell(x,y,cell); //replaces the cellvalue
 
   delwin(edit);
   RefreshSheet(win,x,y);
