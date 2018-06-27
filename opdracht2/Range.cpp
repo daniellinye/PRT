@@ -90,7 +90,7 @@ void Range::initm(Sheet* matrix)
 
 void Range::initCell(int x, int y, string value)
 {
-	bool isfloat = false;
+	bool isfloat = false, isstring = false;
 	float total = 0, decimals = 0;
 	int stringsize = value.size();
 
@@ -102,24 +102,27 @@ void Range::initCell(int x, int y, string value)
 			{
 				total *= 10;
 				total += value[i] - '0';
-				cout << "v: " << value[i] << " t:" << total << endl;
 				decimals ++;
 			}
 			if(value[i] == '.')
 			{
 				isfloat = true;
 			}
+			if(value[i] < '0' || value[i] > '9')
+			{
+				isstring = true;
+			}
 		}
 		total /= (10*decimals);
 		//try int conversion
-		if(!isfloat)
+		if(!isfloat && !isstring)
 		{
 			int temp = atoi(value.c_str());
 			matrix->replaceCell(x, y, temp);
 		}
 		else
 		{
-			throw 10;
+			throw 0;
 		}
 
 	}
@@ -128,10 +131,17 @@ void Range::initCell(int x, int y, string value)
 		//try float conversion
 		try
 		{
-			float temp = atoi(value.c_str());
-			matrix->replaceCell(x, y, temp + total);
+			if(!isstring)
+			{
+				float temp = atoi(value.c_str());
+				matrix->replaceCell(x, y, temp + total);
+			}
+			else
+			{
+				throw 0;
+			}
 		}
-		catch(exception)
+		catch(int i)
 		{
 			//try formula
 			try
