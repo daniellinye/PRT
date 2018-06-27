@@ -149,9 +149,7 @@ void Range::initCell(int x, int y, string value)
 				string startparser = "", arg = "";
 				float result = 0;
 				int state = 0;
-
-				unsigned begin;
-				unsigned end = value.find(')');
+				
 				if (value[0] == '=')
 				{
 					for(int i = 1; i < stringsize; i++)
