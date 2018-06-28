@@ -7,6 +7,8 @@
 
 using namespace std;
 
+//This class is relevant for formulas
+//it keeps track of the two coordinates that are inbetween the values
 class CellAddress
 {
 private:
@@ -44,6 +46,8 @@ public:
 //*****************************************
 //Range
 
+//This class adds the formula functionality (SUM, AVG and COUNT)
+//to the existing sheet class
 class Range
 {
 private:
@@ -58,6 +62,8 @@ public:
 	//initialized first
 	void initm(Sheet* matrix);
 
+	//initializes new cell on coords (x, y) with proper value
+	//according to either int, float, string or formula
 	void initCell(int x, int y, string value);
 
 	void resize(int newx, int newy);

@@ -6,6 +6,7 @@ using namespace std;
 
 //*****************************************************
 //CellValueBase
+//Baseclass for all Cell values
 
 std::stringstream CellValueBase::print()
 {
@@ -29,19 +30,13 @@ float CellValueBase::convertfloat()
 
 //*****************************************************
 //CellValue
+//Generic constructor that carries multiple typenames
 
 //constructor
 template <typename T>
 CellValue<T>::CellValue(T init) : CellValueBase()
 {
 	this->value = init;
-}
-
-//returns value in cell
-template <typename T>
-T CellValue<T>::formvalue()
-{
-	return value;
 }
 
 //returns stringstream with value in cell<float>
@@ -121,6 +116,7 @@ float CellValue<float>::convertfloat()
 
 //*****************************************************
 //Cell
+//Pointerclass to CellValues
 
 //constructor
 Cell::Cell()
@@ -164,7 +160,9 @@ CellValueBase* Cell::giveref()
 
 //*****************************************************
 //Column
+//vector<Cell*> class
 
+//constructor
 Column::Column(int size)
 {
 	this->size = size;
@@ -194,26 +192,31 @@ void Column::resize(int newsize)
 	}
 }
 
+//replace existing cell with new value int
 void Column::replaceCell(int index, int newvalue)
 {
 	col[index]->initCelli(newvalue);
 }
 
+//replace existing cell with new value string
 void Column::replaceCell(int index, string newvalue)
 {
 	col[index]->initCelli(newvalue);
 }
 
+//replace existing cell with new value float
 void Column::replaceCell(int index, float newvalue)
 {
 	col[index]->initCelli(newvalue);
 }
 
+//get cellpointer from index
 Cell* Column::getCell(int index)
 {
 	return col[index];
 }
 
+//get first cell in the vector
 Cell* Column::begin()
 {
 	if(col.size() > 0)
@@ -222,6 +225,7 @@ Cell* Column::begin()
 		return new Cell();
 }
 
+//get last cell in the vector
 Cell* Column::end()
 {
 	if(col.size() > 0)
@@ -233,6 +237,7 @@ Cell* Column::end()
 
 //*****************************************************
 //Sheet
+//Vector<Column> class
 
 //constructor
 Sheet::Sheet(int h, int b)
@@ -282,7 +287,7 @@ void Sheet::resize(int newh, int newb)
 	}
 }
 
-//replaces cell with new value
+//replaces cell with new value string
 void Sheet::replaceCell(int x, int y, string value)
 {
 	if(x < b && y < h && x > -1 && y > -1)
@@ -295,6 +300,7 @@ void Sheet::replaceCell(int x, int y, string value)
 	}
 }
 
+//replaces cell with new value int
 void Sheet::replaceCell(int x, int y, int value)
 {
 	if(x < b && y < h && x > -1 && y > -1)
@@ -307,6 +313,7 @@ void Sheet::replaceCell(int x, int y, int value)
 	}
 }
 
+//replaces cell with new value float
 void Sheet::replaceCell(int x, int y, float value)
 {
 	if(x < b && y < h && x > -1 && y > -1)
@@ -319,6 +326,7 @@ void Sheet::replaceCell(int x, int y, float value)
 	}
 }
 
+//get a cell in the matrix at coords (x, y)
 Cell* Sheet::getCell(int x, int y)
 {
 	if(x < b && y < h && x > -1 && y > -1)
@@ -327,6 +335,7 @@ Cell* Sheet::getCell(int x, int y)
 		return new Cell();
 }
 
+//get a cell in the matrix at coords (a - 'A', y - 1)
 Cell* Sheet::getCell(char a, int y)
 {
 	if (a >= 'A' && a <= 'Z' && y < h + 1 && y > -1)

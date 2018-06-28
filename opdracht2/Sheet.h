@@ -8,7 +8,8 @@
 
 using namespace std;
 
-
+//This is the base class with basefunctions 
+//for the stored values in the program.
 struct CellValueBase
 {
 	CellValueBase() {};
@@ -26,6 +27,8 @@ public:
 	virtual float convertfloat();
 };
 
+//This class extends to types from the basefunctions
+//for the typings int, string and float with templates.
 template<typename T>
 class CellValue : public CellValueBase
 {
@@ -51,6 +54,9 @@ public:
 
 };
 
+//This class is for formulas, it stores both a 
+//string and float in order to edit the string,
+//but keep the float value intact.
 class CellFormula : public CellValue<float>
 {
 private:
@@ -77,6 +83,8 @@ public:
 	virtual float convertfloat();
 };
 
+//Cell is the pointerclass to any CellValueBase and it's extensions.
+//This is such that we can give different celltypes.
 class Cell
 {
 private:
@@ -99,7 +107,9 @@ public:
 	CellValueBase* giveref();
 };
 
-
+//Matrix has columns, 
+//this is such that we can edit on a lower level.
+//Column has a row of cells, which can be resized or replaced.
 class Column
 {
 private:
@@ -132,7 +142,9 @@ public:
 };
 
 
-//TODO: make new class so that class Column contains the columns of vector<Cell*>
+//Sheet is a class with Columns
+//it essentially is a matrix class with functions
+//it can replace, get cells or resize
 class Sheet
 {
 private:
@@ -165,7 +177,7 @@ public:
 	Cell* getCell(int x, int y);
 
 	//gets a cell at coords char a and int y
-	//WARNING: relative coords A1 correspond to "(0, 0)"
+	//Note: relative coords A1 correspond to "(0, 0)"
 	Cell* getCell(char a, int y);
 
 	//returns the begin of a cell in a column

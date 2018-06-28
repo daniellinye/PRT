@@ -88,6 +88,9 @@ void Range::initm(Sheet* matrix)
 	end = CellAddress();
 }
 
+//initializes a new cell, but filters the string
+//such that formulas, int, float and string
+//get the correct cell types
 void Range::initCell(int x, int y, string value)
 {
 	bool isfloat = false, isstring = false;
@@ -186,11 +189,13 @@ void Range::initCell(int x, int y, string value)
 					}
 					else
 					{
+						//otherwise it's a string
 						throw 0;
 					}
 				}
 				else
 				{
+					//otherwise it's a string
 					throw 0;
 				}
 				matrix->replaceCell(x, y, result);
@@ -204,18 +209,22 @@ void Range::initCell(int x, int y, string value)
 	}
 }
 
+//resizes the matrix to new size
+//newx by newy
 void Range::resize(int newx, int newy)
 {
 	matrix->resize(newx, newy);
 }
 
 //sets startingcell of the range
+//needed for the formula
 void Range::setbegin(string input)
 {
 	begin.init(input);
 }
 
 //sets endingcell of the range
+//needed for the formula
 void Range::setend(string input)
 {
 	end.init(input);
@@ -232,6 +241,7 @@ Cell* Range::getCell(int x, int y)
 }
 
 //returns cellpointer at coords (a, col)
+//note: (A, 1) = (0, 0)
 Cell* Range::getCell(char a, int col)
 {
 	if(a >= 'A' && a <= 'Z' && col > 0)
@@ -244,6 +254,7 @@ Cell* Range::getCell(char a, int col)
 //gives both celladdresses in the function
 //the proper coordinates before using the
 //looping the rows
+//<location a>:<location b> as string
 void Range::giveRows(string input)
 {
 	string leftn = "", rightn = "";

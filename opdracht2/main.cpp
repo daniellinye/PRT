@@ -103,8 +103,8 @@ public:
 
 int main()
 {
-	//MainTests mt = MainTests();
-	//mt.dotests();
+	MainTests mt = MainTests();
+	mt.dotests();
 
 	//execute actual program
 	SheetView view = SheetView();
