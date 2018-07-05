@@ -77,6 +77,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api.cs" />
     <Compile Include="ConnectionFunctions.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="Program.cs" />
