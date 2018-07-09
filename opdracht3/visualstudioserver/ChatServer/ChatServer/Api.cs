@@ -273,14 +273,15 @@ namespace ChatServer
                 Socket listen = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Starting");
 
+                listen.Bind(endpoint);
+                listen.Listen(100);
+
                 while (true)
                 {
                     //reset to non signal state
                     mre.Reset();
 
                     //use asynchcallback to listen for connection asynchronously
-                    listen.Bind(endpoint);
-                    listen.Listen(100);
                     listen.BeginAccept(new AsyncCallback(ListenerHelper), listen);
 
                     //wait until done
