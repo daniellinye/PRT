@@ -328,7 +328,7 @@ namespace ChatServer
 
 
                 temp = r.sb.ToString();
-                if(temp.IndexOf("<EOF>") > -1)
+                if(temp.IndexOf("<EOF>") != -1)
                 {
                     //if all content is read, proceed
                     Parser(temp);
