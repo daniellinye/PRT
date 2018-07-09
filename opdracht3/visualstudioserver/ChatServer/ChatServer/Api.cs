@@ -328,6 +328,8 @@ namespace ChatServer
 
 
                 temp = r.sb.ToString();
+                //IMPORTANT: lines that are given, must end with <EOF>, which is to make
+                //sure that more than one line can be given in order to stop redundancy or huge buffers
                 if(temp.IndexOf("<EOF>") != -1)
                 {
                     //if all content is read, proceed
