@@ -279,6 +279,8 @@ namespace ChatServer
                     mre.Reset();
 
                     //use asynchcallback to listen for connection asynchronously
+                    listen.Bind(endpoint);
+                    listen.Listen(100);
                     listen.BeginAccept(new AsyncCallback(ListenerHelper), listen);
 
                     //wait until done

@@ -36,9 +36,9 @@ namespace ChatServer
 
         static void Main(string[] args)
         {
-            Program p = new Program();
+            SocketListener sl = new SocketListener();
+            sl.NetSocketListener(8081, "127.0.0.1");
             Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Initialized TcpListener");
-            p.Startup();
         }
 
         public void Startup()
