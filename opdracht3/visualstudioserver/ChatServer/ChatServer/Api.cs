@@ -11,9 +11,11 @@ using System.Xml;
 using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Net;
+using System.Threading;
 
 namespace ChatServer
 {
+
     public interface IApi
     {
         //Imports info from an xml file
@@ -96,12 +98,8 @@ namespace ChatServer
         Boolean CheckHashInList(string hashcode, string username);
     }
     
-    interface ITcpFunctions
+    interface ISocketListener
     {
-        string TcpFunctions
-        {
-            get; set;
-        }
 
         /// <summary>
         /// Simplify the new sessions and creation of listeners by using a function instead
@@ -109,7 +107,21 @@ namespace ChatServer
         /// <param name="port"></param>
         /// <param name="ip"></param>
         /// <returns>Returns error codes if not succesfull</returns>
-        string NewTcpListener(int port, string ip);
+        string NetSocketListener(int port, string ip);
+
+        /// <summary>
+        /// Helps with using the main signal,
+        /// simplifies functions
+        /// </summary>
+        /// <param name="ar"></param>
+        /// <returns></returns>
+        void ListenerHelper(IAsyncResult ar);
+
+        /// <summary>
+        /// Helps during asynch streamreading
+        /// </summary>
+        /// <param name="ar"></param>
+        void StreamHelper(IAsyncResult ar);
 
         /// <summary>
         /// Parses the string according to the commands
@@ -124,20 +136,23 @@ namespace ChatServer
         /// </summary>
         /// <param name="input"></param>
         /// <param name="stream"></param>
-        void StreamWrite(string input, NetworkStream stream);
+        void StreamWrite(string input, Socket helper);
 
-        /// <summary>
-        /// Reads from a networkstream
-        /// </summary>
-        /// <param name="stream"></param>
-        /// <returns></returns>
-        string StreamRead(NetworkStream stream);
     }
 
     //***********************************************************************************************************************
     //classes
     //TODO: Implement API functions
 
+    public class Reader
+    {
+        //is nested class such that Read is pretty much replaced
+        //which is needed because we're using sockets
+        public Socket socket = null;
+        public const int buffersize = 1024;
+        public byte[] buffer = new byte[buffersize];
+        public StringBuilder sb = new StringBuilder();
+    }
 
     class Api : IApi
     {
@@ -242,28 +257,33 @@ namespace ChatServer
         }
     }
 
-    class TcpFunctions : ITcpFunctions
+    class SocketListener : ISocketListener
     {
-        string ITcpFunctions.TcpFunctions { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        protected ManualResetEvent mre = new ManualResetEvent(false);
 
-        enum TcpState { Read, Write };
-
-
-        public string NewTcpListener(int port, string ip)
+        public string NetSocketListener(int port, string ip)
         {
             try
             {
+                //new network values
                 IPAddress iaddress = IPAddress.Parse(ip);
-                TcpListener listen = new TcpListener(iaddress, port);
-                Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Starting");
-                listen.Start();
+                IPEndPoint endpoint = new IPEndPoint(iaddress, port);
 
-                //connect client
-                TcpClient client = listen.AcceptTcpClient();
+                //net socket
+                Socket listen = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Starting");
 
                 while (true)
                 {
-                    Parser(StreamRead(client.GetStream()));
+                    //reset to non signal state
+                    mre.Reset();
+
+                    //use asynchcallback to listen for connection asynchronously
+                    listen.BeginAccept(new AsyncCallback(ListenerHelper), listen);
+
+                    //wait until done
+                    mre.WaitOne();
+
                 }
             }
             catch (Exception e)
@@ -275,9 +295,76 @@ namespace ChatServer
             return "";
         }
 
-        public void StreamWrite(string input, NetworkStream stream)
+        public void ListenerHelper(IAsyncResult ar)
         {
-            throw new NotImplementedException();
+            //Signal to continue main thread
+            mre.Set();
+
+            //Get sockets such that we can get a client
+            Socket listen = (Socket)ar.AsyncState;
+            Socket helper = listen.EndAccept(ar);
+
+            Reader r = new Reader();
+            r.socket = helper;
+
+            helper.BeginReceive(r.buffer, 0, Reader.buffersize, 0, new AsyncCallback(StreamHelper), r);
+        
+        }
+
+        public void StreamHelper(IAsyncResult ar)
+        {
+            string temp;
+            Reader r = (Reader)ar.AsyncState;
+            Socket helper = r.socket;
+
+            int output = helper.EndReceive(ar);
+
+            if(output > 0)
+            {
+                r.sb.Append(Encoding.ASCII.GetString(r.buffer, 0, output));
+
+
+                temp = r.sb.ToString();
+                if(temp.IndexOf("<EOF>") > -1)
+                {
+                    //if all content is read, proceed
+                    Parser(temp);
+                }
+                else
+                {
+                    //otherwise continue to read in thread
+                    helper.BeginReceive(r.buffer, 0, Reader.buffersize, 0, new AsyncCallback(StreamHelper), r);
+                }
+                
+            }
+        }
+
+        public void StreamWrite(string input, Socket helper)
+        {
+            //convert the string data to bytes using ASCII
+            byte[] byteData = Encoding.ASCII.GetBytes(input);
+
+            helper.BeginSend(byteData, 0, byteData.Length, 0,
+                new AsyncCallback(SendBack), helper);
+        }
+
+        private static void SendBack(IAsyncResult ar)
+        {
+            //when sends back to client, close the stream
+            try
+            {
+                Socket helper = (Socket)ar.AsyncState;
+
+                int bytesSent = helper.EndSend(ar);
+
+                helper.Shutdown(SocketShutdown.Both);
+                helper.Close();
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
         }
 
         public int Parser(string clientinput)
@@ -286,16 +373,6 @@ namespace ChatServer
             //TODO: return codes depending on succesfull or not
             //returning 1 == successfull
             throw new NotImplementedException();
-        }
-
-        //reads rawdata from the newworkstream :D
-        public String StreamRead(NetworkStream stream)
-        {
-            byte[] myReadBuffer = new byte[1024];
-            String responseData = String.Empty;
-            Int32 bytes = stream.Read(myReadBuffer, 0, myReadBuffer.Length);
-            responseData = System.Text.Encoding.ASCII.GetString(myReadBuffer, 0, bytes);
-            return responseData;
         }
     }
 }
