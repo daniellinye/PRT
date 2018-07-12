@@ -37,8 +37,12 @@ namespace ChatServer
         static void Main(string[] args)
         {
             SocketListener sl = new SocketListener();
+            Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Initializing SocketListener");
             sl.NetSocketListener(8081, "127.0.0.1");
-            Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Initialized TcpListener");
+            Console.WriteLine("SERVER ROOM IS ON FIRE");
+            sl.NetSocketListener(8081, "127.0.0.1");
+            Console.WriteLine("SERVER ROOM IS ON FIRE");
+
         }
 
         public void Startup()

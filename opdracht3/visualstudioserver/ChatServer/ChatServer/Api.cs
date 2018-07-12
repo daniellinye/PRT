@@ -25,13 +25,14 @@ namespace ChatServer
         }
 
         /// <summary>
+        /// Constructor:
         /// Manages threads in tcplisteners
         /// Such that multiple users are able to login
         /// </summary>
         /// <param name="ipadress"></param>
         /// <param name="port"></param>
         /// <returns></returns>
-        string ThreadConnections(string ipadress, int port);
+        /// Api(string ipadress, int port);
 
         /// <summary>
         /// Gives a login request to server
@@ -41,7 +42,7 @@ namespace ChatServer
         /// <param name="password"></param>
         /// <param name="hashcode"></param>
         /// <returns>Returns a hashstring such that sessions do not block each other</returns>
-        string Login(string username, string password, string hashcode);
+        string Login(string username, string password);
 
         /// <summary>
         /// Gives a logout request to the server
@@ -50,27 +51,27 @@ namespace ChatServer
         /// <param name="username"></param>
         /// <param name="password"></param>
         /// <param name="hashcode"></param>
-        /// <returns></returns>
+        /// <returns>Responsecode with wether it was successfull or not</returns>
         string Logout(string username, string hashcode);
 
         /// <summary>
         /// Gives a message request to server
-        /// Parser: MESSAGE#username#hashstring
+        /// Parser: MESSAGE#username#recipient#hashcode
         /// </summary>
         /// <param name="hashcode"></param>
         /// <param name="username"></param>
         /// <param name="recipient"></param>
-        /// <returns></returns>
-        string Message(string hashcode, string username, string recipient);
+        /// <returns>Responsecode with wether it was successfull or not</returns>
+        string Message(string username, string recipient, string hashcode);
 
         /// <summary>
         /// Gives an update request to server
-        /// Parser: UPDATE#username#hashstring
+        /// Parser: UPDATE#username#recipient#hashcode
         /// </summary>
         /// <param name="username"></param>
         /// <param name="hashstring"></param>
-        /// <returns></returns>
-        string Update(string username, string hashstring);
+        /// <returns>Returns a list with the messages spaced like: message:user|message:user|message:user</returns>
+        string Update(string username, string recipient, string hashcode);
     }
 
     interface IHashes
@@ -129,7 +130,7 @@ namespace ChatServer
         /// </summary>
         /// <param name="clientinput"></param>
         /// <returns></returns>
-        int Parser(string clientinput);
+        string Parser(string clientinput);
 
         /// <summary>
         /// Writes something to the current NetworkStream
@@ -168,7 +169,7 @@ namespace ChatServer
             this.port = port;
         }
 
-        public string Login(string username, string password, string hashcode)
+        public string Login(string username, string password)
         {
             bool exists = df.LogIn(username, password);
             if(exists)
@@ -188,17 +189,12 @@ namespace ChatServer
             return "ERROR 404: USER NOT FOUND IN LIST, RELOG TO SERVER";
         }
 
-        public string Message(string hashcode, string username, string recipient)
+        public string Message(string username, string recipient, string hashcode)
         {
             throw new NotImplementedException();
         }
 
-        public string ThreadConnections(string ipadress, int port)
-        {
-            throw new NotImplementedException();
-        }
-
-        public string Update(string username, string hashstring)
+        public string Update(string username, string recipient, string hashcode)
         {
             throw new NotImplementedException();
         }
@@ -230,6 +226,7 @@ namespace ChatServer
                 rand.GetBytes(bytes);
             }
             string hash = BitConverter.ToString(bytes);
+
             //check if by miracle a hash of same characters exists
             foreach(string[] hashcodes in hashEntries)
             {
@@ -260,11 +257,13 @@ namespace ChatServer
     class SocketListener : ISocketListener
     {
         protected ManualResetEvent mre = new ManualResetEvent(false);
+        private Api api;
 
         public string NetSocketListener(int port, string ip)
         {
             try
             {
+                api = new Api(ip, port);
                 //new network values
                 IPAddress iaddress = IPAddress.Parse(ip);
                 IPEndPoint endpoint = new IPEndPoint(iaddress, port);
@@ -293,7 +292,8 @@ namespace ChatServer
             {
                 Console.WriteLine(e);
                 Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Tried new socket, but crashed");
-                Console.ReadLine();
+                //safekeeping such that the server will continue
+                NetSocketListener(port, ip);
             }
             return "";
         }
@@ -372,12 +372,62 @@ namespace ChatServer
             }
         }
 
-        public int Parser(string clientinput)
+        /// <summary>
+        /// Commands must be seperated with: '|' and the line
+        /// must have the proper parser as put in the interface
+        /// </summary>
+        /// <param name="clientinput"></param>
+        /// <returns></returns>
+        public string Parser(string clientinput)
         {
-            //TODO: implement parser from api
-            //TODO: return codes depending on succesfull or not
-            //returning 1 == successfull
-            throw new NotImplementedException();
+            try
+            {
+                string[] lines = clientinput.Split('|');
+                //make stringbuilder such that it can add new returnvalues to be send back
+                StringBuilder sb = new StringBuilder();
+
+                foreach (string line in lines)
+                {
+                    string[] commands = line.Split('#');
+                    switch (commands[0])
+                    {
+                        case "<EOF>":
+                            break;
+                        case "LOGIN":
+                            sb.Append("HASHCODE:");
+                            sb.Append(api.Login(commands[1], commands[2]));
+                            sb.Append("|");
+                            break;
+                        case "LOGOUT":
+                            sb.Append("RESPONSECODE:");
+                            sb.Append(api.Logout(commands[1], commands[2]));
+                            sb.Append("|");
+                            break;
+                        case "MESSAGE":
+                            sb.Append("RESPONSECODE:");
+                            sb.Append(api.Message(commands[1], commands[2], commands[3]));
+                            sb.Append("|");
+                            break;
+                        case "UPDATE":
+                            sb.Append("UPDATE:");
+                            sb.Append(api.Update(commands[1], commands[2], commands[3]));
+                            break;
+                        default:
+                            return "Command " + commands[0] + ", no such command exists|<EOF>";
+                    }
+                }
+                sb.Append("<EOF>");
+            } 
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                Console.WriteLine("Parser crashed, now returning back to main.");
+                Console.WriteLine(clientinput);
+                return "Error: parser crash, parser input was: " + clientinput + "|<EOF>";
+            }
+
+            Console.WriteLine("FATAL ERROR IN CONNECTION, CONNECTION HAS NO LINES");
+            return "0|<EOF>";
         }
     }
 }

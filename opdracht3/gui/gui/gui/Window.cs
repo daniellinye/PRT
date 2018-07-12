@@ -34,7 +34,7 @@ namespace gui
                 password = Password.Text;
 
                 //standard values
-                const Int32 port = 8080;
+                const Int32 port = 8081;
                 const string ip = "127.0.0.1";
 
                 //new clients
@@ -119,6 +119,17 @@ namespace gui
         
         }
 
+
+
+
+        //TODO: redo the entire parser such that it fits the parser from the server
+        //TODO
+        //TODO
+        //TODO
+
+
+
+
         //sends a login command to the server
         //FORMAT; Login:"username"."password"
         //sends a login command to the server
@@ -186,6 +197,7 @@ namespace gui
             sb.Append(commandtype);
             sb.Append(":");
             sb.Append(args);
+            sb.Append("|<EOF>");
             StreamWrite(sb.ToString(), stream);
             return Read(stream);
         }

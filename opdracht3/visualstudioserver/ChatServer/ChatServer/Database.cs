@@ -76,13 +76,13 @@ namespace ChatServer
 
                 }
 
-                Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Connection Successful.");
+                Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Database Connection Successful.");
                 
             }
             catch(Exception e)
             {
                 Console.WriteLine("\n" + e + "\n");
-                Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Connection Unsuccesfull.");
+                Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Database Connection Unsuccesfull.");
 
             }
         }
