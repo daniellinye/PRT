@@ -93,7 +93,7 @@ namespace ChatServer
     {
         string Hashes
         {
-            get; set;
+            get;
         }
 
         /// <summary>
@@ -227,7 +227,7 @@ namespace ChatServer
 
     class Hashes : IHashes
     {
-        string IHashes.Hashes { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        string IHashes.Hashes { get => hashEntries.ToString(); }
 
         List<string[]> hashEntries = new List<string[]>();
 
@@ -342,6 +342,7 @@ namespace ChatServer
         public void StreamHelper(IAsyncResult ar)
         {
             string temp;
+            string[] parsedata;
             Reader r = (Reader)ar.AsyncState;
             Socket helper = r.socket;
 
@@ -358,7 +359,8 @@ namespace ChatServer
                 if(temp.IndexOf("<EOF>") != -1)
                 {
                     //if all content is read, proceed
-                    Parser(temp);
+                    parsedata = Parser(temp).Split('|');
+                    SendResponsedata(parsedata, helper);
                 }
                 else
                 {
@@ -366,6 +368,14 @@ namespace ChatServer
                     helper.BeginReceive(r.buffer, 0, Reader.buffersize, 0, new AsyncCallback(StreamHelper), r);
                 }
                 
+            }
+        }
+
+        public void SendResponsedata(string[] input, Socket helper)
+        {
+            foreach(string element in input)
+            {
+                StreamWrite(element + "|", helper);
             }
         }
 
@@ -380,16 +390,12 @@ namespace ChatServer
 
         private static void SendBack(IAsyncResult ar)
         {
-            //when sends back to client, close the stream
             try
             {
                 Socket helper = (Socket)ar.AsyncState;
 
                 int bytesSent = helper.EndSend(ar);
-
-                helper.Shutdown(SocketShutdown.Both);
-                helper.Close();
-
+                
             }
             catch (Exception e)
             {
@@ -419,37 +425,41 @@ namespace ChatServer
                         case "<EOF>":
                             break;
                         case "LOGIN":
-                            sb.Append("HASHCODE:");
+                            sb.Append("HASHCODE#");
                             sb.Append(api.Login(commands[1], commands[2]));
                             sb.Append("|");
                             break;
                         case "LOGOUT":
-                            sb.Append("RESPONSECODE:");
+                            sb.Append("RESPONSECODE#");
                             sb.Append(api.Logout(commands[1], commands[2]));
                             sb.Append("|");
                             break;
                         case "MESSAGE":
-                            sb.Append("RESPONSECODE:");
+                            sb.Append("RESPONSECODE#");
                             sb.Append(api.Message(commands[1], commands[2], commands[3]));
                             sb.Append("|");
                             break;
                         case "UPDATE":
-                            sb.Append("UPDATE:");
+                            sb.Append("UPDATE#");
                             sb.Append(api.Update(commands[1], commands[2], commands[3]));
+                            sb.Append("|");
                             break;
                         case "ONLINE":
-                            sb.Append("USERS:");
+                            sb.Append("USERS#");
                             sb.Append(api.Online());
+                            sb.Append("|");
                             break;
                         case "REGISTER":
-                            sb.Append("RESPONSECODE:");
+                            sb.Append("RESPONSECODE#");
                             sb.Append(api.Register(commands[1], commands[2]));
+                            sb.Append("|");
                             break;
                         default:
                             return "Command " + commands[0] + ", no such command exists|<EOF>";
                     }
                 }
                 sb.Append("<EOF>");
+                return sb.ToString();
             } 
             catch (Exception e)
             {
@@ -458,9 +468,6 @@ namespace ChatServer
                 Console.WriteLine(clientinput);
                 return "Error: parser crash, parser input was: " + clientinput + "|<EOF>";
             }
-
-            Console.WriteLine("FATAL ERROR IN CONNECTION, CONNECTION HAS NO LINES");
-            return "0|<EOF>";
         }
     }
 }
