@@ -122,20 +122,6 @@ namespace gui
         }
 
 
-
-
-        //TODO: redo the entire parser such that it fits the parser from the server
-        //TODO
-        //TODO
-        //TODO
-
-
-
-
-        //sends a login command to the server
-        //FORMAT; Login:"username"."password"
-        //sends a login command to the server
-        //FORMAT; Login:"username"."password"
         public void Login(NetworkStream stream, string username, string password)
         {
             try

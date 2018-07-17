@@ -74,6 +74,13 @@ namespace ChatServer
         string Update(string username, string recipient, string hashcode);
 
         /// <summary>
+        /// Returns the users that are online
+        /// doesn't need security, since this should be public info anyway
+        /// </summary>
+        /// <returns>Returns a list with a list spaced like this: online:user|user|user</returns>
+        string Online();
+
+        /// <summary>
         /// Registers a new user to the server
         /// </summary>
         /// <param name="username"></param>
@@ -208,6 +215,11 @@ namespace ChatServer
         }
 
         public string Register(string username, string password)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string Online()
         {
             throw new NotImplementedException();
         }
@@ -425,9 +437,13 @@ namespace ChatServer
                             sb.Append("UPDATE:");
                             sb.Append(api.Update(commands[1], commands[2], commands[3]));
                             break;
+                        case "ONLINE":
+                            sb.Append("USERS:");
+                            sb.Append(api.Online());
+                            break;
                         case "REGISTER":
                             sb.Append("RESPONSECODE:");
-                            sb.Append("");
+                            sb.Append(api.Register(commands[1], commands[2]));
                             break;
                         default:
                             return "Command " + commands[0] + ", no such command exists|<EOF>";

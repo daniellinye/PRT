@@ -16,5 +16,10 @@ namespace FormAppClient
         {
             InitializeComponent();
         }
+
+        private void Chatwindow_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
