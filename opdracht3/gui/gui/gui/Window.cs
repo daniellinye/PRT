@@ -46,7 +46,7 @@ namespace gui
 
 
                 //read returning message
-                message = nf.Login(stream, username, password);
+                nf.Login(stream, username, password);
             }
             catch
             {
@@ -136,25 +136,55 @@ namespace gui
         //FORMAT; Login:"username"."password"
         //sends a login command to the server
         //FORMAT; Login:"username"."password"
-        public string Login(NetworkStream stream, string username, string password)
+        public void Login(NetworkStream stream, string username, string password)
         {
             try
             {
                 AddCommand("LOGIN", new string[] { username, password });
 
-                string total = SendCommands(stream);
 
-                string[] idmessage = total.Split(':');
-                id = Int32.Parse(idmessage[1]);
-                return idmessage[0];
             }
             catch (Exception e)
-            {   
-                return e.ToString();
+            {
+                Console.WriteLine(e.ToString());
             }
-
         }
 
+        public void Logout(NetworkStream stream, string username, string hashcode)
+        {
+            try
+            {
+                AddCommand("LOGOUT", new string[] { username, hashcode });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+        }
+
+        public void Message(NetworkStream stream, string username, string recipient, string hashcode)
+        {
+            try
+            {
+                AddCommand("MESSAGE", new string[] { username, recipient, hashcode });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+        }
+
+        public void Update(NetworkStream stream, string username, string recipient, string hashcode)
+        {
+            try
+            {
+                AddCommand("UPDATE", new string[] { username, recipient, hashcode });
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.ToString());
+            }
+        }
 
         public List<string> GetUsers(NetworkStream stream)
         {
