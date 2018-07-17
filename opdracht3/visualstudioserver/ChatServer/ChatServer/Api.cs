@@ -72,6 +72,14 @@ namespace ChatServer
         /// <param name="hashstring"></param>
         /// <returns>Returns a list with the messages spaced like: message:user|message:user|message:user</returns>
         string Update(string username, string recipient, string hashcode);
+
+        /// <summary>
+        /// Registers a new user to the server
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        string Register(string username, string password);
     }
 
     interface IHashes
@@ -195,6 +203,11 @@ namespace ChatServer
         }
 
         public string Update(string username, string recipient, string hashcode)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string Register(string username, string password)
         {
             throw new NotImplementedException();
         }
@@ -411,6 +424,10 @@ namespace ChatServer
                         case "UPDATE":
                             sb.Append("UPDATE:");
                             sb.Append(api.Update(commands[1], commands[2], commands[3]));
+                            break;
+                        case "REGISTER":
+                            sb.Append("RESPONSECODE:");
+                            sb.Append("");
                             break;
                         default:
                             return "Command " + commands[0] + ", no such command exists|<EOF>";
