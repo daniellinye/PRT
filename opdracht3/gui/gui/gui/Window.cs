@@ -78,6 +78,7 @@ namespace gui
                 Thread connect = new Thread(() => win.InitConnection());
                 connect.Start();
                 Thread listen = new Thread(() => win.ListenerAsync());
+                
                 //listen.Start();
                 win.Show();
             }
@@ -113,6 +114,7 @@ namespace gui
     {
         //To be setuped when pinging server
         public int id;
+        StringBuilder commands;
 
         public NetFunctions()
         {
@@ -138,13 +140,9 @@ namespace gui
         {
             try
             {
-                StringBuilder sb = new StringBuilder();
-                sb.Append(username);
-                sb.Append(".");
-                sb.Append(password);
+                AddCommand("LOGIN", new string[] { username, password });
 
-                //send actual command
-                string total = SendCommand(stream, "Login", sb.ToString());
+                string total = SendCommands(stream);
 
                 string[] idmessage = total.Split(':');
                 id = Int32.Parse(idmessage[1]);
@@ -157,23 +155,6 @@ namespace gui
 
         }
 
-        //sends a message command to the server
-        //FORMAT; Message:"user","recipient"."message"
-        public string Message(NetworkStream stream, string username, string recipient, string message)
-        {
-            StringBuilder sb = new StringBuilder();
-            //TODO: insert id as parameter when using the client
-            sb.Append("Message");
-            sb.Append(":");
-            sb.Append(username);
-            sb.Append(",");
-            sb.Append(recipient);
-            sb.Append(".");
-            sb.Append(message);
-
-            //send actual command
-            return StreamWrite(sb.ToString(), stream);
-        }
 
         public List<string> GetUsers(NetworkStream stream)
         {
@@ -189,16 +170,25 @@ namespace gui
             return users;
         }
 
+        public void AddCommand(string command, string[] args)
+        {
+            commands.Append(command);
+            commands.Append(":");
+
+            foreach(string arg in args)
+            {
+                commands.Append("#");
+                commands.Append(arg);
+            }
+            commands.Append("|");
+        }
+
         //ALWAYS USE THIS COMMAND IN ORDER TO PREVENT DEADLOCK
         //except pingpong, pingpong is always fine
-        public string SendCommand(NetworkStream stream, string commandtype, string args)
+        public string SendCommands(NetworkStream stream)
         {
-            StringBuilder sb = new StringBuilder();
-            sb.Append(commandtype);
-            sb.Append(":");
-            sb.Append(args);
-            sb.Append("|<EOF>");
-            StreamWrite(sb.ToString(), stream);
+            commands.Append("|<EOF>");
+            StreamWrite(commands.ToString(), stream);
             return Read(stream);
         }
 
