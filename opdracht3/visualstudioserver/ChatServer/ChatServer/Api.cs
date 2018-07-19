@@ -208,16 +208,22 @@ namespace ChatServer
 
         public string Message(string username, string recipient, string hashcode)
         {
+            //TODO:
+            //DatabaseCall
             throw new NotImplementedException();
         }
 
         public string Update(string username, string recipient, string hashcode)
         {
+            //TODO:
+            //DatabaseCall
             throw new NotImplementedException();
         }
 
         public string Register(string username, string password)
         {
+            //TODO:
+            //DatabaseCall
             throw new NotImplementedException();
         }
 
@@ -450,7 +456,7 @@ namespace ChatServer
                             sb.Append("|");
                             break;
                         case "LOGOUT":
-                            sb.Append("LOGIN#");
+                            sb.Append("LOGOUT#");
                             sb.Append(api.Logout(commands[1], commands[2]));
                             sb.Append("|");
                             break;

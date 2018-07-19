@@ -10,6 +10,8 @@ namespace FormAppClient
 {
     static class Program
     {
+        public static NetFunctions nf = new NetFunctions();
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -22,6 +24,12 @@ namespace FormAppClient
         }
     }
 
+    public class Statistics
+    {
+        public string[] onlineusers;
+        public List<string[]> usermessages;
+    }
+
 
     public class NetFunctions
     {
@@ -29,9 +37,11 @@ namespace FormAppClient
         public int id;
         private string hashcode;
         private StringBuilder commands;
+        public Statistics st;
 
         public NetFunctions()
         {
+            st = new Statistics();
             commands = new StringBuilder();
         }
 
@@ -80,7 +90,22 @@ namespace FormAppClient
             commands.Append("|");
         }
 
-        public StringBuilder Parser(string input)
+        public void UpdateChat(string args)
+        {
+            //TODO: wait for database parser server side
+        }
+
+        public void UpdateUsers(string args)
+        {
+            string[] temp = args.Split('%');
+            st.onlineusers = new string[temp.Length];
+            for(int i = 0; i < temp.Length; i++)
+            {
+                st.onlineusers[i] = temp[i];
+            }
+        }
+
+        public StringBuilder Parser(string input, Statistics st)
         {
             string[] lines = input.Split('|');
             StringBuilder builder = new StringBuilder();
@@ -95,20 +120,21 @@ namespace FormAppClient
                         builder.Append(command[1]);
                         builder.Append('$');
                         break;
-                    case "LOGIN":
-                        //TODO: implement update that login was succesfull or not
+                    case "LOGOUT":
+                        //TODO: implement update that logout
                         //LoginResponse(command[1]);
                         break;
                     case "HASHCODE":
-                            hashcode = command[1];
+                        //TODO:
+                        //used for login, just check after wether you have a hashcode that isn't null
+                        hashcode = command[1];
                         break;
                     case "UPDATE":
                         //TODO: actually update the chat window with proper parsing
                         //Chatwindow(command[1]);
                         break;
                     case "USERS":
-                        //TODO: actually update the user window with proper parsing
-                        //UserWindow(command[1]);
+                        UpdateUsers(command[1]);
                         break;
                     default:
                         Console.WriteLine("ERROR: COMMAND " + command[0] + " EITHER NOT IMPLEMENTEDD OR FOUND!");
