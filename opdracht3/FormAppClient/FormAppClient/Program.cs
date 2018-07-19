@@ -10,7 +10,7 @@ namespace FormAppClient
 {
     static class Program
     {
-        public static NetFunctions nf = new NetFunctions();
+
 
         /// <summary>
         /// The main entry point for the application.
@@ -24,10 +24,28 @@ namespace FormAppClient
         }
     }
 
-    public class Statistics
+    public static class Statistics
     {
-        public string[] onlineusers;
-        public List<string[]> usermessages;
+        public static NetFunctions _nf = new NetFunctions();
+        public static string[] _onlineusers;
+        public static List<string[]> _usermessages;
+
+        public static string[] onlineusers
+        {
+            get { return _onlineusers; }
+            set { _onlineusers = value; }
+        }
+
+        public static string[] usermessages
+        {
+            get { return _onlineusers; }
+            set { _onlineusers = value; }
+        }
+
+        public static NetFunctions nf
+        {
+            get { return _nf; }
+        }
     }
 
 
@@ -37,11 +55,9 @@ namespace FormAppClient
         public int id;
         private string hashcode;
         private StringBuilder commands;
-        public Statistics st;
 
         public NetFunctions()
         {
-            st = new Statistics();
             commands = new StringBuilder();
         }
 
@@ -98,14 +114,14 @@ namespace FormAppClient
         public void UpdateUsers(string args)
         {
             string[] temp = args.Split('%');
-            st.onlineusers = new string[temp.Length];
+            Statistics.onlineusers = new string[temp.Length];
             for(int i = 0; i < temp.Length; i++)
             {
-                st.onlineusers[i] = temp[i];
+                Statistics.onlineusers[i] = temp[i];
             }
         }
 
-        public StringBuilder Parser(string input, Statistics st)
+        public StringBuilder Parser(string input)
         {
             string[] lines = input.Split('|');
             StringBuilder builder = new StringBuilder();
