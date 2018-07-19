@@ -404,3 +404,16 @@ namespace ChatServer
     }
 
 }
+
+/*
+ TODO:
+ get the following queries in commands that return a <stringbuilder> or <string>:
+   - return top 50 messages
+   - add new user to the database
+   - add new messages to the database
+ following manual tasks:
+   - softcode queries, meaning that you only have to call
+     specific functions instead of writing queries anywhere else,
+     in other words only this class will contain any queries.
+   - make documentation on database
+     */

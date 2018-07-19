@@ -70,14 +70,14 @@ namespace ChatServer
         /// </summary>
         /// <param name="username"></param>
         /// <param name="hashstring"></param>
-        /// <returns>Returns a list with the messages spaced like: message:user|message:user|message:user</returns>
+        /// <returns>Returns a list with the messages spaced like: message:user%message:user%message:user</returns>
         string Update(string username, string recipient, string hashcode);
 
         /// <summary>
         /// Returns the users that are online
         /// doesn't need security, since this should be public info anyway
         /// </summary>
-        /// <returns>Returns a list with a list spaced like this: online:user|user|user</returns>
+        /// <returns>Returns a list with a list spaced like this: online:user%user%user</returns>
         string Online();
 
         /// <summary>
@@ -112,6 +112,8 @@ namespace ChatServer
         /// <param name="username"></param>
         /// <returns>Returns wether this is true or not</returns>
         Boolean CheckHashInList(string hashcode, string username);
+
+        string[] AllOnlineUsers();
     }
     
     interface ISocketListener
@@ -221,7 +223,14 @@ namespace ChatServer
 
         public string Online()
         {
-            throw new NotImplementedException();
+            string returntemp = "";
+            string[] users = hashcodes.AllOnlineUsers();
+            int usersize = users.Length;
+            for(int i = 0; i < usersize; i++)
+            {
+                returntemp += users[i] + "%";
+            }
+            return returntemp;
         }
     }
 
@@ -276,6 +285,17 @@ namespace ChatServer
                 }
             }
             return false;
+        }
+
+        public string[] AllOnlineUsers()
+        {
+            int usersize = hashEntries.Count;
+            string[] users = new string[usersize];
+            for(int i = 0; i < usersize; i++)
+            {
+                users[i] = hashEntries[i][0];
+            }
+            return users;
         }
     }
 
@@ -430,7 +450,7 @@ namespace ChatServer
                             sb.Append("|");
                             break;
                         case "LOGOUT":
-                            sb.Append("RESPONSECODE#");
+                            sb.Append("LOGIN#");
                             sb.Append(api.Logout(commands[1], commands[2]));
                             sb.Append("|");
                             break;

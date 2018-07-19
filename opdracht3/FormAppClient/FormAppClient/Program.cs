@@ -27,6 +27,7 @@ namespace FormAppClient
     {
         //To be setuped when pinging server
         public int id;
+        private string hashcode;
         private StringBuilder commands;
 
         public NetFunctions()
@@ -45,14 +46,14 @@ namespace FormAppClient
             AddCommand("LOGOUT", new string[] { username, hashcode });
         }
 
-        public void Message(string username, string recipient, string hashcode)
+        public void Message(string username, string recipient)
         {
 
             AddCommand("MESSAGE", new string[] { username, recipient, hashcode });
 
         }
 
-        public void Update(string username, string recipient, string hashcode)
+        public void Update(string username, string recipient)
         {
             AddCommand("UPDATE", new string[] { username, recipient, hashcode });
         }
@@ -70,7 +71,6 @@ namespace FormAppClient
         public void AddCommand(string command, string[] args)
         {
             commands.Append(command);
-            commands.Append(":");
 
             foreach (string arg in args)
             {
@@ -95,16 +95,12 @@ namespace FormAppClient
                         builder.Append(command[1]);
                         builder.Append('$');
                         break;
+                    case "LOGIN":
+                        //TODO: implement update that login was succesfull or not
+                        //LoginResponse(command[1]);
+                        break;
                     case "HASHCODE":
-                        try
-                        {
-                            id = Int32.Parse(command[1]);
-                        }
-                        catch(Exception e)
-                        {
-                            builder.Append("ERROR: " + e.ToString());
-                            builder.Append('$');
-                        }
+                            hashcode = command[1];
                         break;
                     case "UPDATE":
                         //TODO: actually update the chat window with proper parsing
@@ -128,13 +124,15 @@ namespace FormAppClient
         {
             StringBuilder returnvalues = new StringBuilder();
 
-            commands.Append("|<EOF>");
+            commands.Append("$<EOF>");
             string[] sending = commands.ToString().Split('|');
             foreach(string strings in sending)
             {
-                StreamWrite(strings + "|", stream);
+                if (strings.IndexOf("<EOF>") == -1)
+                    StreamWrite(strings + "|", stream);
+                else
+                    StreamWrite(strings, stream);
             }
-
             //clear commands after sending them
             commands.Clear();
 
@@ -164,3 +162,27 @@ namespace FormAppClient
 
     }
 }
+
+/*
+ TODO:
+ - Make Chatwindow and LoginWindow interactable
+    = registerwindow
+    = loginwindow
+ - Implement commands:
+    = Login  = transitions screen when loginrequest is succesfull
+    = Update = returns an update from database from user and messages, parsing is stated in server
+    = Online = same as above except online users
+ - multithread the following:
+    = chatwindow and interactables (aka adding commands)
+    = sendcommand on a 5 second timeloop sleep
+ - write design about the api; describe the parsing and sockets. Meaning that every instance of a connection gets its' own socket
+   whilst the parsing can just be in it's own documentation. I've written a mockup on a README.txt (dunno which one anymore).
+   Just work that out and we should be fine.
+   Also it's a factory method on the backend of the server side, actually planned up ahead.
+   And for the server/client it's publish/subscribe (qua softwaredesign)
+
+    README:
+    - commands are added to a list when you use them, then you send it to the server manually via SendCommands
+    - happens on a 5-second timeloop, except for the login and register windows
+
+     */

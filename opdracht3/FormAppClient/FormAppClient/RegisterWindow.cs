@@ -10,21 +10,11 @@ using System.Windows.Forms;
 
 namespace FormAppClient
 {
-    public partial class Chatwindow : Form
+    public partial class RegisterWindow : Form
     {
-        public Chatwindow()
+        public RegisterWindow()
         {
             InitializeComponent();
-        }
-
-        private void Chatwindow_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }
