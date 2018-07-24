@@ -30,9 +30,9 @@ namespace FormAppClient
         {
             Statistics.nf.Login(Statistics.username, Statistics.password);
             Statistics.nf.SendCommands();
-            Form chatting = new Chatwindow();
             if(Statistics.nf.IsLoggedin())
             {
+                Form chatting = new Chatwindow();
                 this.Hide();
                 chatting.Show();
             }
@@ -46,6 +46,11 @@ namespace FormAppClient
         private void PasswordLogin_TextChanged_1(object sender, EventArgs e)
         {
             Statistics.password = PasswordLogin.Text;
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            textBox1.Text = Statistics.nf.GetHashCode();
         }
     }
 }

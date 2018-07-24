@@ -13,7 +13,6 @@ namespace FormAppClient
 {
     public partial class Chatwindow : Form
     {
-        private static object sleep;
 
         public Chatwindow()
         {

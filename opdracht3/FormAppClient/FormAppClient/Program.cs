@@ -122,6 +122,11 @@ namespace FormAppClient
             return hashcode != null;
         }
 
+        public new string GetHashCode()
+        {
+            return hashcode;
+        }
+
         public void UpdateUsers(string args)
         {
             string[] temp = args.Split('%');
@@ -139,21 +144,20 @@ namespace FormAppClient
             foreach(string line in lines)
             {
                 string[] command = line.Split('#');
-                switch(command[0])
+                switch (command[0])
                 {
                     case "RESPONSECODE":
                         //Responsecodes are pretty much just for debugging such that I can see console outputs,
                         //but sometimes they're to communicate to the user
                         builder.Append(command[1]);
-                        builder.Append('$');
+                        builder.Append('|');
                         break;
                     case "LOGOUT":
                         //TODO: implement update that logout
                         //LoginResponse(command[1]);
                         break;
                     case "HASHCODE":
-                        //TODO:
-                        //used for login, just check after wether you have a hashcode that isn't null
+                        Console.WriteLine("HASHCODE:" + command[1]);
                         hashcode = command[1];
                         break;
                     case "UPDATE":
@@ -164,7 +168,6 @@ namespace FormAppClient
                         UpdateUsers(command[1]);
                         break;
                     default:
-                        Console.WriteLine("ERROR: COMMAND " + command[0] + " EITHER NOT IMPLEMENTEDD OR FOUND!");
                         break;
                 }
             }
@@ -193,7 +196,7 @@ namespace FormAppClient
                 //new code
                 StringBuilder returnvalues = new StringBuilder();
 
-                commands.Append("$<EOF>");
+                commands.Append("<EOF>");
                 string[] sending = commands.ToString().Split('|');
                 foreach (string strings in sending)
                 {
@@ -209,6 +212,8 @@ namespace FormAppClient
                 {
                     returnvalues.Append(Read(stream));
                 }
+
+                Parser(returnvalues.ToString());
                 return returnvalues;
             }
             catch
@@ -220,7 +225,7 @@ namespace FormAppClient
         public string Read(NetworkStream stream)
         {
             byte[] myReadBuffer = new byte[1024];
-            String responseData = String.Empty;
+            string responseData = string.Empty;
             Int32 bytes = stream.Read(myReadBuffer, 0, myReadBuffer.Length);
             responseData = System.Text.Encoding.ASCII.GetString(myReadBuffer, 0, bytes);
             return responseData;
@@ -230,7 +235,6 @@ namespace FormAppClient
         {
             Byte[] login = System.Text.Encoding.ASCII.GetBytes(input);
             stream.Write(login, 0, login.Length);
-            Console.WriteLine(input);
             return input;
         }
 

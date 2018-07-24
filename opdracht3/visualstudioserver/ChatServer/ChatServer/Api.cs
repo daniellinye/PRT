@@ -401,7 +401,14 @@ namespace ChatServer
         {
             foreach(string element in input)
             {
-                StreamWrite(element + "|", helper);
+                if(element.Equals("<EOF>"))
+                {
+                    StreamWrite(element, helper);
+                }
+                else
+                {
+                    StreamWrite(element + "|", helper);
+                }
             }
         }
 
@@ -453,38 +460,41 @@ namespace ChatServer
                         case "LOGIN":
                             sb.Append("HASHCODE#");
                             sb.Append(api.Login(commands[1], commands[2]));
-                            sb.Append("|");
+                            sb.Append('|');
                             break;
                         case "LOGOUT":
                             sb.Append("LOGOUT#");
                             sb.Append(api.Logout(commands[1], commands[2]));
-                            sb.Append("|");
+                            sb.Append('|');
                             break;
                         case "MESSAGE":
                             sb.Append("RESPONSECODE#");
                             sb.Append(api.Message(commands[1], commands[2], commands[3], commands[4]));
-                            sb.Append("|");
+                            sb.Append('|');
                             break;
                         case "UPDATE":
                             sb.Append("UPDATE#");
                             sb.Append(api.Update(commands[1], commands[2], commands[3]));
-                            sb.Append("|");
+                            sb.Append('|');
                             break;
                         case "ONLINE":
                             sb.Append("USERS#");
                             sb.Append(api.Online());
-                            sb.Append("|");
+                            sb.Append('|');
                             break;
                         case "REGISTER":
                             sb.Append("RESPONSECODE#");
                             sb.Append(api.Register(commands[1], commands[2]));
-                            sb.Append("|");
+                            sb.Append('|');
                             break;
                         default:
-                            return "Command " + commands[0] + ", no such command exists|<EOF>";
+                            sb.Append("Command " + commands[0] + ", no such command exists");
+                            sb.Append('|');
+                            break;
                     }
                 }
                 sb.Append("<EOF>");
+                Console.WriteLine(sb.ToString());
                 return sb.ToString();
             } 
             catch (Exception e)

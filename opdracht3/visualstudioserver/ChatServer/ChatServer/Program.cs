@@ -32,7 +32,6 @@ namespace ChatServer
          returns messagelist
              */
 
-        private bool newuser;
 
         static void Main(string[] args)
         {
