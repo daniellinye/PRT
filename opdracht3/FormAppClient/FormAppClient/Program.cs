@@ -21,6 +21,11 @@ namespace FormAppClient
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new LoginWindow());
+
+            if(Statistics.registerwindow)
+            {
+                Application.Run(new RegisterWindow());
+            }
         }
     }
 
@@ -29,6 +34,8 @@ namespace FormAppClient
         public static NetFunctions _nf = new NetFunctions();
         public static string[] _onlineusers;
         public static List<string[]> _usermessages;
+        public static string username, password, message, recipient;
+        public static bool registerwindow;
 
         public static string[] onlineusers
         {
@@ -61,8 +68,7 @@ namespace FormAppClient
             commands = new StringBuilder();
         }
 
-
-        public void Login(NetworkStream stream, string username, string password)
+        public void Login(string username, string password)
         {
             AddCommand("LOGIN", new string[] { username, password });
         }
@@ -72,10 +78,10 @@ namespace FormAppClient
             AddCommand("LOGOUT", new string[] { username, hashcode });
         }
 
-        public void Message(string username, string recipient)
+        public void Message(string username, string recipient, string message)
         {
 
-            AddCommand("MESSAGE", new string[] { username, recipient, hashcode });
+            AddCommand("MESSAGE", new string[] { username, recipient, message, hashcode });
 
         }
 
@@ -109,6 +115,11 @@ namespace FormAppClient
         public void UpdateChat(string args)
         {
             //TODO: wait for database parser server side
+        }
+
+        public bool IsLoggedin()
+        {
+            return hashcode != null;
         }
 
         public void UpdateUsers(string args)
@@ -162,27 +173,48 @@ namespace FormAppClient
 
         //ALWAYS USE THIS COMMAND IN ORDER TO PREVENT DEADLOCK
         //except pingpong, pingpong is always fine
-        public StringBuilder SendCommands(NetworkStream stream)
+        public StringBuilder SendCommands()
         {
-            StringBuilder returnvalues = new StringBuilder();
-
-            commands.Append("$<EOF>");
-            string[] sending = commands.ToString().Split('|');
-            foreach(string strings in sending)
+            TcpClient client = new TcpClient();
+            NetworkStream stream = null;
+            try
             {
-                if (strings.IndexOf("<EOF>") == -1)
-                    StreamWrite(strings + "|", stream);
-                else
-                    StreamWrite(strings, stream);
-            }
-            //clear commands after sending them
-            commands.Clear();
+                //standard values
+                const Int32 port = 8081;
+                const string ip = "127.0.0.1";
 
-            while(returnvalues.ToString().IndexOf("<EOF>") != -1)
-            {
-                returnvalues.Append(Read(stream));
+                //new clients
+                client = new TcpClient(ip, port);
+
+                //new stream
+                stream = client.GetStream();
+
+                //------------------- 
+                //new code
+                StringBuilder returnvalues = new StringBuilder();
+
+                commands.Append("$<EOF>");
+                string[] sending = commands.ToString().Split('|');
+                foreach (string strings in sending)
+                {
+                    if (strings.IndexOf("<EOF>") == -1)
+                        StreamWrite(strings + "|", stream);
+                    else
+                        StreamWrite(strings, stream);
+                }
+                //clear commands after sending them
+                commands.Clear();
+
+                while (returnvalues.ToString().IndexOf("<EOF>") != -1)
+                {
+                    returnvalues.Append(Read(stream));
+                }
+                return returnvalues;
             }
-            return returnvalues;
+            catch
+            {
+                return new StringBuilder();
+            }
         }
 
         public string Read(NetworkStream stream)

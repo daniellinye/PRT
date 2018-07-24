@@ -56,13 +56,13 @@ namespace ChatServer
 
         /// <summary>
         /// Gives a message request to server
-        /// Parser: MESSAGE#username#recipient#hashcode
+        /// Parser: MESSAGE#username#recipient#message#hashcode
         /// </summary>
         /// <param name="hashcode"></param>
         /// <param name="username"></param>
         /// <param name="recipient"></param>
         /// <returns>Responsecode with wether it was successfull or not</returns>
-        string Message(string username, string recipient, string hashcode);
+        string Message(string username, string recipient, string message, string hashcode);
 
         /// <summary>
         /// Gives an update request to server
@@ -206,7 +206,7 @@ namespace ChatServer
             return "ERROR 404: USER NOT FOUND IN LIST, RELOG TO SERVER";
         }
 
-        public string Message(string username, string recipient, string hashcode)
+        public string Message(string username, string recipient, string message, string hashcode)
         {
             //TODO:
             //DatabaseCall
@@ -462,7 +462,7 @@ namespace ChatServer
                             break;
                         case "MESSAGE":
                             sb.Append("RESPONSECODE#");
-                            sb.Append(api.Message(commands[1], commands[2], commands[3]));
+                            sb.Append(api.Message(commands[1], commands[2], commands[3], commands[4]));
                             sb.Append("|");
                             break;
                         case "UPDATE":

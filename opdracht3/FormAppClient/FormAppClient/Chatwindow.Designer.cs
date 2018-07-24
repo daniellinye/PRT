@@ -42,6 +42,7 @@
             this.OnlineUsers.Name = "OnlineUsers";
             this.OnlineUsers.Size = new System.Drawing.Size(239, 21);
             this.OnlineUsers.TabIndex = 0;
+            this.OnlineUsers.SelectedIndexChanged += new System.EventHandler(this.OnlineUsers_SelectedIndexChanged);
             // 
             // MessageBox
             // 
@@ -50,6 +51,7 @@
             this.MessageBox.Name = "MessageBox";
             this.MessageBox.Size = new System.Drawing.Size(409, 381);
             this.MessageBox.TabIndex = 1;
+            this.MessageBox.SelectedIndexChanged += new System.EventHandler(this.MessageBox_SelectedIndexChanged);
             // 
             // UserText
             // 
@@ -57,6 +59,7 @@
             this.UserText.Name = "UserText";
             this.UserText.Size = new System.Drawing.Size(409, 20);
             this.UserText.TabIndex = 2;
+            this.UserText.TextChanged += new System.EventHandler(this.UserText_TextChanged);
             // 
             // button1
             // 
@@ -76,6 +79,7 @@
             this.button2.TabIndex = 4;
             this.button2.Text = "Send";
             this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // Chatwindow
             // 

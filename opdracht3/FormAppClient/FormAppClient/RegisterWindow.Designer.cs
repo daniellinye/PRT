@@ -32,8 +32,8 @@
             this.PasswordRegister = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.BackToLogin = new System.Windows.Forms.Button();
             this.RegisterConfirm = new System.Windows.Forms.Button();
+            this.Back = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // UserRegister
@@ -42,6 +42,7 @@
             this.UserRegister.Name = "UserRegister";
             this.UserRegister.Size = new System.Drawing.Size(160, 20);
             this.UserRegister.TabIndex = 0;
+            this.UserRegister.TextChanged += new System.EventHandler(this.UserRegister_TextChanged);
             // 
             // PasswordRegister
             // 
@@ -49,6 +50,7 @@
             this.PasswordRegister.Name = "PasswordRegister";
             this.PasswordRegister.Size = new System.Drawing.Size(160, 20);
             this.PasswordRegister.TabIndex = 1;
+            this.PasswordRegister.TextChanged += new System.EventHandler(this.PasswordRegister_TextChanged);
             // 
             // label1
             // 
@@ -68,31 +70,33 @@
             this.label2.TabIndex = 3;
             this.label2.Text = "Password:";
             // 
-            // BackToLogin
-            // 
-            this.BackToLogin.Location = new System.Drawing.Point(150, 213);
-            this.BackToLogin.Name = "BackToLogin";
-            this.BackToLogin.Size = new System.Drawing.Size(75, 23);
-            this.BackToLogin.TabIndex = 4;
-            this.BackToLogin.Text = "Back";
-            this.BackToLogin.UseVisualStyleBackColor = true;
-            // 
             // RegisterConfirm
             // 
-            this.RegisterConfirm.Location = new System.Drawing.Point(235, 213);
+            this.RegisterConfirm.Location = new System.Drawing.Point(150, 205);
             this.RegisterConfirm.Name = "RegisterConfirm";
             this.RegisterConfirm.Size = new System.Drawing.Size(75, 23);
             this.RegisterConfirm.TabIndex = 5;
             this.RegisterConfirm.Text = "Register";
             this.RegisterConfirm.UseVisualStyleBackColor = true;
+            this.RegisterConfirm.Click += new System.EventHandler(this.RegisterConfirm_Click);
+            // 
+            // Back
+            // 
+            this.Back.Location = new System.Drawing.Point(231, 205);
+            this.Back.Name = "Back";
+            this.Back.Size = new System.Drawing.Size(75, 23);
+            this.Back.TabIndex = 6;
+            this.Back.Text = "Back";
+            this.Back.UseVisualStyleBackColor = true;
+            this.Back.Click += new System.EventHandler(this.Back_Click);
             // 
             // RegisterWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(439, 275);
+            this.Controls.Add(this.Back);
             this.Controls.Add(this.RegisterConfirm);
-            this.Controls.Add(this.BackToLogin);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.PasswordRegister);
@@ -110,7 +114,7 @@
         private System.Windows.Forms.TextBox PasswordRegister;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Button BackToLogin;
         private System.Windows.Forms.Button RegisterConfirm;
+        private System.Windows.Forms.Button Back;
     }
 }
