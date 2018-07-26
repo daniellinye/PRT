@@ -34,7 +34,6 @@
             this.label2 = new System.Windows.Forms.Label();
             this.Register = new System.Windows.Forms.Button();
             this.Login = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // UserLogin
@@ -91,20 +90,11 @@
             this.Login.UseVisualStyleBackColor = true;
             this.Login.Click += new System.EventHandler(this.Login_Click_1);
             // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(353, 105);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(266, 20);
-            this.textBox1.TabIndex = 6;
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
-            // 
             // LoginWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(660, 303);
-            this.Controls.Add(this.textBox1);
+            this.ClientSize = new System.Drawing.Size(373, 228);
             this.Controls.Add(this.Login);
             this.Controls.Add(this.Register);
             this.Controls.Add(this.label2);
@@ -126,7 +116,6 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button Register;
         private System.Windows.Forms.Button Login;
-        private System.Windows.Forms.TextBox textBox1;
     }
 }
 

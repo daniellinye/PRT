@@ -18,6 +18,9 @@ namespace FormAppClient
         [STAThread]
         static void Main()
         {
+            Statistics.onlineusers = new List<string>();
+            Statistics.usermessages = new List<string[]>();
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new LoginWindow());
@@ -32,21 +35,21 @@ namespace FormAppClient
     public static class Statistics
     {
         public static NetFunctions _nf = new NetFunctions();
-        public static string[] _onlineusers;
         public static List<string[]> _usermessages;
+        public static List<string> _onlineusers;
         public static string username, password, message, recipient;
         public static bool registerwindow;
 
-        public static string[] onlineusers
+        public static List<string> onlineusers
         {
             get { return _onlineusers; }
             set { _onlineusers = value; }
         }
 
-        public static string[] usermessages
+        public static List<string[]> usermessages
         {
-            get { return _onlineusers; }
-            set { _onlineusers = value; }
+            get { return _usermessages; }
+            set { _usermessages = value; }
         }
 
         public static NetFunctions nf
@@ -80,9 +83,7 @@ namespace FormAppClient
 
         public void Message(string username, string recipient, string message)
         {
-
             AddCommand("MESSAGE", new string[] { username, recipient, message, hashcode });
-
         }
 
         public void Update(string username, string recipient)
@@ -114,7 +115,20 @@ namespace FormAppClient
 
         public void UpdateChat(string args)
         {
-            //TODO: wait for database parser server side
+            try
+            {
+                Console.WriteLine(args);
+                string[] temp1 = args.Split('%');
+                foreach (string userline in temp1)
+                {
+                    string[] both = userline.Split(':');
+                    Statistics.usermessages.Add(new string[2] { both[0], both[1] });
+                }
+            }
+            catch
+            {
+                Console.WriteLine(args);
+            }
         }
 
         public bool IsLoggedin()
@@ -129,12 +143,23 @@ namespace FormAppClient
 
         public void UpdateUsers(string args)
         {
-            string[] temp = args.Split('%');
-            Statistics.onlineusers = new string[temp.Length];
-            for(int i = 0; i < temp.Length; i++)
+            try
             {
-                Statistics.onlineusers[i] = temp[i];
+                string[] temp = args.Split('%');
+                for (int i = 0; i < temp.Length - 1; i++)
+                {
+                    if (Statistics.onlineusers.IndexOf(temp[i]) == -1)
+                    {
+                        Statistics.onlineusers.Add(temp[i]);
+                    }
+                }
             }
+            catch(Exception e)
+            {
+                Console.WriteLine(e);
+                Console.WriteLine("Null user found");
+            }
+
         }
 
         public StringBuilder Parser(string input)
@@ -154,15 +179,13 @@ namespace FormAppClient
                         break;
                     case "LOGOUT":
                         //TODO: implement update that logout
-                        //LoginResponse(command[1]);
+                        Statistics.nf.hashcode = null;
                         break;
                     case "HASHCODE":
-                        Console.WriteLine("HASHCODE:" + command[1]);
                         hashcode = command[1];
                         break;
                     case "UPDATE":
-                        //TODO: actually update the chat window with proper parsing
-                        //Chatwindow(command[1]);
+                        UpdateChat(command[1]);
                         break;
                     case "USERS":
                         UpdateUsers(command[1]);
@@ -208,16 +231,16 @@ namespace FormAppClient
                 //clear commands after sending them
                 commands.Clear();
 
-                while (returnvalues.ToString().IndexOf("<EOF>") != -1)
+                while (returnvalues.ToString().IndexOf("<EOF>") == -1)
                 {
                     returnvalues.Append(Read(stream));
                 }
-
                 Parser(returnvalues.ToString());
                 return returnvalues;
             }
-            catch
+            catch (Exception e)
             {
+                Console.WriteLine(e);
                 return new StringBuilder();
             }
         }

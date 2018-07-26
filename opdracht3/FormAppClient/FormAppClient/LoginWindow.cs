@@ -47,10 +47,5 @@ namespace FormAppClient
         {
             Statistics.password = PasswordLogin.Text;
         }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-            textBox1.Text = Statistics.nf.GetHashCode();
-        }
     }
 }

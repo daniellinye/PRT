@@ -87,29 +87,6 @@ namespace ChatServer
             }
         }
 
-        //executes a function on the database and returns values
-        public bool ExecuteFunction(string function, string args)
-        {
-            string[] parser;        //This function is used for no-return functions, the arguments are split by dots.
-            switch (function)       //This makes the amount of arguments is modular, the return is whether the function 
-            {                       //was executed properly
-                case "Login":
-                    parser = args.Split('.');
-                    return LogIn(parser[0], parser[1]);
-                case "Sendmessage":
-                    parser = args.Split('.');
-                    return SendMessage(parser[0], parser[1], parser[2]);
-                case "Register":
-                    parser = args.Split('.');
-                    return CreateNewUser(parser[0],parser[1]);
-                default:
-                    Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "DatabaseFunction: " + function + " not recognized or implemented.");
-                    break;
-            }
-
-            return false;
-        }
-
         //logs user in if username and password match
         public bool LogIn(string username, string password)
         {
@@ -163,7 +140,7 @@ namespace ChatServer
         }
 
         //creates new user
-        private bool CreateNewUser(string username, string password)
+        public bool CreateNewUser(string username, string password)
         {
             const int minlength = 8;
             Console.WriteLine(DateTime.Now.ToString("[HH:mm:ss] ") + "Creating new user");
@@ -204,7 +181,7 @@ namespace ChatServer
             {
                 try
                 {
-                    const int aantal = 17;                                  //Always needs to return 17 messages
+                    const int aantal = 50;                                  //Always needs to return 50 messages
                     string description;
                     int i, id;
                     DateTime datetime;

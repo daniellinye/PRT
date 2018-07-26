@@ -208,23 +208,65 @@ namespace ChatServer
 
         public string Message(string username, string recipient, string message, string hashcode)
         {
-            //TODO:
-            //DatabaseCall
-            throw new NotImplementedException();
+            if(hashcodes.CheckHashInList(hashcode, username))
+            {
+                if (!username.Equals(recipient))
+                {
+                    if(df.SendMessage(username, message, recipient))
+                    {
+                        return "Succesfull";
+                    }
+                    return "Something went wrong on database side";
+                }
+                else
+                {
+                    return "ERROR 000: users are the same as recipient";
+                }
+            }
+            else
+            {
+                return "HASHCODE WAS INCORRECT!";
+            }
         }
 
         public string Update(string username, string recipient, string hashcode)
         {
-            //TODO:
-            //DatabaseCall
-            throw new NotImplementedException();
+            List<string> messages = new List<string>();
+            StringBuilder returning = new StringBuilder();
+            if (hashcodes.CheckHashInList(hashcode, username))
+            {
+                if (!username.Equals(recipient))
+                {
+                    messages = df.GetMessages(0, username, recipient);
+                    foreach(string line in messages)
+                    {
+                        Console.WriteLine(line);
+                        line.Split('`');
+                        returning.Append(line[0]);
+                        returning.Append(':');
+                        returning.Append(line[1]);
+                        returning.Append('%');
+                    }
+                    return returning.ToString();
+                }
+                else
+                {
+                    return "ERROR 000: users are the same as recipient";
+                }
+            }
+            else
+            {
+                return "HASHCODE WAS INCORRECT!";
+            }
         }
 
         public string Register(string username, string password)
         {
-            //TODO:
-            //DatabaseCall
-            throw new NotImplementedException();
+            if(df.CreateNewUser(username, password))
+            {
+                return "New user created";
+            }
+            return "Username already exists!";
         }
 
         public string Online()
@@ -274,6 +316,11 @@ namespace ChatServer
                 {
                     hash = NewHash(username);
                     return hash;
+                }
+                //check if user isn't already logged in in another session
+                if(hashcodes[0].Equals(username))
+                {
+                    return hashcodes[1];
                 }
             }
             hashEntries.Add(new string[2] { username, hash });

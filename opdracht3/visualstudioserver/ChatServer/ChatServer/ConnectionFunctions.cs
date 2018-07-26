@@ -36,6 +36,7 @@ namespace ChatServer
         }
     }
 
+    
     public class ConnectionFunctions
     {
         public List<TcpUsers> clients = new List<TcpUsers>();
@@ -214,7 +215,7 @@ namespace ChatServer
         public bool Login(string username, string password, TcpClient client)
         {
             //that returns null if not found
-            if (df.ExecuteFunction("Login", username + "." + password))
+            if (df.LogIn(username, password))
             {
                 cf.LoginUser(client, username);
                 return true;
