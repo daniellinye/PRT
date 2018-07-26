@@ -241,10 +241,10 @@ namespace ChatServer
                     foreach(string line in messages)
                     {
                         Console.WriteLine(line);
-                        line.Split('`');
-                        returning.Append(line[0]);
+                        string[] total = line.Split('`');
+                        returning.Append(total[0]);
                         returning.Append(':');
-                        returning.Append(line[1]);
+                        returning.Append(total[1]);
                         returning.Append('%');
                     }
                     return returning.ToString();

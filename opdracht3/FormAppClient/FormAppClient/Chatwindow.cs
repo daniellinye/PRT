@@ -14,10 +14,12 @@ namespace FormAppClient
     public partial class Chatwindow : Form
     {
         List<string> _users = new List<string>();
-        List<string[]> _messages = new List<string[]>();
+        List<string> _messages = new List<string>();
         public Chatwindow()
         {
             InitializeComponent();
+
+            label1.Text = Statistics.username;
 
             //give list of online users
             Statistics.nf.Online();
@@ -31,53 +33,7 @@ namespace FormAppClient
             }
 
             listBox1.DataSource = _users;
-        }
 
-        public void Updater()
-        {
-            try
-            {
-                //do this every second
-                Thread.Sleep(1000);
-
-                //prep and send commands to server
-                if (Statistics.recipient != null)
-                {
-                    Statistics.nf.Update(Statistics.username, Statistics.recipient);
-                }
-                Statistics.nf.Online();
-                Statistics.nf.SendCommands();
-
-                //update messages
-                foreach (string[] messages in Statistics.usermessages)
-                {
-                    _messages.Add(messages);
-                }
-
-                //update userlist
-                foreach (string users in Statistics.onlineusers)
-                {
-                    _users.Add(users);
-                }
-
-                //update gui
-                listBox1.DataSource = null;
-                listBox1.DataSource = _users;
-                MessageBox.DataSource = null;
-                MessageBox.DataSource = _messages;
-
-
-
-            }
-            catch
-            {
-                Console.WriteLine("Updater Crashed");
-            }
-            Updater();
-        }
-
-        private void Chatwindow_Load(object sender, EventArgs e)
-        {
             try
             {
                 ThreadStart timers = new ThreadStart(Updater);
@@ -90,6 +46,56 @@ namespace FormAppClient
             }
         }
 
+        public void Updater()
+        {
+            while(true)
+            {
+                try
+                {
+                    //do this every second
+                    Thread.Sleep(1000);
+
+                    //prep and send commands to server
+                    if (Statistics.recipient != null)
+                    {
+                        Statistics.nf.Update(Statistics.username, Statistics.recipient);
+                    }
+                    Statistics.nf.Online();
+                    Statistics.nf.SendCommands();
+
+                    //update messages
+                    foreach (string messages in Statistics.usermessages)
+                    {
+                        _messages.Add(messages);
+                    }
+
+                    //update userlist
+                    foreach (string users in Statistics.onlineusers)
+                    {
+                        _users.Add(users);
+                    }
+
+                    //update gui
+                    listBox1.DataSource = null;
+                    listBox1.DataSource = _users;
+                    MessageBox.DataSource = null;
+                    MessageBox.DataSource = _messages;
+                    Console.WriteLine(_messages[0]);
+                    Update();
+                }
+                catch
+                {
+                    Console.WriteLine("Updater Crashed");
+                    Updater();
+                }
+            }
+        }
+
+        private void Chatwindow_Load(object sender, EventArgs e)
+        {
+
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
             Statistics.nf.Logout(Statistics.username, Statistics.nf.GetHashCode());
@@ -97,11 +103,6 @@ namespace FormAppClient
             Form login = new LoginWindow();
             this.Hide();
             login.Show();
-        }
-
-        private void OnlineUsers_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            Statistics.recipient = Statistics.onlineusers[OnlineUsers.SelectedIndex];
         }
 
         private void MessageBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -131,6 +132,11 @@ namespace FormAppClient
             catch
             {
             }
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

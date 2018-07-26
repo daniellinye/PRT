@@ -19,7 +19,7 @@ namespace FormAppClient
         static void Main()
         {
             Statistics.onlineusers = new List<string>();
-            Statistics.usermessages = new List<string[]>();
+            Statistics.usermessages = new List<string>();
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
@@ -35,7 +35,7 @@ namespace FormAppClient
     public static class Statistics
     {
         public static NetFunctions _nf = new NetFunctions();
-        public static List<string[]> _usermessages;
+        public static List<string> _usermessages;
         public static List<string> _onlineusers;
         public static string username, password, message, recipient;
         public static bool registerwindow;
@@ -46,7 +46,7 @@ namespace FormAppClient
             set { _onlineusers = value; }
         }
 
-        public static List<string[]> usermessages
+        public static List<string> usermessages
         {
             get { return _usermessages; }
             set { _usermessages = value; }
@@ -117,12 +117,13 @@ namespace FormAppClient
         {
             try
             {
-                Console.WriteLine(args);
                 string[] temp1 = args.Split('%');
                 foreach (string userline in temp1)
                 {
-                    string[] both = userline.Split(':');
-                    Statistics.usermessages.Add(new string[2] { both[0], both[1] });
+                    if(!userline.Equals(string.Empty))
+                    {
+                        Statistics.usermessages.Add(userline);
+                    }
                 }
             }
             catch
@@ -178,7 +179,6 @@ namespace FormAppClient
                         builder.Append('|');
                         break;
                     case "LOGOUT":
-                        //TODO: implement update that logout
                         Statistics.nf.hashcode = null;
                         break;
                     case "HASHCODE":
