@@ -236,6 +236,7 @@ namespace FormAppClient
                     returnvalues.Append(Read(stream));
                 }
                 Parser(returnvalues.ToString());
+                client.Close();
                 return returnvalues;
             }
             catch (Exception e)

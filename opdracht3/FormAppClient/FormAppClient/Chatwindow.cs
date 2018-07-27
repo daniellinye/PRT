@@ -76,15 +76,15 @@ namespace FormAppClient
                     }
 
                     //update gui
-                    listBox1.DataSource = null;
-                    listBox1.DataSource = _users;
-                    MessageBox.DataSource = null;
-                    MessageBox.DataSource = _messages;
+
+
+
+
                     Console.WriteLine(_messages[0]);
-                    Update();
                 }
-                catch
+                catch (Exception e)
                 {
+                    Console.WriteLine(e);
                     Console.WriteLine("Updater Crashed");
                     Updater();
                 }
@@ -107,7 +107,9 @@ namespace FormAppClient
 
         private void MessageBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+                                MessageBox.DataSource = null;
+                    MessageBox.DataSource = _messages;
+                    MessageBox.Show();
         }
 
         private void UserText_TextChanged(object sender, EventArgs e)
@@ -128,6 +130,9 @@ namespace FormAppClient
             try
             {
                 Statistics.recipient = _users[listBox1.SelectedIndex];
+                listBox1.DataSource = null;
+                listBox1.DataSource = _users;
+                listBox1.Show();
             }
             catch
             {
