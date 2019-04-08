@@ -39,6 +39,19 @@ CellValue<T>::CellValue(T init) : CellValueBase()
 	this->value = init;
 }
 
+template <typename T>
+CellValue<T>::CellValue(T init, string memory) : CellValueBase()
+{
+	this->value = init;
+	this->memory = memory;
+}
+
+template <typename T>
+string CellValue<T>::returnmemory()
+{
+	return this->memory;
+}
+
 //returns stringstream with value in cell<float>
 template <>
 std::stringstream CellValue<float>::print(void)
@@ -126,24 +139,24 @@ Cell::Cell()
 }
 
 //inits the cell with an int
-void Cell::initCelli(int init)
+void Cell::initCelli(int init, string mem)
 {
 
-	auto cvar = new CellValue<int>(init);
+	auto cvar = new CellValue<int>(init, mem);
 	value = unique_ptr<CellValueBase>(cvar);
 }
 
 //inits the cell with a string
-void Cell::initCelli(string init)
+void Cell::initCelli(string init, string mem)
 {
-	auto cvar = new CellValue<string>(init);
+	auto cvar = new CellValue<string>(init, mem);
 	value = unique_ptr<CellValueBase>(cvar);
 }
 
 //inits the cell with a float
-void Cell::initCelli(float init)
+void Cell::initCelli(float init, string mem)
 {
-	auto cvar = new CellValue<float>(init);
+	auto cvar = new CellValue<float>(init, mem);
 	value = unique_ptr<CellValueBase>(cvar);
 }
 
@@ -193,22 +206,23 @@ void Column::resize(int newsize)
 }
 
 //replace existing cell with new value int
-void Column::replaceCell(int index, int newvalue)
+void Column::replaceCell(int index, int newvalue, string mem)
 {
-	col[index]->initCelli(newvalue);
+	col[index]->initCelli(newvalue, mem);
 }
 
 //replace existing cell with new value string
-void Column::replaceCell(int index, string newvalue)
+void Column::replaceCell(int index, string newvalue, string mem)
 {
-	col[index]->initCelli(newvalue);
+	col[index]->initCelli(newvalue, mem);
 }
 
 //replace existing cell with new value float
-void Column::replaceCell(int index, float newvalue)
+void Column::replaceCell(int index, float newvalue, string mem)
 {
-	col[index]->initCelli(newvalue);
+	col[index]->initCelli(newvalue, mem);
 }
+
 
 //get cellpointer from index
 Cell* Column::getCell(int index)
@@ -288,11 +302,11 @@ void Sheet::resize(int newh, int newb)
 }
 
 //replaces cell with new value string
-void Sheet::replaceCell(int x, int y, string value)
+void Sheet::replaceCell(int x, int y, string value, string mem)
 {
 	if(x < b && y < h && x > -1 && y > -1)
 	{
-		matrix[x].replaceCell(y, value);
+		matrix[x].replaceCell(y, value, mem);
 	}
 	else
 	{
@@ -301,11 +315,11 @@ void Sheet::replaceCell(int x, int y, string value)
 }
 
 //replaces cell with new value int
-void Sheet::replaceCell(int x, int y, int value)
+void Sheet::replaceCell(int x, int y, int value, string mem)
 {
 	if(x < b && y < h && x > -1 && y > -1)
 	{
-		matrix[x].replaceCell(y, value);
+		matrix[x].replaceCell(y, value, mem);
 	}
 	else
 	{
@@ -314,11 +328,11 @@ void Sheet::replaceCell(int x, int y, int value)
 }
 
 //replaces cell with new value float
-void Sheet::replaceCell(int x, int y, float value)
+void Sheet::replaceCell(int x, int y, float value, string mem)
 {
 	if(x < b && y < h && x > -1 && y > -1)
 	{
-		matrix[x].replaceCell(y, value);
+		matrix[x].replaceCell(y, value, mem);
 	}
 	else
 	{

@@ -121,7 +121,7 @@ void Range::initCell(int x, int y, string value)
 		if(!isfloat && !isstring)
 		{
 			int temp = atoi(value.c_str());
-			matrix->replaceCell(x, y, temp);
+			matrix->replaceCell(x, y, temp, value);
 		}
 		else
 		{
@@ -137,7 +137,7 @@ void Range::initCell(int x, int y, string value)
 			if(!isstring)
 			{
 				float temp = atoi(value.c_str());
-				matrix->replaceCell(x, y, temp + total);
+				matrix->replaceCell(x, y, temp + total, value);
 			}
 			else
 			{
@@ -198,12 +198,11 @@ void Range::initCell(int x, int y, string value)
 					//otherwise it's a string
 					throw 0;
 				}
-				matrix->replaceCell(x, y, result);
+				matrix->replaceCell(x, y, result, value);
 			}
 			catch (int e)
 			{
 				cout << e << endl;
-				matrix->replaceCell(x, y, value);
 			}
 		}
 	}

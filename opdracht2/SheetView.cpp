@@ -317,7 +317,7 @@ void SheetView::Display()
         RefreshSheet(win, x-1, y);
       break;
       case KEY_BACKSPACE: case KEY_DC:
-        matrix->replaceCell(x,y,"");
+        matrix->replaceCell(x,y,"", "");
         RefreshSheet(win, x, y);
       break;
       case 'R': case 'r':
