@@ -93,119 +93,90 @@ void Range::initm(Sheet* matrix)
 //get the correct cell types
 void Range::initCell(int x, int y, string value)
 {
-	bool isfloat = false, isstring = false;
-	float total = 0, decimals = 0;
-	int stringsize = value.size();
+	int stringsize = value.size(), temp;
 
+	//try formula
 	try
 	{
-		for(int i = 0; i < stringsize; i++)
+		string startparser = "", arg = "";
+		float result = 0;
+		int state = 0;
+		
+		if (value[0] == '=')
 		{
-			if(isfloat)
+			for(int i = 1; i < stringsize; i++)
 			{
-				total *= 10;
-				total += value[i] - '0';
-				decimals ++;
+				if(value[i] == '(' && state == 0)
+				{
+					state = 1;
+				}
+				else if (state == 0)
+				{
+					startparser += value[i];
+				}
+				else if (state == 1 && value[i] == ')')
+				{
+					state = 2;
+				}
+				else if (state == 1)
+				{
+					arg += value[i];
+				}
 			}
-			if(value[i] == '.')
-			{
-				isfloat = true;
-			}
-			if(value[i] < '0' || value[i] > '9')
-			{
-				isstring = true;
-			}
-		}
-		total /= (10*decimals);
-		//try int conversion
-		if(!isfloat && !isstring)
-		{
-			int temp = atoi(value.c_str());
-			matrix->replaceCell(x, y, temp, value);
-		}
-		else
-		{
-			throw 0;
-		}
 
-	}
-	catch(int i)
-	{
-		//try float conversion
-		try
-		{
-			if(!isstring)
+			if(startparser == "SUM")
 			{
-				float temp = atoi(value.c_str());
-				matrix->replaceCell(x, y, temp + total, value);
+				result = iterRows(arg, matrix);
+			} 
+			else if(startparser == "COUNT")
+			{
+				result = countcells(arg, matrix);
+			}
+			else if (startparser == "AVG")
+			{
+				result = averageCells(arg, matrix);
 			}
 			else
 			{
+				//otherwise it's a string
 				throw 0;
 			}
 		}
-		catch(int i)
+		else
 		{
-			//try formula
+			//otherwise it's a string
+			throw 0;
+		}
+		matrix->replaceCell(x, y, result, value);
+	}
+	catch (int e)
+	{
+		try
+		{
+			if(stringsize < 8)
+			{
+				temp = atof(value.c_str());
+				matrix->replaceCell(x, y, temp, value);
+			}
+
+		}
+		catch (int i)
+		{
 			try
 			{
-				string startparser = "", arg = "";
-				float result = 0;
-				int state = 0;
-				
-				if (value[0] == '=')
+				if(stringsize < 11)
 				{
-					for(int i = 1; i < stringsize; i++)
-					{
-						if(value[i] == '(' && state == 0)
-						{
-							state = 1;
-						}
-						else if (state == 0)
-						{
-							startparser += value[i];
-						}
-						else if (state == 1 && value[i] == ')')
-						{
-							state = 2;
-						}
-						else if (state == 1)
-						{
-							arg += value[i];
-						}
-					}
+					temp = atoi(value.c_str());
+					matrix->replaceCell(x, y, temp, value);
+				}
 
-					if(startparser == "SUM")
-					{
-						result = iterRows(arg, matrix);
-					} 
-					else if(startparser == "COUNT")
-					{
-						result = countcells(arg, matrix);
-					}
-					else if (startparser == "AVG")
-					{
-						result = averageCells(arg, matrix);
-					}
-					else
-					{
-						//otherwise it's a string
-						throw 0;
-					}
-				}
-				else
-				{
-					//otherwise it's a string
-					throw 0;
-				}
-				matrix->replaceCell(x, y, result, value);
 			}
-			catch (int e)
+			catch(const std::exception& e)
 			{
-				cout << e << endl;
+				matrix->replaceCell(x, y, value, value);
 			}
 		}
-	}
+	}	
 }
 
 //resizes the matrix to new size
@@ -292,12 +263,9 @@ float Range::iterRows(string input, Sheet* matrix)
 	string str;
     giveRows(input);
 
-    int beginx = begin.givex(), beginy = begin.givey(),
-		endy = end.givey(), endx = end.givex();
-
-    for(int i = beginx; i <= endx; i++)
+    for(int i = begin.givex(); i <= end.givex(); i++)
     {
-        for(int j = beginy; j <= endy; j++)
+        for(int j = begin.givey(); j <= end.givey(); j++)
         {
 					string str = matrix->getCell(i, j)->giveref()->print().str();
 					try {temp += atof(str.c_str());}
@@ -318,12 +286,10 @@ unsigned int Range::countcells(string input, Sheet* matrix)
 	string str;
 
 	giveRows(input);
-	int beginx = begin.givex(), beginy = begin.givey(),
-	endy = end.givey(), endx = end.givex();
 
-	for(int i = beginx; i <= endx; i++)
+	for(int i = begin.givex(); i <= end.givex(); i++)
 	{
-		for(int j = beginy; j <= endy; j++)
+		for(int j = begin.givey(); j <= end.givey(); j++)
 	  {
 			containsno = false;
 			string str = matrix->getCell(i, j)->giveref()->print().str();
@@ -350,13 +316,10 @@ float Range::averageCells(string input, Sheet* matrix)
 	int counter = 0;
 	string str;
   	giveRows(input);
-
-  int beginx = begin.givex(), beginy = begin.givey(),
-	endy = end.givey(), endx = end.givex();
-
-  for(int i = beginx; i <= endx; i++)
+	  
+  for(int i = begin.givex(); i <= end.givex(); i++)
   {
-    for(int j = beginy; j <= endy; j++)
+    for(int j = begin.givey(); j <= end.givey(); j++)
     {
 			string str = matrix->getCell(i, j)->giveref()->print().str();
 			temp = matrix->getCell(i, j)->giveref()->convertfloat();
