@@ -93,19 +93,33 @@ void Range::initm(Sheet* matrix)
 //get the correct cell types
 void Range::initCell(int x, int y, string value)
 {
-	int stringsize = value.size(), temp;
+	int stringsize = value.size(), temp, isfloat = 0, state = 0;
+	bool isint = true;
+	string startparser = "", arg = "";
+	float result = 0;
 
-	//try formula
+	//first parse the cels
+	for(int i = 0; i < stringsize; i++)
+	{
+		if(value[i] < '0' && value[i] > '9')
+		{
+			isint = false;
+			if(value[i] == '.')
+			{
+				isfloat++;
+			}
+			
+		}
+	}
+
 	try
 	{
-		string startparser = "", arg = "";
-		float result = 0;
-		int state = 0;
-		
+		//then try formula		
 		if (value[0] == '=')
 		{
 			for(int i = 1; i < stringsize; i++)
 			{
+				
 				if(value[i] == '(' && state == 0)
 				{
 					state = 1;
@@ -141,33 +155,35 @@ void Range::initCell(int x, int y, string value)
 				//otherwise it's a string
 				throw 0;
 			}
+			matrix->replaceCell(x, y, result, value);
 		}
 		else
 		{
 			//otherwise it's a string
 			throw 0;
 		}
-		matrix->replaceCell(x, y, result, value);
+		
 	}
 	catch (int e)
 	{
+		//then add
 		try
 		{
-			if(stringsize < 8)
+			if(stringsize < 8 && isint)
 			{
 				temp = atof(value.c_str());
 				matrix->replaceCell(x, y, temp, value);
 			}
-
 		}
 		catch (int i)
 		{
 			try
 			{
-				if(stringsize < 11)
+				if(stringsize < 11 && isfloat == 1)
 				{
 					temp = atoi(value.c_str());
 					matrix->replaceCell(x, y, temp, value);
+					cout << "float" << endl;
 				}
 
 			}
@@ -177,6 +193,7 @@ void Range::initCell(int x, int y, string value)
 			}
 		}
 	}	
+	matrix->replaceCell(x, y, value, value);
 }
 
 //resizes the matrix to new size
@@ -316,7 +333,7 @@ float Range::averageCells(string input, Sheet* matrix)
 	int counter = 0;
 	string str;
   	giveRows(input);
-	  
+
   for(int i = begin.givex(); i <= end.givex(); i++)
   {
     for(int j = begin.givey(); j <= end.givey(); j++)
