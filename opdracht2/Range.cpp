@@ -42,29 +42,19 @@ void CellAddress::init(std::string input)
 }
 
 // returns coords in array
-int* CellAddress::givecoords()
+void CellAddress::givecoords(int &x, int &y)
 {
-	return new int[2]{ x, y };
-}
-
-//returns x coord
-int CellAddress::givex()
-{
-	return x;
-}
-
-//returns y coord
-int CellAddress::givey()
-{
-	return y;
+	x = this->x;
+	y = this->y;
 }
 
 //operator += for another Celladdress object
 CellAddress* CellAddress::operator +=(CellAddress &a)
 {
-	int* coords = a.givecoords();
-	this->x += coords[0];
-	this->y += coords[1];
+	int x,y;
+	a.givecoords(x,y);
+	this->x += x;
+	this->y += y;
 	return this;
 }
 
@@ -152,7 +142,7 @@ void Range::initCell(int x, int y, string value)
 				string startparser = "", arg = "";
 				float result = 0;
 				int state = 0;
-				
+
 				if (value[0] == '=')
 				{
 					for(int i = 1; i < stringsize; i++)
@@ -178,7 +168,7 @@ void Range::initCell(int x, int y, string value)
 					if(startparser == "SUM")
 					{
 						result = iterRows(arg, matrix);
-					} 
+					}
 					else if(startparser == "COUNT")
 					{
 						result = countcells(arg, matrix);
@@ -293,8 +283,9 @@ float Range::iterRows(string input, Sheet* matrix)
 	string str;
     giveRows(input);
 
-    int beginx = begin.givex(), beginy = begin.givey(),
-		endy = end.givey(), endx = end.givex();
+    int beginx,beginy,endx,endy;
+		begin.givecoords(beginx,beginy);
+		end.givecoords(endx,endy);
 
     for(int i = beginx; i <= endx; i++)
     {
@@ -315,12 +306,14 @@ float Range::iterRows(string input, Sheet* matrix)
 unsigned int Range::countcells(string input, Sheet* matrix)
 {
 	unsigned int h, temp = 0;
+	int beginx,beginy,endx,endy;
 	bool containsno;
 	string str;
 
 	giveRows(input);
-	int beginx = begin.givex(), beginy = begin.givey(),
-	endy = end.givey(), endx = end.givex();
+
+	begin.givecoords(beginx,beginy);
+	end.givecoords(endx,endy);
 
 	for(int i = beginx; i <= endx; i++)
 	{
@@ -348,12 +341,13 @@ unsigned int Range::countcells(string input, Sheet* matrix)
 float Range::averageCells(string input, Sheet* matrix)
 {
 	float temp = 0, temp2 = 0;
+	int beginx,beginy,endx,endy;
 	int counter = 0;
 	string str;
-  	giveRows(input);
+  giveRows(input);
 
-  int beginx = begin.givex(), beginy = begin.givey(),
-	endy = end.givey(), endx = end.givex();
+	begin.givecoords(beginx,beginy);
+	end.givecoords(endx,endy);
 
   for(int i = beginx; i <= endx; i++)
   {

@@ -27,13 +27,7 @@ public:
 	void init(std::string input);
 
 	//returns the coordinates in a int[2]
-	int* givecoords();
-
-	//returns the x-coordinate
-	int givex();
-
-	//returns the y-coordinate
-	int givey();
+	void givecoords(int&,int&);
 
 	//adds another celladress to the current one
 	CellAddress* operator +=(CellAddress &a);
