@@ -80,7 +80,7 @@ void SheetView::Delete()
 {
   int x,y;
   address->givecoords(x,y);
-  sheet->replaceCell(x,y,"");
+  sheet->replaceCell(x,y,"","");
 } // Delete
 
 
@@ -98,6 +98,7 @@ void SheetView::initEdit()
 
   CreateBorder();
   edit->EditLoop();
+  sheet->replaceCell(x,y,cellvalue,cellvalue);
   RefreshSheet();
 
   delete edit;
@@ -165,9 +166,7 @@ void SheetView::RefreshSheet()
 {
   int x,y;
   const char* cellvalue;
-
   werase(window);
-
   for (x = 0; x < cols && x < maxcols; x++)
     for (y = 0; y < lines && y < maxlines; y++){
       PrintCell(x,y);
@@ -274,7 +273,6 @@ EditView::EditView(int x, int y)
   window = subwin(stdscr,cellheight,cellwidth,cellheight*(y+1),cellwidth*(x+1));
   keypad(window, TRUE);     // enable keyboard inputs
   curs_set(1);
-  werase(window);
 } // constructor
 
 
@@ -286,9 +284,11 @@ EditView::~EditView()
 
 
 //Refreshes the editwindow
-void EditView::Refresh()
+void EditView::Refresh(char *input, int curs_pos)
 {
-  mvwprintw(window,0,0,"");
+  werase(window);
+  mvwprintw(window,0,0,input);
+  wmove(window,0,curs_pos);
   wrefresh(window);
 }
 
@@ -308,6 +308,7 @@ EditController::EditController(int x, int y, char *cellvalue)
   newValue = cellvalue;
   view = new EditView(x,y);
   length = strlen(newValue);
+  cout << length;
   curs_pos = length;
 } // constructor
 
@@ -321,12 +322,11 @@ EditController::~EditController()
 void EditController::EditLoop()
 {
   int ch;
-
   noecho();
-  do
+  view->Refresh(newValue,curs_pos);
+  while((ch = view->getchar()) != '\n')
   {
     noecho();
-    view->Refresh();
     switch (ch) {
       case KEY_BACKSPACE:   //backspace
         Backspace();
@@ -344,7 +344,8 @@ void EditController::EditLoop()
         Putchar(ch);
       break;
     }
-  } while((ch = view->getchar()) != '\n');
+    view->Refresh(newValue,curs_pos);
+  }
 } // EditLoop
 
 
@@ -393,12 +394,14 @@ void EditController::Right()
 
 void EditController::Putchar(int ch)
 {
-  for (int i = length; i > curs_pos; i--)
+  if (!has_key(ch))
   {
-    newValue[i] = newValue[i-1];
+    for (int i = length; i > curs_pos; i--)
+      newValue[i] = newValue[i-1];
+
+    newValue[curs_pos] = ch;
+    curs_pos++;
+    length++;
+    newValue[length] = '\0';
   }
-  newValue[curs_pos] = ch;
-  curs_pos++;
-  length++;
-  newValue[length] = '\0';
 } // Putchar

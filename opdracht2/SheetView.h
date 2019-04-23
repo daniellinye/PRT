@@ -81,13 +81,14 @@ class EditView
     ~EditView();
 
     //Refreshes the editing window
-    void Refresh();
+    void Refresh(char*,int);
 
     //Asks for input and returns char
     int getchar();
 
   private:
     WINDOW *window;               // pointer to the editwindow
+    int tracker;                  // keeps track of visible chars
 };
 
 

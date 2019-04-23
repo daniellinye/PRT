@@ -83,60 +83,90 @@ void Range::initm(Sheet* matrix)
 //get the correct cell types
 void Range::initCell(int x, int y, string value)
 {
-	bool isfloat = false, isstring = false;
-	float total = 0, decimals = 0;
-	int stringsize = value.size();
+	int stringsize = value.size(), temp, isfloat = 0, state = 0;
+	bool isint = true;
+	string startparser = "", arg = "";
+	float result = 0;
+
+	//first parse the cels
+	for(int i = 0; i < stringsize; i++)
+	{
+		if(value[i] < '0' && value[i] > '9')
+		{
+			isint = false;
+			if(value[i] == '.')
+			{
+				isfloat++;
+			}
+
+		}
+	}
 
 	try
 	{
-		for(int i = 0; i < stringsize; i++)
+		//then try formula
+		if (value[0] == '=')
 		{
-			if(isfloat)
+			for(int i = 1; i < stringsize; i++)
 			{
-				total *= 10;
-				total += value[i] - '0';
-				decimals ++;
+
+				if(value[i] == '(' && state == 0)
+				{
+					state = 1;
+				}
+				else if (state == 0)
+				{
+					startparser += value[i];
+				}
+				else if (state == 1 && value[i] == ')')
+				{
+					state = 2;
+				}
+				else if (state == 1)
+				{
+					arg += value[i];
+				}
 			}
-			if(value[i] == '.')
+
+			if(startparser == "SUM")
 			{
-				isfloat = true;
+				result = iterRows(arg, matrix);
 			}
-			if(value[i] < '0' || value[i] > '9')
+			else if(startparser == "COUNT")
 			{
-				isstring = true;
+				result = countcells(arg, matrix);
 			}
-		}
-		total /= (10*decimals);
-		//try int conversion
-		if(!isfloat && !isstring)
-		{
-			int temp = atoi(value.c_str());
-			matrix->replaceCell(x, y, temp);
+			else if (startparser == "AVG")
+			{
+				result = averageCells(arg, matrix);
+			}
+			else
+			{
+				//otherwise it's a string
+				throw 0;
+			}
+			matrix->replaceCell(x, y, result, value);
 		}
 		else
 		{
+			//otherwise it's a string
 			throw 0;
 		}
 
 	}
-	catch(int i)
+	catch (int e)
 	{
-		//try float conversion
+		//then add
 		try
 		{
-			if(!isstring)
+			if(stringsize < 8 && isint)
 			{
-				float temp = atoi(value.c_str());
-				matrix->replaceCell(x, y, temp + total);
-			}
-			else
-			{
-				throw 0;
+				temp = atof(value.c_str());
+				matrix->replaceCell(x, y, temp, value);
 			}
 		}
-		catch(int i)
+		catch (int i)
 		{
-			//try formula
 			try
 			{
 				string startparser = "", arg = "";
@@ -185,18 +215,19 @@ void Range::initCell(int x, int y, string value)
 				}
 				else
 				{
-					//otherwise it's a string
-					throw 0;
+					temp = atoi(value.c_str());
+					matrix->replaceCell(x, y, temp, value);
+					cout << "float" << endl;
 				}
-				matrix->replaceCell(x, y, result);
+
 			}
-			catch (int e)
+			catch(const std::exception& e)
 			{
-				cout << e << endl;
-				matrix->replaceCell(x, y, value);
+				matrix->replaceCell(x, y, value, value);
 			}
 		}
 	}
+	matrix->replaceCell(x, y, value, value);
 }
 
 //resizes the matrix to new size
