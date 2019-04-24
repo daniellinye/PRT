@@ -36,7 +36,8 @@ SheetView::~SheetView()
   endwin();       //end of ncurses
 } // ~SheetView
 
-// Fetch a single character from the window
+
+// Fetch a single character from ncurses
 int SheetView::getchar()
 {
   noecho();
@@ -68,7 +69,7 @@ void SheetView::Move(int input)
       if (x > 0)
         x--;
     break;
-  }
+  } //switch
 
   address->init(x,y);
   RefreshSheet();
@@ -81,6 +82,7 @@ void SheetView::Delete()
   int x,y;
   address->givecoords(x,y);
   sheet->replaceCell(x,y,"","");
+  RefreshSheet();
 } // Delete
 
 
@@ -102,7 +104,7 @@ void SheetView::initEdit()
   RefreshSheet();
 
   delete edit;
-}
+} // initEdit
 
 
 // Create window
@@ -115,7 +117,7 @@ void SheetView::CreateWindow()
   maxlines = (scrheight / cellheight) - 1;  // of lines and columns
 
   window = subwin(stdscr,scrheight - cellheight, scrwidth - cellwidth, cellheight, cellwidth);
-}
+} // CreateWindow
 
 
 // Add rows and colums
@@ -139,22 +141,20 @@ void SheetView::initView()
     {
       hulpflt = hulpflt / letters - 1;
       aantalletters++;
-    }
+    } // while
     while (letteri < aantalletters)
     {
       colname[letteri] = 'A' + hulpflt;
       hulpflt = (hulpflt - (int) hulpflt) * letters;
       letteri++;
-    }
+    } // while
     colname[letteri] = '\0';
     mvprintw(0,cellwidth * (i + 1),"   %*s",3 - cellwidth,colname);
-  }
+  } // for
 
   //add rownumbers
   for (int i = 1; i <= lines && i <= maxlines; i++)
-  {
     mvprintw(cellheight * i, 0,"%*d   ",cellwidth - 3,i);
-  }
 
   attroff(A_STANDOUT);
   delete[] colname;
@@ -167,10 +167,10 @@ void SheetView::RefreshSheet()
   int x,y;
   const char* cellvalue;
   werase(window);
+
   for (x = 0; x < cols && x < maxcols; x++)
-    for (y = 0; y < lines && y < maxlines; y++){
+    for (y = 0; y < lines && y < maxlines; y++)
       PrintCell(x,y);
-    }
 
   address->givecoords(x,y);
   cellvalue = sheet->getCell(x,y)->giveref()->print().str().c_str();
@@ -183,14 +183,15 @@ void SheetView::RefreshSheet()
 } // RefreshSheet
 
 
-// prints cell
+// Prints cell
 void SheetView::PrintCell(int x, int y)
 {
   const char* cellvalue = sheet->getCell(x,y)->giveref()->print().str().c_str();
   mvwprintw(window,cellheight * y,cellwidth * x,"%.*s",cellwidth,cellvalue);
-}//PrintCell
+} // PrintCell
 
 
+// Print a border around the editwindow
 void SheetView::CreateBorder()
 {
   int x,y;
@@ -198,32 +199,32 @@ void SheetView::CreateBorder()
 
   address->givecoords(x,y);
 
-  if(x > 0 && y > 0){
+  if(x > 0 && y > 0)
     mvwaddch(window, (cellheight * y) - 1, (cellwidth * x) - 1, corner);
-  }
-  if(x < maxcols && x < cols && y > 0){
+
+  if(x < maxcols && x < cols && y > 0)
     mvwaddch(window, (cellheight * y) - 1, cellwidth * (x + 1), corner);
-  }
-  if(x > 0 && y < maxlines && y < lines){
+
+  if(x > 0 && y < maxlines && y < lines)
     mvwaddch(window, cellheight * (y + 1), (cellwidth * x) - 1, corner);
-  }
-  if(x < maxcols && x < cols && y < maxlines && y < lines){
+
+  if(x < maxcols && x < cols && y < maxlines && y < lines)
     mvwaddch(window, cellheight * (y + 1), cellwidth * (x + 1), corner);
-  }
-  if(y > 0){
+
+  if(y > 0)
     mvwhline(window, (cellheight * y) - 1, cellwidth * x, horizontal, cellwidth);
-  }
-  if(y < maxlines && y < lines){
+
+  if(y < maxlines && y < lines)
     mvwhline(window, cellheight * (y + 1), cellwidth * x, horizontal, cellwidth);
-  }
-  if(x > 0){
+
+  if(x > 0)
     mvwvline(window, cellheight * y, (cellwidth * x) - 1, vertical, cellheight);
-  }
-  if(x < maxcols && x < cols){
+
+  if(x < maxcols && x < cols)
     mvwvline(window, cellheight * y, cellwidth * (x + 1), vertical, cellheight);
-  }
+
   wrefresh(window);
-}
+} // CreateBorder
 
 
 //*****************************************************
@@ -232,12 +233,12 @@ void SheetView::CreateBorder()
 SheetController::SheetController()
 {
   view = new SheetView();
-}
+} // constructor
 
 SheetController::~SheetController()
 {
   delete view;
-}
+} // destructor
 
 void SheetController::MainLoop()
 {
@@ -252,17 +253,37 @@ void SheetController::MainLoop()
         view->Move(input);
       break;
       case KEY_BACKSPACE: case KEY_DC:
+      case KEY_CLEAR: case KEY_DL:
+      case 0x7f:
         view->Delete();
       break;
-      case 'r': case 'R':
-        //view.ResizeSheet(win);
+      case 's': case 'S':
+        //Save();
+      break;
+      case 'l': case 'L':
+        //Load();
       break;
       case KEY_ENTER: case '\n':
+      case '\r':
         view->initEdit();
       break;
-    }//moves the cursor around
-  }
-}
+    } // switch
+  } // while
+} // MainLoop
+
+
+void SheetController::Save()
+{
+  //TODO:
+
+} // Save
+
+
+void SheetController::Load(string filename)
+{
+  //TODO:
+
+} // Load
 
 
 //*****************************************************
@@ -290,9 +311,10 @@ void EditView::Refresh(char *input, int curs_pos)
   mvwprintw(window,0,0,input);
   wmove(window,0,curs_pos);
   wrefresh(window);
-}
+} // Refresh
 
-// Fetch a single character from the window
+
+// Fetch a single character from ncurses
 int EditView::getchar()
 {
   noecho();
@@ -308,7 +330,6 @@ EditController::EditController(int x, int y, char *cellvalue)
   newValue = cellvalue;
   view = new EditView(x,y);
   length = strlen(newValue);
-  cout << length;
   curs_pos = length;
 } // constructor
 
@@ -327,7 +348,8 @@ void EditController::EditLoop()
   while((ch = view->getchar()) != '\n')
   {
     noecho();
-    switch (ch) {
+    switch (ch)
+    {
       case KEY_BACKSPACE:   //backspace
         Backspace();
       break;
@@ -343,9 +365,9 @@ void EditController::EditLoop()
       default:              //normal typing keys
         Putchar(ch);
       break;
-    }
+    } // switch
     view->Refresh(newValue,curs_pos);
-  }
+  } // switch
 } // EditLoop
 
 
@@ -356,11 +378,10 @@ void EditController::Backspace()
     length--;
     curs_pos--;
     for (int i = curs_pos; i < length; i++)
-    {
       newValue[i] = newValue[i+1];
-    }
+
     newValue[length] = '\0';
-  }
+  } // if
 } // Backspace
 
 
@@ -370,11 +391,10 @@ void EditController::Delete()
   {
     length--;
     for (int i = curs_pos; i < length; i++)
-    {
       newValue[i] = newValue[i+1];
-    }
+
     newValue[length] = '\0';
-  }
+  } // if
 } // Delete
 
 
@@ -403,5 +423,5 @@ void EditController::Putchar(int ch)
     curs_pos++;
     length++;
     newValue[length] = '\0';
-  }
+  } // if
 } // Putchar

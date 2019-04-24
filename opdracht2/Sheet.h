@@ -104,6 +104,9 @@ public:
 	//constructor
 	Cell();
 
+	//destructor
+	~Cell();
+
 	//initializes a new cell with an integer value init
 	void initCelli(int init, string mem);
 
@@ -126,18 +129,14 @@ private:
 	int size;
 public:
 	Column(int size);
+	~Column();
 
 	//resize vectorcolumns to proper size
 	void resize(int newsize);
 
-	//replaces a cell with value int
-	void replaceCell(int index, int value, string mem);
-
-	//replaces a cell with value string
-	void replaceCell(int index, string value, string mem);
-
-	//replaces a cell with value float
-	void replaceCell(int index, float value, string mem);
+	//replaces a cell with value T
+	template<typename T>
+	void replaceCell(int index, T value, string mem);
 
 
 	//gets cell from vector at col index
@@ -165,6 +164,8 @@ public:
 	//initializes the sheet with
 	//height h and width b
 	Sheet(int h, int b);
+
+	~Sheet();
 
 	//resize matrix to new size h and b
 	void resize(int newh, int newb);

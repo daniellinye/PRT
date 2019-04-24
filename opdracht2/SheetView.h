@@ -1,7 +1,7 @@
 #include <iostream>
-#include "Range.h"
 #include <ncurses.h>
 #include <string.h>
+#include "Range.h"
 
 using namespace std;
 
@@ -67,6 +67,8 @@ class SheetController
     void MainLoop();
 
   private:
+    void Save();
+    void Load(string);
     SheetView *view;
 };
 

@@ -11,7 +11,8 @@ using namespace std;
 
 int main()
 {
-	SheetController controller = SheetController();
-  controller.MainLoop();
+	SheetController *controller = new SheetController();
+  controller->MainLoop();
+	delete controller;
 	return 0;
 }

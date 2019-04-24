@@ -109,7 +109,6 @@ void Range::initCell(int x, int y, string value)
 		{
 			for(int i = 1; i < stringsize; i++)
 			{
-
 				if(value[i] == '(' && state == 0)
 				{
 					state = 1;
@@ -310,24 +309,24 @@ void Range::giveRows(string input)
 //does SUM
 float Range::iterRows(string input, Sheet* matrix)
 {
+	int beginx,beginy,endx,endy;
 	float temp = 0;
 	string str;
-    giveRows(input);
+  giveRows(input);
 
-    int beginx,beginy,endx,endy;
-		begin.givecoords(beginx,beginy);
-		end.givecoords(endx,endy);
+	begin.givecoords(beginx,beginy);
+	end.givecoords(endx,endy);
 
-    for(int i = beginx; i <= endx; i++)
+  for(int i = beginx; i <= endx; i++)
+  {
+    for(int j = beginy; j <= endy; j++)
     {
-        for(int j = beginy; j <= endy; j++)
-        {
-					string str = matrix->getCell(i, j)->giveref()->print().str();
-					try {temp += atof(str.c_str());}
-					catch(exception e){return 0;}
-        }
+			string str = matrix->getCell(i, j)->giveref()->print().str();
+			try {temp += atof(str.c_str());}
+			catch(exception e){return 0;}
     }
-    return temp;
+  }
+  return temp;
 }
 
 //takes input
