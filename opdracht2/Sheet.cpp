@@ -144,7 +144,7 @@ Cell::Cell()
 //destructor
 Cell::~Cell()
 {
-	
+
 } // destructor
 
 //inits the cell with an int

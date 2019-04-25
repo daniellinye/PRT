@@ -98,7 +98,6 @@ void Range::initCell(int x, int y, string value)
 			{
 				isfloat++;
 			}
-
 		}
 	}
 
@@ -144,7 +143,8 @@ void Range::initCell(int x, int y, string value)
 				//otherwise it's a string
 				throw 0;
 			}
-			matrix->replaceCell(x, y, result, value);
+			matrix->replaceCell(x,y,result, value);
+			return;
 		}
 		else
 		{
@@ -211,18 +211,21 @@ void Range::initCell(int x, int y, string value)
 						//otherwise it's a string
 						throw 0;
 					}
+					matrix->replaceCell(x,y,result, value);
+					return;
 				}
 				else
 				{
 					temp = atoi(value.c_str());
 					matrix->replaceCell(x, y, temp, value);
-					cout << "float" << endl;
+					return;
 				}
 
 			}
 			catch(const std::exception& e)
 			{
 				matrix->replaceCell(x, y, value, value);
+				return;
 			}
 		}
 	}
@@ -257,7 +260,7 @@ Cell* Range::getCell(int x, int y)
 	{
 		return matrix->getCell(x, y);
 	}
-	return new Cell();
+	return NULL;
 }
 
 //returns cellpointer at coords (a, col)
@@ -268,7 +271,7 @@ Cell* Range::getCell(char a, int col)
 	{
 		return matrix->getCell(a, col);
 	}
-	return new Cell();
+	return NULL;
 }
 
 //gives both celladdresses in the function

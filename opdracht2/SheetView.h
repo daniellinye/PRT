@@ -49,6 +49,7 @@ class SheetView
     int maxlines, maxcols;        // maximum amount of lines and columns that fit the screen
     int lines, cols;              // amount of lines and columns
     Sheet* sheet;                 // pointer to a Sheet
+    Range* range;
     CellAddress* address;         // pointer to a CellAddress
     WINDOW *window;               // pointer to the window
 };

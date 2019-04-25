@@ -13,8 +13,10 @@ SheetView::SheetView()
   lines = 24;
   cols = 80;
 
-  sheet = new Sheet(lines, cols);
   address = new CellAddress();
+  sheet = new Sheet(lines, cols);
+  range = new Range();
+  range->initm(sheet);
 
   CreateWindow();
   initView();
@@ -29,6 +31,7 @@ SheetView::SheetView()
 SheetView::~SheetView()
 {
   delete sheet;
+  delete range;
   delete address;
 
   delwin(window); //delete window
@@ -81,7 +84,7 @@ void SheetView::Delete()
 {
   int x,y;
   address->givecoords(x,y);
-  sheet->replaceCell(x,y,"","");
+  range->initCell(x,y,"");
   RefreshSheet();
 } // Delete
 
@@ -100,7 +103,7 @@ void SheetView::initEdit()
 
   CreateBorder();
   edit->EditLoop();
-  sheet->replaceCell(x,y,cellvalue,cellvalue);
+  range->initCell(x,y,cellvalue);
   RefreshSheet();
 
   delete edit;
@@ -307,8 +310,13 @@ EditView::~EditView()
 //Refreshes the editwindow
 void EditView::Refresh(char *input, int curs_pos)
 {
+  int pos = 0;
+
+  if (curs_pos >= cellwidth)
+    pos = curs_pos - cellwidth + 1;
+
   werase(window);
-  mvwprintw(window,0,0,input);
+  mvwprintw(window,0,0,input + pos);
   wmove(window,0,curs_pos);
   wrefresh(window);
 } // Refresh
