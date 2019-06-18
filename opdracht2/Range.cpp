@@ -1,6 +1,448 @@
 #include "Range.h"
 #include <string>
 #include <iostream>
+#include <vector>
+#include <sstream>
+#include <iostream>
+
+using namespace std;
+
+
+//*****************************************************
+//CellValueBase
+//Baseclass for all Cell values
+
+std::stringstream CellValueBase::print()
+{
+	std::stringstream ss;
+	ss << "";
+	return ss;
+}
+
+//returns typename T as type
+std::string CellValueBase::givetid()
+{
+	return "nonetype";
+}
+
+//returns the value as float
+//is -1 when it's null
+float CellValueBase::convertfloat()
+{
+	return -1;
+}
+
+//*****************************************************
+//CellValue
+//Generic constructor that carries multiple typenames
+
+//constructor
+template <typename T>
+CellValue<T>::CellValue(T init) : CellValueBase()
+{
+	this->value = init;
+}
+
+//returns stringstream with value in cell<float>
+template <>
+std::stringstream CellValue<float>::print(void)
+{
+	std::stringstream ss;
+	ss << value;
+	return ss;
+}
+
+//returns stringstream with value in cell<int>
+template <>
+std::stringstream CellValue<int>::print(void)
+{
+	std::stringstream ss;
+	ss << value;
+	return ss;
+}
+
+//returns stringstream with value in cell<string>
+template <>
+std::stringstream CellValue<string>::print(void)
+{
+	std::stringstream ss;
+	ss << value;
+	return ss;
+}
+
+template<>
+std::string CellValue<int>::givetid()
+{
+	return "int";
+}
+
+template<>
+std::string CellValue<float>::givetid()
+{
+	return "float";
+}
+
+template<>
+std::string CellValue<string>::givetid()
+{
+	return "string";
+}
+
+//returns the value into a float
+template<>
+float CellValue<int>::convertfloat()
+{
+	return (float) value;
+}
+
+//returns the value into a float
+template<>
+float CellValue<string>::convertfloat()
+{
+	float temp = 0;
+	bool decimal = false;
+	int i, n = 0;
+	for (char chars : value)
+	{
+		if (chars == '.' || chars == ',') {
+			decimal = true;
+		}
+		else if (chars >= '0' && chars <= '9') {
+			temp = temp * 10 + (chars - '0');
+			if (decimal) {
+				n++;
+			}
+		}
+	}
+	if (decimal) {
+		for (i = 0; i < n; i++) {
+			temp /= 10;
+		}
+	}
+	return temp;
+}
+
+//returns the value into a float
+template<>
+float CellValue<float>::convertfloat()
+{
+	return value;
+}
+
+//*****************************************************
+//Cell
+//Pointerclass to CellValues
+
+//constructor
+Cell::Cell()
+{
+	value.reset(nullptr);
+	value = unique_ptr<CellValueBase>(new CellValue<string>(""));
+}
+
+
+//filters cells to proper value and initializes them
+void Cell::initCell(string value)
+{
+	bool isint = true, isfloat = true;
+	int temp;
+	float temp2;
+
+	for(char element : value)
+	{
+		if(element < '0' && element > '9')
+		{
+			isint = false;
+			if(element != '.' && element != ',')
+			{
+				isfloat = false;
+			}
+		}
+	}
+
+	if(isint)
+	{
+		try
+		{
+			temp = atoi(value.c_str());
+			initCelli(temp);
+		}
+		catch(int i)
+		{
+			cout << "rip" << endl;
+		}
+		
+	}
+	else if(isfloat)
+	{
+		try
+		{
+			temp2 = atof(value.c_str());
+			initCelli(temp2);
+		}
+		catch(int i)
+		{
+			cout << "rip" << endl;
+		}
+	}
+	else
+	{
+		initCelli(value);
+	}
+}
+
+//inits the cell with an int
+void Cell::initCelli(int init)
+{
+
+	auto cvar = new CellValue<int>(init);
+	delete &value;
+	value = unique_ptr<CellValueBase>(cvar);
+}
+
+//inits the cell with a string
+void Cell::initCelli(string init)
+{
+	auto cvar = new CellValue<string>(init);
+	delete &value;
+	value = unique_ptr<CellValueBase>(cvar);
+}
+
+//inits the cell with a float
+void Cell::initCelli(float init)
+{
+	auto cvar = new CellValue<float>(init);
+	delete &value;
+	value = unique_ptr<CellValueBase>(cvar);
+}
+
+//returns the cellvaluebase reference pointer
+CellValueBase* Cell::giveref()
+{
+	if (value != 0)
+	{
+		return value.get();
+	}
+	return NULL;
+}
+
+//*****************************************************
+//CellFormula
+
+CellFormula::CellFormula(float value, string origin)
+{
+	this->value.reset(nullptr);
+	this->value = unique_ptr<CellValueBase>(new CellValue<string>(""));
+	auto cvar = new CellValue<float>(value);
+	this->value = unique_ptr<CellValueBase>(cvar);
+	this->origin = origin;
+}
+
+
+//*****************************************************
+//Column
+//vector<Cell*> class
+
+//constructor
+Column::Column(int size)
+{
+	this->size = size;
+	for(int i = 0; i < size; i++)
+	{
+		col.push_back(new Cell());
+	}
+}
+
+//nested resize function in column
+//saves complexity if written here
+void Column::resize(int newsize)
+{
+	if(newsize > size)
+	{
+		for(int i = size; i < newsize; i++)
+		{
+			col.push_back(new Cell());
+		}
+	}
+	else
+	{
+		for(int i = size; i > newsize; i--)
+		{
+			col.pop_back();
+		}
+	}
+}
+
+void Column::replaceCell(int index, int newvalue)
+{
+	col[index]->initCelli(newvalue);
+}
+
+void Column::replaceCell(int index, float newvalue)
+{
+	col[index]->initCelli(newvalue);
+}
+
+//replace existing cell with new value string
+void Column::replaceCell(int index, string newvalue)
+{
+	col[index]->initCell(newvalue);
+}
+
+void Column::replaceCell(int index, float newvalue, string origin)
+{
+	delete col[index];
+	col[index] = new CellFormula(newvalue, origin);
+}
+
+//get cellpointer from index
+Cell* Column::getCell(int index)
+{
+	return col[index];
+}
+
+//get first cell in the vector
+Cell* Column::begin()
+{
+	if(col.size() > 0)
+		return col[0];
+	else
+		return new Cell();
+}
+
+//get last cell in the vector
+Cell* Column::end()
+{
+	if(col.size() > 0)
+		return col[col.size() - 1];
+	else
+		return new Cell();
+}
+
+
+//*****************************************************
+//Sheet
+//Vector<Column> class
+
+//constructor
+Sheet::Sheet(int h, int b)
+{
+	this->h = h;
+	this->b = b;
+	//fill matrix with h x b cells that are empty
+	for(int i = 0; i < b; i++)
+	{
+		matrix.push_back(Column(h));
+	}
+}
+
+//resizes the matrix
+void Sheet::resize(int newh, int newb)
+{
+	//check wether the sizes are valid
+	if(newh > 0 && newb > 0)
+	{
+		//in case the matrix has to become larger, make new vector elements
+		if(newb > b)
+		{
+			for(int i = 0; i < b; i++)
+			{
+				matrix[i].resize(newh);
+			}
+			for(int i = b; i < newb; i++)
+			{
+				matrix.push_back(Column(newh));
+			}
+		}
+		else
+		{
+			//otherwise only remove vector elements and handle the rest with
+			//mested function in column
+			for(int i = b; i > newb; i--)
+			{
+				matrix.pop_back();
+			}
+			for(int i = 0; i < newb; i++)
+			{
+				matrix[i].resize(newh);
+			}
+		}
+		this->h = newh;
+		this->b = newb;
+	}
+}
+
+//replaces cell with new value string
+void Sheet::replaceCell(int x, int y, string value)
+{
+	if(x < b && y < h && x > -1 && y > -1)
+	{
+		matrix[x].replaceCell(y, value);
+	}
+	else
+	{
+		cout << "Cell was not in scope of matrix" << endl;
+	}
+}
+
+//replaces cell with new value int
+void Sheet::replaceCell(int x, int y, int value)
+{
+	if(x < b && y < h && x > -1 && y > -1)
+	{
+		matrix[x].replaceCell(y, value);
+	}
+	else
+	{
+		cout << "Cell was not in scope of matrix" << endl;
+	}
+}
+
+//replaces cell with new value float
+void Sheet::replaceCell(int x, int y, float value)
+{
+	if(x < b && y < h && x > -1 && y > -1)
+	{
+		matrix[x].replaceCell(y, value);
+	}
+	else
+	{
+		cout << "Cell was not in scope of matrix" << endl;
+	}
+}
+
+void Sheet::replaceCell(int x, int y, float value, string origin)
+{
+	if(x < b && y < h && x > -1 && y > -1)
+	{
+		matrix[x].replaceCell(y, value, origin);
+	}
+	else
+	{
+		cout << "Cell was not in scope of matrix" << endl;
+	}
+}
+
+//get a cell in the matrix at coords (x, y)
+Cell* Sheet::getCell(int x, int y)
+{
+	if(x < b && y < h && x > -1 && y > -1)
+		return matrix[x].getCell(y);
+	else
+		return new Cell();
+}
+
+//get a cell in the matrix at coords (a - 'A', y - 1)
+Cell* Sheet::getCell(char a, int y)
+{
+	if (a >= 'A' && a <= 'Z' && y < h + 1 && y > -1)
+		return matrix[a - 'A'].getCell(y - 1);
+	else
+		return new Cell();
+}
+
+
+
 
 //*****************************************************
 //CellAddrress
@@ -42,19 +484,29 @@ void CellAddress::init(std::string input)
 }
 
 // returns coords in array
-void CellAddress::givecoords(int &x, int &y)
+int* CellAddress::givecoords()
 {
-	x = this->x;
-	y = this->y;
+	return new int[2]{ x, y };
+}
+
+//returns x coord
+int CellAddress::givex()
+{
+	return x;
+}
+
+//returns y coord
+int CellAddress::givey()
+{
+	return y;
 }
 
 //operator += for another Celladdress object
 CellAddress* CellAddress::operator +=(CellAddress &a)
 {
-	int x,y;
-	a.givecoords(x,y);
-	this->x += x;
-	this->y += y;
+	int* coords = a.givecoords();
+	this->x += coords[0];
+	this->y += coords[1];
 	return this;
 }
 
@@ -83,53 +535,38 @@ void Range::initm(Sheet* matrix)
 //get the correct cell types
 void Range::initCell(int x, int y, string value)
 {
-	int stringsize = value.size(), temp, isfloat = 0, state = 0;
-	bool isint = true;
-	string startparser = "", arg = "";
-	float result = 0;
-
-	//first parse the cels
-	for(int i = 0; i < stringsize; i++)
-	{
-		if(value[i] < '0' && value[i] > '9')
-		{
-			isint = false;
-			if(value[i] == '.')
-			{
-				isfloat++;
-			}
-		}
-	}
-
+	//first see if it's a formula
 	try
 	{
-		//then try formula
+		string startparser = "", arg = "";
+		float result = 0;
+		int state = 0;
 		if (value[0] == '=')
 		{
-			for(int i = 1; i < stringsize; i++)
+			for(char val : value)
 			{
-				if(value[i] == '(' && state == 0)
+				if(val == '(' && state == 0)
 				{
 					state = 1;
 				}
 				else if (state == 0)
 				{
-					startparser += value[i];
+					startparser += val;
 				}
-				else if (state == 1 && value[i] == ')')
+				else if (state == 1 && val == ')')
 				{
 					state = 2;
 				}
 				else if (state == 1)
 				{
-					arg += value[i];
+					arg += val;
 				}
-			}
+			}//for
 
 			if(startparser == "SUM")
 			{
 				result = iterRows(arg, matrix);
-			}
+			} 
 			else if(startparser == "COUNT")
 			{
 				result = countcells(arg, matrix);
@@ -143,93 +580,19 @@ void Range::initCell(int x, int y, string value)
 				//otherwise it's a string
 				throw 0;
 			}
-			matrix->replaceCell(x,y,result, value);
-			return;
-		}
+			matrix->replaceCell(x, y, result, value);
+				
+		}//if val[0] = '='
 		else
 		{
-			//otherwise it's a string
-			throw 0;
+			matrix->replaceCell(x, y, result);
 		}
-
 	}
 	catch (int e)
 	{
-		//then add
-		try
-		{
-			if(stringsize < 8 && isint)
-			{
-				temp = atof(value.c_str());
-				matrix->replaceCell(x, y, temp, value);
-			}
-		}
-		catch (int i)
-		{
-			try
-			{
-				string startparser = "", arg = "";
-				float result = 0;
-				int state = 0;
-
-				if (value[0] == '=')
-				{
-					for(int i = 1; i < stringsize; i++)
-					{
-						if(value[i] == '(' && state == 0)
-						{
-							state = 1;
-						}
-						else if (state == 0)
-						{
-							startparser += value[i];
-						}
-						else if (state == 1 && value[i] == ')')
-						{
-							state = 2;
-						}
-						else if (state == 1)
-						{
-							arg += value[i];
-						}
-					}
-
-					if(startparser == "SUM")
-					{
-						result = iterRows(arg, matrix);
-					}
-					else if(startparser == "COUNT")
-					{
-						result = countcells(arg, matrix);
-					}
-					else if (startparser == "AVG")
-					{
-						result = averageCells(arg, matrix);
-					}
-					else
-					{
-						//otherwise it's a string
-						throw 0;
-					}
-					matrix->replaceCell(x,y,result, value);
-					return;
-				}
-				else
-				{
-					temp = atoi(value.c_str());
-					matrix->replaceCell(x, y, temp, value);
-					return;
-				}
-
-			}
-			catch(const std::exception& e)
-			{
-				matrix->replaceCell(x, y, value, value);
-				return;
-			}
-		}
+		cout << e << endl;
+		matrix->replaceCell(x, y, value);
 	}
-	matrix->replaceCell(x, y, value, value);
 }
 
 //resizes the matrix to new size
@@ -260,7 +623,7 @@ Cell* Range::getCell(int x, int y)
 	{
 		return matrix->getCell(x, y);
 	}
-	return NULL;
+	return new Cell();
 }
 
 //returns cellpointer at coords (a, col)
@@ -271,7 +634,7 @@ Cell* Range::getCell(char a, int col)
 	{
 		return matrix->getCell(a, col);
 	}
-	return NULL;
+	return new Cell();
 }
 
 //gives both celladdresses in the function
@@ -312,24 +675,23 @@ void Range::giveRows(string input)
 //does SUM
 float Range::iterRows(string input, Sheet* matrix)
 {
-	int beginx,beginy,endx,endy;
 	float temp = 0;
 	string str;
-  giveRows(input);
+    giveRows(input);
 
-	begin.givecoords(beginx,beginy);
-	end.givecoords(endx,endy);
+    int beginx = begin.givex(), beginy = begin.givey(),
+		endy = end.givey(), endx = end.givex();
 
-  for(int i = beginx; i <= endx; i++)
-  {
-    for(int j = beginy; j <= endy; j++)
+    for(int i = beginx; i <= endx; i++)
     {
-			string str = matrix->getCell(i, j)->giveref()->print().str();
-			try {temp += atof(str.c_str());}
-			catch(exception e){return 0;}
+        for(int j = beginy; j <= endy; j++)
+        {
+					string str = matrix->getCell(i, j)->giveref()->print().str();
+					try {temp += atof(str.c_str());}
+					catch(exception e){return 0;}
+        }
     }
-  }
-  return temp;
+    return temp;
 }
 
 //takes input
@@ -339,14 +701,12 @@ float Range::iterRows(string input, Sheet* matrix)
 unsigned int Range::countcells(string input, Sheet* matrix)
 {
 	unsigned int h, temp = 0;
-	int beginx,beginy,endx,endy;
 	bool containsno;
 	string str;
 
 	giveRows(input);
-
-	begin.givecoords(beginx,beginy);
-	end.givecoords(endx,endy);
+	int beginx = begin.givex(), beginy = begin.givey(),
+	endy = end.givey(), endx = end.givex();
 
 	for(int i = beginx; i <= endx; i++)
 	{
@@ -374,13 +734,12 @@ unsigned int Range::countcells(string input, Sheet* matrix)
 float Range::averageCells(string input, Sheet* matrix)
 {
 	float temp = 0, temp2 = 0;
-	int beginx,beginy,endx,endy;
 	int counter = 0;
 	string str;
-  giveRows(input);
+  	giveRows(input);
 
-	begin.givecoords(beginx,beginy);
-	end.givecoords(endx,endy);
+  int beginx = begin.givex(), beginy = begin.givey(),
+	endy = end.givey(), endx = end.givex();
 
   for(int i = beginx; i <= endx; i++)
   {
@@ -397,3 +756,4 @@ float Range::averageCells(string input, Sheet* matrix)
   }
   return (temp2/counter);
 }
+
