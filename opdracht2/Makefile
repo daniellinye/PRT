@@ -12,7 +12,7 @@ final: all
 	#then ./Sheet
 
 all: clean Compile
-	$(CC) $(LDFLAGS) $(CFLAGS) -o libsheet.so.1.0 $(OBJS)
+	$(CC) $(LDFLAGS) $(CFLAGS) -o libsheet.so.1.0 $(OBJS) -lcurses
 	ln -sf libsheet.so.1.0 libsheet.so.1
 	ln -sf libsheet.so.1 libsheet.so
  
