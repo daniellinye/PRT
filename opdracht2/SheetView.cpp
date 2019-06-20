@@ -1,3 +1,5 @@
+
+
 #include "SheetView.h"
 #include <ncurses.h>
 #include <string>
@@ -16,7 +18,6 @@ SheetView::SheetView()
   address = new CellAddress();
   sheet = new Sheet(lines, cols);
   range = new Range();
-  range->initm(sheet);
 
   CreateWindow();
   initView();
@@ -52,7 +53,8 @@ int SheetView::getchar()
 void SheetView::Move(int input)
 {
   int x,y;
-  address->givecoords(x,y);
+  x = address->givex();
+  y = address->givey();
 
   switch (input)
   {
@@ -83,8 +85,9 @@ void SheetView::Move(int input)
 void SheetView::Delete()
 {
   int x,y;
-  address->givecoords(x,y);
-  range->initCell(x,y,"");
+  x = address->givex();
+  y = address->givey();
+  sheet->initCell(x,y,"");
   RefreshSheet();
 } // Delete
 
@@ -96,14 +99,15 @@ void SheetView::initEdit()
   char *cellvalue;
   EditController *edit;
 
-  address->givecoords(x,y);
+  x = address->givex();
+  y = address->givey();
 
   cellvalue = const_cast<char*>(sheet->getCell(x,y)->giveref()->print().str().c_str());
   edit = new EditController(x,y,cellvalue);
 
   CreateBorder();
   edit->EditLoop();
-  range->initCell(x,y,cellvalue);
+  sheet->initCell(x,y,cellvalue);
   RefreshSheet();
 
   delete edit;
@@ -175,7 +179,8 @@ void SheetView::RefreshSheet()
     for (y = 0; y < lines && y < maxlines; y++)
       PrintCell(x,y);
 
-  address->givecoords(x,y);
+  x = address->givex();
+  y = address->givey();
   cellvalue = sheet->getCell(x,y)->giveref()->print().str().c_str();
 
   wattron(window,A_STANDOUT);
@@ -200,7 +205,8 @@ void SheetView::CreateBorder()
   int x,y;
   char corner = '+', vertical = '|', horizontal = '-';
 
-  address->givecoords(x,y);
+  x = address->givex();
+  y = address->givey();
 
   if(x > 0 && y > 0)
     mvwaddch(window, (cellheight * y) - 1, (cellwidth * x) - 1, corner);
