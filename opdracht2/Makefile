@@ -1,3 +1,5 @@
+#!/bin/sh
+
 CC = g++
 CFLAGS = -g -Wall -std=c++11
 OBJS = Cell.o Column.o Sheet.o CellAddress.o Range.o
@@ -11,6 +13,8 @@ check: clean libsheet.so libview.so Test
 
 Sheet: main.cc
 	$(CC) $(CFLAGS) $< -o $@ $(OBJS) $(LDFLAGS)
+	#after this do: export LD_LIBRARY_PATH=.
+	#then ./Sheet
 
 Test: test_range.cc
 	$(CC) $(CFLAGS) $< -o $@ $(OBJS) $(LDFLAGS)

@@ -33,7 +33,7 @@ Range::~Range ()
 
 void Range::ParseString (std::string range)
 {
-  int i = 2;
+  int i = 2, temp = 0;
   std::string coordinate = "";
 
   for (; range[i] != ':'; i++)
@@ -50,6 +50,17 @@ void Range::ParseString (std::string range)
 
   if (!end->CreateFromReference(coordinate))
     end = nullptr;
+  
+  //check if coordinates are reversed
+  if(end->x > begin->x || (end->x == begin->x && begin->y < end->y))
+  {
+    temp = end->x;
+    i = end->y;
+    end->x = begin->x;
+    end->y = begin->y;
+    begin->x = temp;
+    begin->y = i;
+  }
 }
 
 //*****************************************************************************
