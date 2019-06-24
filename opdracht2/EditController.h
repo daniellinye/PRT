@@ -16,7 +16,7 @@ class EditController
     //Loop voor het aanpassen van de cellValue
     void EditLoop(void);
 
-    CellValueBase *CellValueFactory (void);
+    CellValueBase *CellValueFactory (Sheet*);
 
   private:
     void Backspace();

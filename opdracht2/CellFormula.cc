@@ -6,10 +6,12 @@
 
  #include <iostream>
  #include "CellFormula.h"
+ 
 
 
-CellFormula::CellFormula(std::string value) : CellValueBase(), 
-                            value(value)
+
+CellFormula::CellFormula(std::string value, Sheet *sheet) : CellValueBase(), 
+                            value(value), sheet(sheet)
 {
     
 }
@@ -24,12 +26,21 @@ std::string CellFormula::GetLiteral()
 std::string CellFormula::GetString()
 {
     std::string type = "";
+    int i = 1, size = value.size();
     //TODO: float berekenen en in string zetten
-    for(int i = 1; i < 4; i++)
+    for(; value[i] != '(' && i < size; i++)
     {
         type += value[i];
     }
-    return "";
+
+    Range range = Range(sheet, value);
+
+    for(auto mem : range)
+    {
+        std::cout << mem->GetFloat() << std::endl;
+    }
+
+    return "ERR";
 }
 
 float CellFormula::GetFloat()

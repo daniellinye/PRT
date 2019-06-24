@@ -15,9 +15,6 @@ SheetView::SheetView()
 {
   initscr();                //start of ncurses
 
-  lines = 24;
-  cols = 80;
-
   address = new CellAddress();
   sheet = new Sheet(lines, cols);
 
@@ -106,7 +103,7 @@ void SheetView::InitEdit()
   edit = new EditController(x,y,cellvalue);
 
   edit->EditLoop();
-  sheet->GetCell(x,y)->SetValue(edit->CellValueFactory());
+  sheet->GetCell(x,y)->SetValue(edit->CellValueFactory(sheet));
   RefreshSheet();
 
   delete edit;

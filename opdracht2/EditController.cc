@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "EditController.h"
+#include "CellFormula.h"
 
 //*****************************************************************************
 
@@ -11,7 +12,6 @@ EditController::EditController(int x, int y, char *cellvalue) : value(cellvalue)
   length = strlen(cellvalue);
   curs_pos = length;
   view = new EditView(x,y);
-
 } // constructor
 
 //*****************************************************************************
@@ -27,7 +27,8 @@ void EditController::EditLoop()
 {
   int ch;
   view->Refresh(value,curs_pos);
-  do
+  noecho();
+  while((ch = view->GetChar()) != '\n')
   {
     noecho();
     switch (ch)
@@ -49,12 +50,12 @@ void EditController::EditLoop()
       break;
     } // switch
     view->Refresh(value,curs_pos);
-  } while ((ch = view->GetChar()) != '\n');
+  }
 } // EditLoop
 
 //*****************************************************************************
 
-CellValueBase *EditController::CellValueFactory ()
+CellValueBase *EditController::CellValueFactory (Sheet *sheet)
 {
   int type = 0;
   int i = 0;
@@ -62,8 +63,8 @@ CellValueBase *EditController::CellValueFactory ()
   if (length == 0)
     return nullptr;
 
-  //if (value[0] == '=')
-  //  return new CellFormula();
+  if (value[0] == '=')
+    return new CellFormula(value, sheet);
 
   if (value[i] == '-')
     i++;

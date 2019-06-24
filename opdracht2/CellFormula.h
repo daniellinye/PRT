@@ -3,12 +3,15 @@
 
 #include<string>
 #include "CellValueBase.h"
+#include "Range.h"
+
+class Sheet;
 
 class CellFormula : public CellValueBase
 {
   public:
 
-    CellFormula (std::string value);
+    CellFormula (std::string value, Sheet *sheet);
 
     ~CellFormula ();
 
@@ -22,6 +25,7 @@ class CellFormula : public CellValueBase
 
   private:
     std::string value;
+    Sheet *sheet;
 };
 
 #endif

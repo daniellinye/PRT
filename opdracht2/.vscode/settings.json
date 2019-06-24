@@ -2,6 +2,13 @@
     "files.associations": {
         "iostream": "cpp",
         "xiosbase": "cpp",
-        "xstring": "cpp"
+        "xstring": "cpp",
+        "iterator": "cpp",
+        "xutility": "cpp",
+        "initializer_list": "cpp",
+        "vector": "cpp",
+        "ostream": "cpp",
+        "exception": "cpp",
+        "memory": "cpp"
     }
 }

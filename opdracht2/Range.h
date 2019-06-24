@@ -26,9 +26,9 @@ class Range
 
     typedef RangeIterator iter;
 
-    RangeIterator begin();
+    RangeIterator begin(void);
     
-    RangeIterator end();
+    RangeIterator end(void);
 
   private:
     Sheet *sheet;
@@ -42,19 +42,15 @@ class RangeIterator : public std::iterator<std::input_iterator_tag, Cell*>
 
   RangeIterator(Range &range, int x, int y);
 
-  RangeIterator &operator++()
-  {
-    if(x < range.e->x)
-    {
-      x++;
-    }
-    else if(y < range.e->y)
-    {
-      y++;
-      x = range.b->x;
-    }
-    return *this;
-  }
+  bool operator==(const RangeIterator &iter) const;
+
+  bool operator!=(const RangeIterator &iter) const;
+
+  Cell* operator*() const;
+
+  Cell* operator->() const;
+
+  RangeIterator &operator++();
 
   private:
     Range &range;

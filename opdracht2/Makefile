@@ -2,7 +2,7 @@
 
 CC = g++
 CFLAGS = -g -Wall -std=c++11
-OBJS = CellFormula.o Cell.o Column.o Sheet.o CellAddress.o Range.o
+OBJS =  Cell.o Column.o Sheet.o CellAddress.o Range.o CellFormula.o
 UIOBJS = SheetController.o SheetView.o EditController.o EditView.o
 LDFLAGS = -L. -lsheet -lview -lncurses
 LIBFLAGS = -shared

@@ -4,6 +4,8 @@
 #include <vector>
 #include "Column.h"
 
+const int lines = 24, cols = 80;
+
 class Sheet
 {
   public:

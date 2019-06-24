@@ -5,6 +5,9 @@
 #include <ncurses.h>
 #include "SheetView.h"
 
+
+class CellFormula;
+
 class SheetController
 {
   public:
