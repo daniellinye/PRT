@@ -23,7 +23,12 @@ std::string CellFormula::GetLiteral()
 
 std::string CellFormula::GetString()
 {
+    std::string type = "";
     //TODO: float berekenen en in string zetten
+    for(int i = 1; i < 4; i++)
+    {
+        type += value[i];
+    }
     return "";
 }
 
