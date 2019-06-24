@@ -1,0 +1,68 @@
+#ifndef __RNG_CC__
+#define __RNG_CC__
+
+#include <iostream>
+#include "Range.h"
+
+//*****************************************************************************
+
+Range::Range (Sheet* sheet,std::string range) : sheet(sheet)
+{
+  begin = new CellAddress();
+  end = new CellAddress();
+  ParseString(range);
+}
+
+//*****************************************************************************
+
+Range::Range (Sheet* sheet,CellAddress *begin, CellAddress *end) : begin(begin),
+                                                                   end(end)
+{
+
+}
+
+//*****************************************************************************
+
+Range::~Range ()
+{
+  delete begin;
+  delete end;
+}
+
+//*****************************************************************************
+
+void Range::ParseString (std::string range)
+{
+  int i = 2, temp = 0;
+  std::string coordinate = "";
+
+  for (; range[i] != ':'; i++)
+    coordinate += range[i];
+
+  if (!begin->CreateFromReference(coordinate))
+    begin = nullptr;
+
+  coordinate = "";
+  i++;
+
+  for (; range[i] != ')'; i++)
+    coordinate += range[i];
+
+  if (!end->CreateFromReference(coordinate))
+    end = nullptr;
+  
+  //check if coordinates are reversed
+  if(end->x > begin->x || (end->x == begin->x && begin->y < end->y))
+  {
+    temp = end->x;
+    i = end->y;
+    end->x = begin->x;
+    end->y = begin->y;
+    begin->x = temp;
+    begin->y = i;
+  }
+}
+
+//*****************************************************************************
+
+#endif

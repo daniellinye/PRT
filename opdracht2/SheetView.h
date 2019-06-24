@@ -1,44 +1,43 @@
-#include <iostream>
+#ifndef __SHV_H__
+#define __SHV_H__
+
 #include <ncurses.h>
 #include <string.h>
-#include "Range.h"
 
-using namespace std;
-
-static const int cellheight(1); //height of a single cell
-static const int cellwidth(8);  //width of a single cell
-static const int editwidth(16); //width of two cells, for editing window
+#include "Sheet.h"
+#include "CellAddress.h"
+#include "EditController.h"
 
 class SheetView
 {
   public:
     //Constructor
-    SheetView();
+    SheetView(void);
 
     //Destructor
-    ~SheetView();
+    ~SheetView(void);
 
     //Asks for input and returns char
-    int getchar();
+    int GetChar(void);
 
     //Move cursorposition in window
     void Move(int);
 
     //Empty selected cell
-    void Delete();
+    void Delete(void);
 
     //Start editing the selected cell
-    void initEdit();
+    void InitEdit(void);
 
   private:
     //Create the main window
-    void CreateWindow();
+    void CreateWindow(void);
 
     //Refresh the main window and display the sheet
-    void RefreshSheet();
+    void RefreshSheet(void);
 
     //initiate the view with row -and columnnumbers
-    void initView();
+    void InitView(void);
 
     //print cell at coordinate (x,y)
     void PrintCell(int,int);
@@ -49,73 +48,8 @@ class SheetView
     int maxlines, maxcols;        // maximum amount of lines and columns that fit the screen
     int lines, cols;              // amount of lines and columns
     Sheet* sheet;                 // pointer to a Sheet
-    Range* range;
     CellAddress* address;         // pointer to a CellAddress
     WINDOW *window;               // pointer to the window
 };
 
-
-class SheetController
-{
-  public:
-    //Constructor
-    SheetController();
-
-    //Destructor
-    ~SheetController();
-
-    //De main loop
-    void MainLoop();
-
-  private:
-    void Save();
-    void Load(string);
-    SheetView *view;
-};
-
-
-class EditView
-{
-  public:
-    //Constructor
-    EditView(int,int);
-
-    //Destructor
-    ~EditView();
-
-    //Refreshes the editing window
-    void Refresh(char*,int);
-
-    //Asks for input and returns char
-    int getchar();
-
-  private:
-    WINDOW *window;               // pointer to the editwindow
-    int tracker;                  // keeps track of visible chars
-};
-
-
-class EditController
-{
-  public:
-    //Constructor
-    EditController(int,int,char*);
-
-    //Destructor
-    ~EditController();
-
-    //Loop voor het aanpassen van de cellValue
-    void EditLoop();
-
-  private:
-    void Backspace();
-    void Delete();
-    void Left();
-    void Right();
-    void Putchar(int);
-
-
-    EditView *view;
-    char *newValue;
-    int length, curs_pos;
-};
+#endif

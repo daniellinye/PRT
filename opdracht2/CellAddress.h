@@ -1,46 +1,22 @@
-#include <string>
-#include <iostream>
-#include <vector>
-#include <sstream>
-#include <iostream>
+#ifndef __CA_H__
+#define __CA_H__
 
-#ifndef CAHVar  // om te voorkomen dat dit .h bestand meerdere keren
-#define CAHVar  // wordt ge-include
-
-//This class is relevant for formulas
-//it keeps track of the two coordinates that are inbetween the values
 class CellAddress
 {
-private:
-	int x, y;
-public:
-	//constructor
-	CellAddress();
+  public:
+  	CellAddress (void);
+    CellAddress (int,int);
+    CellAddress (std::string);
 
-	//initializes values x and y corresponding
-	//with coordinates in the sheet
-	void init(int x, int y);
+    ~CellAddress (void);
 
-	//initializes values x and y corresponding
-	//with coordinates in the sheet
-	//but takes input as string: <column><row>
-	void init(std::string input);
+    void SetAddress (int,int);
+    bool CreateFromReference (std::string);
 
-	//returns the coordinates in a int[2]
-	int* givecoords();
+    int x;
+    int y;
 
-	//returns the x-coordinate
-	int givex();
-
-	//returns the y-coordinate
-	int givey();
-
-	//adds another celladress to the current one
-	CellAddress* operator +=(CellAddress &a);
-
-	//adds another coordinate(s) to the current one
-	CellAddress* operator +=(int coords[2]);
-
+  private:
 };
 
 #endif
