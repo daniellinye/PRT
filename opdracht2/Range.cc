@@ -8,15 +8,15 @@
 
 Range::Range (Sheet* sheet,std::string range) : sheet(sheet)
 {
-  begin = new CellAddress();
-  end = new CellAddress();
+  b = new CellAddress();
+  e = new CellAddress();
   ParseString(range);
-}
+} 
 
 //*****************************************************************************
 
-Range::Range (Sheet* sheet,CellAddress *begin, CellAddress *end) : begin(begin),
-                                                                   end(end)
+Range::Range (Sheet* sheet,CellAddress *b, CellAddress *e) : b(b),
+                                                                   e(e)
 {
 
 }
@@ -25,42 +25,72 @@ Range::Range (Sheet* sheet,CellAddress *begin, CellAddress *end) : begin(begin),
 
 Range::~Range ()
 {
-  delete begin;
-  delete end;
+  delete b;
+  delete e;
 }
 
 //*****************************************************************************
 
 void Range::ParseString (std::string range)
 {
-  int i = 2, temp = 0;
+  int i = 0, temp = 0;
   std::string coordinate = "";
 
   for (; range[i] != ':'; i++)
     coordinate += range[i];
 
-  if (!begin->CreateFromReference(coordinate))
-    begin = nullptr;
+  if (!b->CreateFromReference(coordinate))
+    b = nullptr;
 
   coordinate = "";
   i++;
 
-  for (; range[i] != ')'; i++)
+  for (; range[i] != '\0'; i++)
     coordinate += range[i];
 
-  if (!end->CreateFromReference(coordinate))
-    end = nullptr;
+  if (!e->CreateFromReference(coordinate))
+    e = nullptr;
   
   //check if coordinates are reversed
-  if(end->x > begin->x || (end->x == begin->x && begin->y < end->y))
+  if(e->x > b->x || (e->x == b->x && b->y < e->y))
   {
-    temp = end->x;
-    i = end->y;
-    end->x = begin->x;
-    end->y = begin->y;
-    begin->x = temp;
-    begin->y = i;
+    temp = e->x;
+    i = e->y;
+    e->x = b->x;
+    e->y = b->y;
+    b->x = temp;
+    b->y = i;
   }
+}
+
+//*****************************************************************************
+
+Cell* Range::getValue(const int x, const int y)
+{
+  return sheet->GetCell(x, y);
+}
+
+//*****************************************************************************
+
+RangeIterator Range::begin(void)
+{
+  return RangeIterator(*this, b->x, b->y);
+}
+
+//*****************************************************************************
+
+RangeIterator Range::end(void)
+{
+  return RangeIterator(*this, e->x, e->y);
+}
+
+//*****************************************************************************
+
+RangeIterator::RangeIterator(Range &range, int x, int y) : range(range), 
+                                                                 x(x), 
+                                                                 y(y)
+{
+  
 }
 
 //*****************************************************************************

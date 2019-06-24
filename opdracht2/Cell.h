@@ -13,6 +13,8 @@ class Cell
     void Empty(void);
     void SetValue(CellValueBase*);
     std::string GetValue(void);
+    float GetFloat(void);
+    std::string GetLiteral(void);
 
   private:
     std::unique_ptr<CellValueBase> value;

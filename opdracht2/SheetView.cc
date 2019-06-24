@@ -102,7 +102,7 @@ void SheetView::InitEdit()
 
   CreateBorder();
 
-  cellvalue = const_cast<char*>(sheet->GetCell(x,y)->GetValue().c_str());
+  cellvalue = const_cast<char*>(sheet->GetCell(x,y)->GetLiteral().c_str());
   edit = new EditController(x,y,cellvalue);
 
   edit->EditLoop();

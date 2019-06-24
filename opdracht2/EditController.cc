@@ -26,9 +26,8 @@ EditController::~EditController()
 void EditController::EditLoop()
 {
   int ch;
-  noecho();
   view->Refresh(value,curs_pos);
-  while ((ch = view->GetChar()) != '\n')
+  do
   {
     noecho();
     switch (ch)
@@ -50,7 +49,7 @@ void EditController::EditLoop()
       break;
     } // switch
     view->Refresh(value,curs_pos);
-  } // switch
+  } while ((ch = view->GetChar()) != '\n');
 } // EditLoop
 
 //*****************************************************************************
@@ -58,7 +57,7 @@ void EditController::EditLoop()
 CellValueBase *EditController::CellValueFactory ()
 {
   int type = 0;
-  int i = 1;
+  int i = 0;
 
   if (length == 0)
     return nullptr;

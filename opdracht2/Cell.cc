@@ -43,4 +43,22 @@ std::string Cell::GetValue()
 
 //*****************************************************************************
 
+float Cell::GetFloat()
+{
+  if (value != nullptr)
+    return value->GetFloat();
+  return 0;
+}
+
+//*****************************************************************************
+
+std::string Cell::GetLiteral()
+{
+  if (value != nullptr)
+    return value->GetLiteral();
+  return "";
+}
+
+//*****************************************************************************
+
 #endif
