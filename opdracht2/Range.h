@@ -22,7 +22,7 @@ class Range
 
     void ParseString (std::string);
 
-    Cell* getValue(const int x, const int y);
+    Cell* &getValue(const int x, const int y);
 
     typedef RangeIterator iter;
 
@@ -32,7 +32,7 @@ class Range
 
   private:
     Sheet *sheet;
-
+    Cell *temp;
     std::string function, total;
 };
 
@@ -46,9 +46,9 @@ class RangeIterator : public std::iterator<std::input_iterator_tag, Cell*>
 
   bool operator!=(const RangeIterator &iter) const;
 
-  Cell* operator*() const;
+  Cell* &operator*() const;
 
-  Cell* operator->() const;
+  Cell* &operator->() const;
 
   RangeIterator &operator++();
 

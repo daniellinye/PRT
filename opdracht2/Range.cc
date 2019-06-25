@@ -33,7 +33,8 @@ Range::~Range ()
 
 void Range::ParseString (std::string range)
 {
-  int i = 0, temp = 0, size = range.size();
+  //i = 1 want skip de eerste '='
+  int i = 1, temp = 0, size = range.size();
   std::string coordinate = "";
 
   if(size < 4)
@@ -45,7 +46,10 @@ void Range::ParseString (std::string range)
     coordinate += range[i];
 
   if (!b->CreateFromReference(coordinate))
-    b = nullptr;
+  {
+    delete b;
+    b = new CellAddress();
+  }
 
   coordinate = "";
   i++;
@@ -54,10 +58,13 @@ void Range::ParseString (std::string range)
     coordinate += range[i];
 
   if (!e->CreateFromReference(coordinate))
-    e = nullptr;
-  
+  {
+    delete e;
+    e = new CellAddress();
+  }
+
   //check if coordinates are reversed
-  if(e->x > b->x || (e->x == b->x && b->y < e->y))
+  if(e->x < b->x || (e->x == b->x && b->y > e->y))
   {
     temp = e->x;
     i = e->y;
@@ -66,14 +73,14 @@ void Range::ParseString (std::string range)
     b->x = temp;
     b->y = i;
   }
-
 }
 
 //*****************************************************************************
 
-Cell* Range::getValue(const int x, const int y)
+Cell* &Range::getValue(const int x, const int y)
 {
-  return sheet->GetCell(x, y);
+  temp = sheet->GetCell(x, y);
+  return temp;
 }
 
 //*****************************************************************************
@@ -103,7 +110,7 @@ RangeIterator::RangeIterator(Range &range, int x, int y) : range(range),
 
   bool RangeIterator::operator==(const RangeIterator &iter) const
   {
-    return &iter.range == &range && iter.x == x && iter.y == y;
+    return iter.x == x && iter.y == y;
   }
 
   bool RangeIterator::operator!=(const RangeIterator &iter) const
@@ -111,12 +118,12 @@ RangeIterator::RangeIterator(Range &range, int x, int y) : range(range),
     return !operator==(iter);
   }
 
-  Cell* RangeIterator::operator*() const
+  Cell* &RangeIterator::operator*() const
   {
     return range.getValue(x, y);
   }
 
-  Cell* RangeIterator::operator->() const
+  Cell* &RangeIterator::operator->() const
   {
     return range.getValue(x, y);
   }
@@ -125,6 +132,7 @@ RangeIterator::RangeIterator(Range &range, int x, int y) : range(range),
   {
     if(x < range.e->x)
     {
+      std::cout << range.e->x << std::endl;
       x++;
     }
     else if(y < range.e->y)

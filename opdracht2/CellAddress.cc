@@ -56,7 +56,7 @@ bool CellAddress::CreateFromReference (std::string coordinate)
   {
     if (!row && coordinate[i] >= 'A' && coordinate[i] <= 'Z')
     {
-      x *= 26;
+      x *= 10;
       x += coordinate[i] - 'A' + 1;
       col = true;
     }
@@ -69,9 +69,7 @@ bool CellAddress::CreateFromReference (std::string coordinate)
     else
       return false;
   }
-
-  x--;
-  y--;
+  
   return (col && row);
 }
 

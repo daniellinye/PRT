@@ -27,6 +27,7 @@ std::string CellFormula::GetString()
 {
     std::string type = "";
     int i = 1, size = value.size();
+    float calc = 0;
     //TODO: float berekenen en in string zetten
     for(; value[i] != '(' && i < size; i++)
     {
@@ -35,9 +36,34 @@ std::string CellFormula::GetString()
 
     Range range = Range(sheet, value);
 
-    for(auto mem : range)
+    i = 0; size = 0;
+
+    if(type == "=SUM" || type == "=AVG" || type == "=COUNT")
+
+    for(RangeIterator it = range.begin(); it != range.end(); ++it)
     {
-        std::cout << mem->GetFloat() << std::endl;
+        std::cout << range.b->x << "|" << it.operator==(it) << std::endl;
+        
+        i++;
+        try
+        {
+            atoi(it->GetLiteral().c_str());
+            size++;
+        } catch(int j) { }
+        calc += it->GetFloat();
+    }
+
+    if(type == "=SUM")
+    {
+        return std::to_string(calc) ;
+    }
+    else if(type == "=AVG")
+    {
+        return std::to_string((float)calc/i);
+    }
+    else if(type == "=COUNT")
+    {
+        return std::to_string(size);
     }
 
     return "ERR";
