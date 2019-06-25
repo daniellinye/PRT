@@ -110,7 +110,7 @@ RangeIterator::RangeIterator(Range &range, int x, int y) : range(range),
 
   bool RangeIterator::operator==(const RangeIterator &iter) const
   {
-    return iter.x == x && iter.y == y;
+    return &iter.range == &range && iter.x == x && iter.y == y;
   }
 
   bool RangeIterator::operator!=(const RangeIterator &iter) const
@@ -132,7 +132,6 @@ RangeIterator::RangeIterator(Range &range, int x, int y) : range(range),
   {
     if(x < range.e->x)
     {
-      std::cout << range.e->x << std::endl;
       x++;
     }
     else if(y < range.e->y)
