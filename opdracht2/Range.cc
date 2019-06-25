@@ -94,7 +94,7 @@ RangeIterator Range::begin(void)
 
 RangeIterator Range::end(void)
 {
-  return RangeIterator(*this, e->x, e->y);
+  return RangeIterator(*this, e->x - 1, e->y - 1);
 }
 
 //*****************************************************************************
@@ -110,7 +110,7 @@ RangeIterator::RangeIterator(Range &range, int x, int y) : range(range),
 
   bool RangeIterator::operator==(const RangeIterator &iter) const
   {
-    return &iter.range == &range && iter.x == x && iter.y == y;
+    return iter.x == this->x - 1 && iter.y == this->y;
   }
 
   bool RangeIterator::operator!=(const RangeIterator &iter) const

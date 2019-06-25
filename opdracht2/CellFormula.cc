@@ -42,7 +42,8 @@ std::string CellFormula::GetString()
 
     for(RangeIterator it = range.begin(); it != range.end(); ++it)
     {
-        i++;
+        if(it->GetLiteral() != "")
+            i++;
         try
         {
             atoi(it->GetLiteral().c_str());
@@ -56,12 +57,13 @@ std::string CellFormula::GetString()
         return std::to_string(calc) ;
     }
     else if(type == "AVG")
-    {
-        return std::to_string((float)calc/(i/size/size));
+    {   
+        if(i > 0)
+            return std::to_string((float)(calc/(i - 1)));
     }
     else if(type == "COUNT")
     {
-        return std::to_string(size/2);
+        return std::to_string((size - 1)/2);
     }
 
     return "ERR";
