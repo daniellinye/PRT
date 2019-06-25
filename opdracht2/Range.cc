@@ -73,6 +73,8 @@ void Range::ParseString (std::string range)
     b->x = temp;
     b->y = i;
   }
+  e->x--;
+  e->y--;
 }
 
 //*****************************************************************************
@@ -94,7 +96,7 @@ RangeIterator Range::begin(void)
 
 RangeIterator Range::end(void)
 {
-  return RangeIterator(*this, e->x - 1, e->y - 1);
+  return RangeIterator(*this, e->x + 1, e->y);
 }
 
 //*****************************************************************************
@@ -110,7 +112,7 @@ RangeIterator::RangeIterator(Range &range, int x, int y) : range(range),
 
   bool RangeIterator::operator==(const RangeIterator &iter) const
   {
-    return iter.x == this->x - 1 && iter.y == this->y;
+    return iter.x == this->x && iter.y == this->y;
   }
 
   bool RangeIterator::operator!=(const RangeIterator &iter) const
@@ -130,7 +132,7 @@ RangeIterator::RangeIterator(Range &range, int x, int y) : range(range),
 
   RangeIterator &RangeIterator::operator++()
   {
-    if(x < range.e->x)
+    if(x < range.e->x || (y == range.e->y && x == range.e->x))
     {
       x++;
     }

@@ -40,14 +40,15 @@ std::string CellFormula::GetString()
 
     if(type == "SUM" || type == "AVG" || type == "COUNT")
 
-    for(RangeIterator it = range.begin(); it != range.end(); ++it)
+    for(auto it : range)
     {
         if(it->GetLiteral() != "")
             i++;
         try
         {
             atoi(it->GetLiteral().c_str());
-            size++;
+            if(it->GetLiteral().find('.') == std::string::npos && it->GetLiteral() != "")
+                size++;
         } catch(int j) { }
         calc += it->GetFloat();
     }
@@ -59,11 +60,11 @@ std::string CellFormula::GetString()
     else if(type == "AVG")
     {   
         if(i > 0)
-            return std::to_string((float)(calc/(i - 1)));
+            return std::to_string((float)(calc/(i)));
     }
     else if(type == "COUNT")
     {
-        return std::to_string((size - 1)/2);
+        return std::to_string(size);
     }
 
     return "ERR";
